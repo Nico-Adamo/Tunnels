@@ -1,13 +1,13 @@
 #include "body.h"
-#include "polygon.h"
-#include "sdl_wrapper.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 // TO DO: Once sprite rendering is done, include it in typedef body_t
 typedef struct body {
-    SDL_Rect shape;
+    SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
+    SDL_Rect hitbox; // Position on screen and size
+    SDL_Texture *texture;
     double mass;
     // rgb_color_t color;
     vector_t centroid;
@@ -20,15 +20,17 @@ typedef struct body {
     free_func_t info_freer;
 } body_t;
 
-body_t *body_init(SDL_Rect shape, double mass, rgb_color_t color) {
-    return body_init_with_info(shape, mass, color, NULL, NULL);
+body_t *body_init(SDL_Rect shape, SDL_Rect hitbox, SDL_Texture *texture, double mass) {
+    return body_init_with_info(shape, hitbox, texture, mass, NULL, NULL);
 }
 
-body_t *body_init_with_info(SDL_Rect shape, double mass, rgb_color_t color, void *info, free_func_t info_freer) {
+body_t *body_init_with_info(SDL_Rect shape, SDL_Rect hitbox, SDL_Texture *texture, double mass, void *info, free_func_t info_freer) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
     body->shape = shape;
+    body->hitbox = hitbox;
+    body->texture = texture;
     body->mass = mass;
     // body->color = color;
     body->net_force.x = 0;
@@ -56,6 +58,14 @@ SDL_Rect body_get_shape(body_t *body) {
     return body->shape;
 }
 
+SDL_Rect body_get_hitbox(body_t *body) {
+    return body->hitbox;
+}
+
+SDL_Texture *body_get_texture(body_t *body) {
+    return body->texture;
+}
+
 vector_t body_get_centroid(body_t *body) {
     return body->centroid;
 }
@@ -81,8 +91,8 @@ void *body_get_info(body_t *body) {
 void body_set_centroid(body_t *body, vector_t x) {
     vector_t translation = vec_subtract(x, body->centroid);
     body->centroid = x;
-    body->shape.x += translation.x;
-    body->shape.y += translation.y;
+    body->hitbox.x += translation.x;
+    body->hitbox.y += translation.y;
 }
 
 void body_set_velocity(body_t *body, vector_t v) {

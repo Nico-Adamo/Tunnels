@@ -5,6 +5,7 @@
 #include "color.h"
 #include "list.h"
 #include "vector.h"
+#include <SDL2/SDL.h>
 
 /**
  * A rigid body constrained to the plane.
@@ -18,7 +19,7 @@ typedef struct body body_t;
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
-body_t *body_init(SDL_Rect shape, double mass, rgb_color_t color);
+body_t *body_init(SDL_Rect shape, SDL_Rect hitbox, SDL_Texture *texture, double mass);
 
 /**
  * Allocates memory for a body with the given parameters.
@@ -33,13 +34,7 @@ body_t *body_init(SDL_Rect shape, double mass, rgb_color_t color);
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(
-    SDL_Rect shape,
-    double mass,
-    rgb_color_t color,
-    void *info,
-    free_func_t info_freer
-);
+body_t *body_init_with_info(SDL_Rect shape, SDL_Rect hitbox, SDL_Texture *texture, double mass, void *info, free_func_t info_freer);
 
 /**
  * Releases the memory allocated for a body.
@@ -56,6 +51,8 @@ void body_free(body_t *body);
  * @return the polygon describing the body's current position
  */
 SDL_Rect body_get_shape(body_t *body);
+SDL_Rect body_get_hitbox(body_t *body);
+SDL_Texture *body_get_texture(body_t *body);
 
 /**
  * Gets the current center of mass of a body.

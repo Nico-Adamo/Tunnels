@@ -2,12 +2,13 @@
 #define __SDL_WRAPPER_H__
 
 #include <stdbool.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_image.h>
 #include "color.h"
 #include "list.h"
 #include "scene.h"
 #include "vector.h"
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
 
 // Values passed to a key handler when the given arrow key is pressed
 typedef enum {
@@ -64,14 +65,6 @@ bool sdl_is_done(scene_t *scene);
  * Clears the screen. Should be called before drawing polygons in each frame.
  */
 void sdl_clear(void);
-
-/**
- * Draws a polygon from the given list of vertices and a color.
- *
- * @param points the list of vertices of the polygon
- * @param color the color used to fill in the polygon
- */
-void sdl_draw_polygon(list_t *points, rgb_color_t color);
 
 /**
  * Displays the rendered frame on the SDL window.
