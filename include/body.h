@@ -131,7 +131,7 @@ void body_set_centroid(body_t *body, vector_t x);
  * @param body a pointer to a body returned from body_init()
  * @param v the body's new velocity
  */
-// void body_set_velocity(body_t *body, vector_t v);
+void body_set_velocity(body_t *body, vector_t v);
 
 /**
  * Changes a body's orientation in the plane.
@@ -141,7 +141,7 @@ void body_set_centroid(body_t *body, vector_t x);
  * @param body a pointer to a body returned from body_init()
  * @param angle the body's new angle in radians. Positive is counterclockwise.
  */
-void body_set_rotation(body_t *body, rect_t shape, double angle);
+void body_set_rotation(body_t *body, SDL_Rect shape, double angle);
 
 /**
  * Changes a body's orientation in the plane.

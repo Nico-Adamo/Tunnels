@@ -32,6 +32,8 @@ typedef struct {
  * @return whether the shapes are colliding, and if so, the collision axis.
  * The axis should be a unit vector pointing from shape1 towards shape2.
  */
-collision_info_t find_collision(list_t *shape1, list_t *shape2);
+collision_info_t find_collision(rect_t hitbox1, rect_t hitbox2);
+
+collision_info_t find_collision_list(list_t *shape1, list_t *shape2);
 
 #endif // #ifndef __COLLISION_H__

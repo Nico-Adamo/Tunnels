@@ -22,6 +22,11 @@ const vector_t PADDLE_VELOCITY = {
     .y = 0
 };
 
+const vector_t PADDLE_UP_VELOCITY = {
+    .x = 0,
+    .y = 300
+};
+
 double rand_from(double min, double max) {
     double range = (max - min);
     double div = RAND_MAX / range;
@@ -37,6 +42,12 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
             case RIGHT_ARROW:
                 body_set_velocity(scene_get_body(scene, 0), PADDLE_VELOCITY);
                 break;
+            case DOWN_ARROW:
+                body_set_velocity(scene_get_body(scene, 0), vec_negate(PADDLE_UP_VELOCITY)); //pass player first
+                break;
+            case UP_ARROW:
+                body_set_velocity(scene_get_body(scene, 0), PADDLE_UP_VELOCITY);
+                break;
         }
     }
     else if (type == KEY_RELEASED) {
@@ -45,6 +56,12 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
                 body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
                 break;
             case RIGHT_ARROW:
+                body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
+                break;
+            case DOWN_ARROW:
+                body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
+                break;
+            case UP_ARROW:
                 body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
                 break;
         }

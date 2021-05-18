@@ -4,7 +4,96 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "sdl_wrapper.h"
 
+// For hitboxes
+list_t *rect_to_list(rect_t hitbox) {
+    list_t *shape = list_init(4, free);
+    vector_t *corner1 = malloc(sizeof(vector_t));
+    corner1->x = hitbox.x;
+    corner1->y = hitbox.y;
+    list_add(shape, corner1);
+
+    vector_t *corner2 = malloc(sizeof(vector_t));
+    corner2->x = hitbox.x + hitbox.w;
+    corner2->y = hitbox.y;
+    list_add(shape, corner2);
+
+    vector_t *corner3 = malloc(sizeof(vector_t));
+    corner3->x = hitbox.x;
+    corner3->y = hitbox.y + hitbox.h;
+    list_add(shape, corner3);
+
+    vector_t *corner4 = malloc(sizeof(vector_t));
+    corner4->x = hitbox.x + hitbox.w;
+    corner4->y = hitbox.y + hitbox.h;
+    list_add(shape, corner4);
+}
+
+double is_separating_axis(vector_t axis, rect_t hitbox1, rect_t hitbox2) {
+    double min1 = INFINITY;
+    double max1 = -INFINITY;
+    double min2 = INFINITY;
+    double max2 = -INFINITY;
+    list_t *shape1 = rect_to_list(hitbox1);
+    list_t *shape2 = rect_to_list(hitbox2);
+    
+
+    for (int i = 0; i < list_size(shape1); i++) {
+        double projected_point = vec_dot(*(vector_t*) list_get(shape1, i), axis);
+        max1 = fmax(max1, projected_point);
+        min1 = fmin(min1, projected_point);
+    }
+
+    for (int i = 0; i < list_size(shape2); i++) {
+        double projected_point = vec_dot(*(vector_t*) list_get(shape2, i), axis);
+        max2 = fmax(max2, projected_point);
+        min2 = fmin(min2, projected_point);
+    }
+
+    if (max1 >= min2 && max2 >= min1) {
+        return fmin(max1 - min2, max2 - min1);
+    }
+
+    return -1;
+}
+
+collision_info_t find_collision(rect_t hitbox1, rect_t hitbox2) {
+    // Bounding Box Check
+    collision_info_t info = {
+        .collided = false,
+        .axis = VEC_ZERO
+    };
+
+    vector_t horizontal_axis = {
+        .x = 1,
+        .y = 0
+    };
+
+    vector_t vertical_axis = {
+        .x = 0,
+        .y = 1
+    };
+
+    double separating_axis1 = is_separating_axis(horizontal_axis, hitbox1, hitbox2);
+    double separating_axis2 = is_separating_axis(vertical_axis, hitbox1, hitbox2);
+    if (separating_axis1 < 0 || separating_axis2 < 0) {
+        return info;
+    } 
+    else {
+        info.collided = true;
+        if (separating_axis1 < separating_axis2) {
+            info.axis = horizontal_axis; 
+        }
+        else {
+            info.axis = vertical_axis; 
+        }
+    }
+
+    return info;
+}
+
+// For lists
 void add_edges(list_t *edges, list_t *shape) {
     for (int i = 0; i < list_size(shape); i++) {
         vector_t *edge = malloc(sizeof(vector_t));
@@ -13,7 +102,9 @@ void add_edges(list_t *edges, list_t *shape) {
     }
 }
 
-double is_separating_axis(vector_t axis, list_t *shape1, list_t* shape2) {
+
+
+double is_separating_axis_list(vector_t axis, list_t *shape1, list_t* shape2) {
     double min1 = INFINITY;
     double max1 = -INFINITY;
     double min2 = INFINITY;
@@ -39,7 +130,7 @@ double is_separating_axis(vector_t axis, list_t *shape1, list_t* shape2) {
 }
 
 
-collision_info_t find_collision(list_t *shape1, list_t *shape2) {
+collision_info_t find_collision_list(list_t *shape1, list_t *shape2) {
     list_t *edges = list_init(list_size(shape1) + list_size(shape2), free);
     add_edges(edges, shape1);
     add_edges(edges, shape2);
@@ -77,10 +168,11 @@ collision_info_t find_collision(list_t *shape1, list_t *shape2) {
 
         // Generates orthogonal axis by rotating vector by 90 degrees
         vector_t ortho_axis = vec_rotate(edge, M_PI_2);
-        double separating_axis = is_separating_axis(ortho_axis, shape1, shape2);
+        double separating_axis = is_separating_axis_list(ortho_axis, shape1, shape2);
         if (separating_axis < 0) {
             return info;
-        } else {
+        } 
+        else {
             if (separating_axis < current_min) {
                 current_min = separating_axis;
                 info.axis = ortho_axis; // come back here if broken
