@@ -2,14 +2,13 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
 #include "sdl_wrapper.h"
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1000;
 const int WINDOW_HEIGHT = 500;
 const double MS_PER_S = 1e3;
+const double map_scale = 10;
 
 /**
  * The coordinate at the center of the screen.
@@ -154,36 +153,24 @@ void sdl_clear(void) {
     SDL_RenderClear(renderer);
 }
 
-void sdl_draw_polygon(list_t *points, rgb_color_t color) {
-    // Check parameters
-    size_t n = list_size(points);
-    assert(n >= 3);
-    assert(0 <= color.r && color.r <= 1);
-    assert(0 <= color.g && color.g <= 1);
-    assert(0 <= color.b && color.b <= 1);
+/* loads textures */
+SDL_Texture *sdl_load_texture(const char *path) {
+    return IMG_LoadTexture(renderer, path);
+}
 
+void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination) {
+    SDL_Rect dest_window;
     vector_t window_center = get_window_center();
+    double scale = get_scene_scale(window_center);
+    dest_window.w = (int) round(destination.w) * scale;
+    dest_window.h = (int) round(destination.h) * scale;
 
-    // Convert each vertex to a point on screen
-    int16_t *x_points = malloc(sizeof(*x_points) * n),
-            *y_points = malloc(sizeof(*y_points) * n);
-    assert(x_points != NULL);
-    assert(y_points != NULL);
-    for (size_t i = 0; i < n; i++) {
-        vector_t *vertex = list_get(points, i);
-        vector_t pixel = get_window_position(*vertex, window_center);
-        x_points[i] = pixel.x;
-        y_points[i] = pixel.y;
-    }
+    //change x and y of destination to window coordinates
+    vector_t destPos = get_window_position((vector_t) {destination.x, destination.y}, window_center);
+    dest_window.x = (int) round(destPos.x);
+    dest_window.y = (int) round(destPos.y) - dest_window.h; // Scene standard: declaring
 
-    // Draw polygon with the given color
-    filledPolygonRGBA(
-        renderer,
-        x_points, y_points, n,
-        color.r * 255, color.g * 255, color.b * 255, 255
-    );
-    free(x_points);
-    free(y_points);
+    SDL_RenderCopy(renderer, texture, &source, &dest_window);
 }
 
 void sdl_show(void) {
@@ -207,12 +194,14 @@ void sdl_show(void) {
 
 void sdl_render_scene(scene_t *scene) {
     sdl_clear();
+    // Sprite rendering
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
         body_t *body = scene_get_body(scene, i);
-        list_t *shape = body_get_shape(body);
-        sdl_draw_polygon(shape, body_get_color(body));
-        list_free(shape);
+        SDL_Rect shape = body_get_shape(body);
+        rect_t hitbox = body_get_hitbox(body);
+        SDL_Texture *texture = body_get_texture(body);
+        sdl_draw_texture(texture, shape, hitbox);
     }
     sdl_show();
 }
@@ -220,6 +209,7 @@ void sdl_render_scene(scene_t *scene) {
 void sdl_on_key(key_handler_t handler) {
     key_handler = handler;
 }
+
 
 double time_since_last_tick(void) {
     clock_t now = clock();
@@ -230,18 +220,3 @@ double time_since_last_tick(void) {
     return difference;
 }
 
-/* loads textures */
-SDL_Texture *load_texture(const char *path) {
-    return IMG_Load_Texture(renderer, path);
-}
-
-void draw_texture(SDL_Texture texture, SDL_Rect source, SDL_Rect destination) {
-    //change x and y of destination to window coordinates
-    
-
-    
-    //change width and height of window coordinates
-
-    //render
-    
-}

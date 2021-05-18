@@ -2,9 +2,6 @@
 #define __SDL_WRAPPER_H__
 
 #include <stdbool.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
-#include <SDL2/SDL_image.h>
 #include "color.h"
 #include "list.h"
 #include "scene.h"
@@ -60,6 +57,8 @@ void sdl_init(vector_t min, vector_t max);
  * @return true if the window was closed, false otherwise
  */
 bool sdl_is_done(scene_t *scene);
+
+SDL_Texture *sdl_load_texture(const char *path);
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

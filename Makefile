@@ -1,10 +1,10 @@
 # List of demo programs
-DEMOS = bounce gravity pacman nbodies damping spaceinvaders pegs breakout
+DEMOS = game
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
 # This also defines the order in which the tests are run.
-STUDENT_LIBS = vector list polygon color body scene forces collision
+STUDENT_LIBS = vector list color body scene
 
 # If we're not on Windows...
 ifneq ($(OS), Windows_NT)
@@ -19,12 +19,13 @@ CC = clang
 #   (take CS 24 for a full explanation)
 # -fsanitize=address enables asan
 CFLAGS = -Iinclude $(shell sdl2-config --cflags | sed -e "s/include\/SDL2/include/") -Wall -g -fno-omit-frame-pointer -fsanitize=address -Wno-nullability-completeness
+
 # Compiler flag that links the program with the math library
 LIB_MATH = -lm
 # Compiler flags that link the program with the math and SDL libraries.
 # Note that $(...) substitutes a variable's value, so this line is equivalent to
 # LIBS = -lm -lSDL2 -lSDL2_gfx
-LIBS = $(LIB_MATH) $(shell sdl2-config --libs) -lSDL2_gfx
+LIBS = $(LIB_MATH) $(shell sdl2-config --libs) -lSDL2_gfx -lSDL2_image
 
 # List of compiled .o files corresponding to STUDENT_LIBS, e.g. "out/vector.o".
 # Don't worry about the syntax; it's just adding "out/" to the start
@@ -32,7 +33,7 @@ LIBS = $(LIB_MATH) $(shell sdl2-config --libs) -lSDL2_gfx
 STUDENT_OBJS = $(addprefix out/,$(STUDENT_LIBS:=.o))
 # List of test suite executables, e.g. "bin/test_suite_vector"
 TEST_BINS = $(addprefix bin/test_suite_,$(STUDENT_LIBS))
-# List of demo executables, i.e. "bin/bounce".
+# List of demo executables, i.e. "bin/game".
 DEMO_BINS = $(addprefix bin/,$(DEMOS))
 # All executables (the concatenation of TEST_BINS and DEMO_BINS)
 BINS = $(TEST_BINS) $(DEMO_BINS)
@@ -60,10 +61,10 @@ out/%.o: demo/%.c # or "demo"
 out/%.o: tests/%.c # or "tests"
 	$(CC) -c $(CFLAGS) $^ -o $@
 
-# Builds bin/bounce by linking the necessary .o files.
+# Builds bin/game by linking the necessary .o files.
 # Unlike the out/%.o rule, this uses the LIBS flags and omits the -c flag,
 # since it is building a full executable.
-bin/bounce: out/bounce.o out/sdl_wrapper.o $(STUDENT_OBJS)
+bin/game: out/game.o out/sdl_wrapper.o $(STUDENT_OBJS)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 bin/gravity: out/gravity.o out/sdl_wrapper.o $(STUDENT_OBJS)
@@ -163,7 +164,7 @@ C_FLAGS += -FC
 # Note that a lot of the base Windows ones are missing - the
 # libraries I've distributed are _dynamically linked_, because otherwise,
 # we'd need to manually link a lot of crap.
-LIBS = SDL2main.lib SDL2.lib SDL2_gfx.lib shell32.lib
+LIBS = SDL2main.lib SDL2.lib SDL2_gfx.lib SDL2_image.lib shell32.lib
 
 # Tell cl to look for lib files in this folder
 LINKEROPTS = -LIBPATH:"C:/Users/$(USERNAME)/msvc/lib"
@@ -181,7 +182,7 @@ LINKEROPTS += -NODEFAULTLIB:msvcrt.lib
 STUDENT_OBJS = $(addprefix out/,$(STUDENT_LIBS:=.obj))
 # List of test suite executables, e.g. "bin/test_suite_vector.exe"
 TEST_BINS = $(addsuffix .exe,$(addprefix bin/test_suite_,$(STUDENT_LIBS)))
-# List of demo executables, i.e. "bin/bounce.exe".
+# List of demo executables, i.e. "bin/game.exe".
 DEMO_BINS = $(addsuffix .exe,$(addprefix bin/,$(DEMOS)))
 # All executables (the concatenation of TEST_BINS and DEMO_BINS)
 BINS = $(TEST_BINS) $(DEMO_BINS)
@@ -209,7 +210,7 @@ out/%.obj: demo/%.c # or "demo"
 out/%.obj: tests/%.c # or "tests"
 	$(CC) -c $^ $(CFLAGS) -Fo"$@"
 
-bin/bounce.exe bin\bounce.exe: out/bounce.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+bin/game.exe bin\game.exe: out/game.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
 bin/gravity.exe bin\gravity.exe: out/gravity.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
@@ -240,7 +241,7 @@ bin/test_suite_%.exe bin\test_suite_%.exe: out/test_suite_%.obj out/test_util.ob
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) -out:"$@"
 
 # Empty recipes for cross-OS task compatibility.
-bin/bounce bin\bounce: bin/bounce.exe ;
+bin/game bin\game: bin/game.exe ;
 bin/gravity bin\gravity: bin/gravity.exe ;
 bin/pacman bin\pacman: bin/pacman.exe ;
 bin/nbodies bin\nbodies: bin/nbodies.exe;

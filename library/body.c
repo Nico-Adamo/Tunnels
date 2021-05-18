@@ -6,7 +6,7 @@
 // TO DO: Once sprite rendering is done, include it in typedef body_t
 typedef struct body {
     SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
-    SDL_Rect hitbox; // Position on screen and size
+    rect_t hitbox; // Position on screen and size
     SDL_Texture *texture;
     double mass;
     // rgb_color_t color;
@@ -20,11 +20,11 @@ typedef struct body {
     free_func_t info_freer;
 } body_t;
 
-body_t *body_init(SDL_Rect shape, SDL_Rect hitbox, SDL_Texture *texture, double mass) {
+body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass) {
     return body_init_with_info(shape, hitbox, texture, mass, NULL, NULL);
 }
 
-body_t *body_init_with_info(SDL_Rect shape, SDL_Rect hitbox, SDL_Texture *texture, double mass, void *info, free_func_t info_freer) {
+body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, void *info, free_func_t info_freer) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
@@ -58,7 +58,7 @@ SDL_Rect body_get_shape(body_t *body) {
     return body->shape;
 }
 
-SDL_Rect body_get_hitbox(body_t *body) {
+rect_t body_get_hitbox(body_t *body) {
     return body->hitbox;
 }
 
