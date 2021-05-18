@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "sdl_wrapper.h"
+#include "body.h"
 
 // For hitboxes
 list_t *rect_to_list(rect_t hitbox) {
@@ -28,6 +29,8 @@ list_t *rect_to_list(rect_t hitbox) {
     corner4->x = hitbox.x + hitbox.w;
     corner4->y = hitbox.y + hitbox.h;
     list_add(shape, corner4);
+
+    return shape;
 }
 
 double is_separating_axis(vector_t axis, rect_t hitbox1, rect_t hitbox2) {
@@ -37,7 +40,6 @@ double is_separating_axis(vector_t axis, rect_t hitbox1, rect_t hitbox2) {
     double max2 = -INFINITY;
     list_t *shape1 = rect_to_list(hitbox1);
     list_t *shape2 = rect_to_list(hitbox2);
-    
 
     for (int i = 0; i < list_size(shape1); i++) {
         double projected_point = vec_dot(*(vector_t*) list_get(shape1, i), axis);
@@ -59,7 +61,6 @@ double is_separating_axis(vector_t axis, rect_t hitbox1, rect_t hitbox2) {
 }
 
 collision_info_t find_collision(rect_t hitbox1, rect_t hitbox2) {
-    // Bounding Box Check
     collision_info_t info = {
         .collided = false,
         .axis = VEC_ZERO
@@ -79,14 +80,14 @@ collision_info_t find_collision(rect_t hitbox1, rect_t hitbox2) {
     double separating_axis2 = is_separating_axis(vertical_axis, hitbox1, hitbox2);
     if (separating_axis1 < 0 || separating_axis2 < 0) {
         return info;
-    } 
+    }
     else {
         info.collided = true;
         if (separating_axis1 < separating_axis2) {
-            info.axis = horizontal_axis; 
+            info.axis = horizontal_axis;
         }
         else {
-            info.axis = vertical_axis; 
+            info.axis = vertical_axis;
         }
     }
 
@@ -140,28 +141,6 @@ collision_info_t find_collision_list(list_t *shape1, list_t *shape2) {
         .axis = VEC_ZERO
     };
     double current_min = INFINITY;
-
-    // Bounding Box Check
-    double x_min = INFINITY;
-    double x_max = -INFINITY;
-    double y_min = INFINITY;
-    double y_max = -INFINITY;
-    for (size_t i = 0; i < list_size(shape1); i++) {
-        vector_t *curr = list_get(shape1, i);
-        if (curr->x < x_min) x_min = curr->x;
-        if (curr->x > x_max) x_max = curr->x;
-        if (curr->y < y_min) y_min = curr->y;
-        if (curr->y > y_max) y_max = curr->y;
-    }
-    bool in_box = false;
-    for (size_t i = 0; i < list_size(shape2); i++) {
-        vector_t *curr = list_get(shape2, i);
-        if ((curr->x >= x_min && curr->x <= x_max) && (curr->y >= y_min && curr->y <= y_max)) {
-            in_box = true;
-        }
-    }
-    if (!in_box) return info;
-
     // Separating Axis Check
     for (int i = 0; i < list_size(edges); i++) {
         vector_t edge = *(vector_t*) list_get(edges, i);
@@ -171,7 +150,7 @@ collision_info_t find_collision_list(list_t *shape1, list_t *shape2) {
         double separating_axis = is_separating_axis_list(ortho_axis, shape1, shape2);
         if (separating_axis < 0) {
             return info;
-        } 
+        }
         else {
             if (separating_axis < current_min) {
                 current_min = separating_axis;

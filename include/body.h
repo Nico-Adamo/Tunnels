@@ -16,6 +16,7 @@ typedef struct rect {
     int w;
     int h;
 } rect_t;
+
 /**
  * A rigid body constrained to the plane.
  * Implemented as a polygon with uniform density.

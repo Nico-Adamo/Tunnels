@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "list.h"
 #include "vector.h"
+#include "body.h"
 
 /**
  * Represents the status of a collision between two shapes.

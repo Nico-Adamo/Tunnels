@@ -108,7 +108,7 @@ void collision(void *aux) {
     collision_aux_t *values = (collision_aux_t *) aux;
     body_t *body1 = values->body1;
     body_t *body2 = values->body2;
-    collision_info_t col_info = find_collision(body_get_shape(body1), body_get_shape(body2));
+    collision_info_t col_info = find_collision(body_get_hitbox(body1), body_get_hitbox(body2));
     if (values->collided && !col_info.collided) {
         values->collided = false;
     }
@@ -117,7 +117,7 @@ void collision(void *aux) {
         values->collided = true;
     }
 
-    
+
 }
 
 void create_collision(scene_t *scene, body_t *body1, body_t *body2, collision_handler_t handler, void *aux, free_func_t freer) {
@@ -171,7 +171,7 @@ void physics_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     double imp_1;
     if (m_a != INFINITY && m_b != INFINITY) {
         imp_1 = ((m_a * m_b) / (m_a + m_b)) * (1 + C_r) * (u_b - u_a);
-    } 
+    }
     else if (m_a == INFINITY) {
         imp_1 = m_b * (1 + C_r) * (u_b - u_a);
     }

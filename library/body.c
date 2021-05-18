@@ -43,8 +43,8 @@ body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture,
     body->info_freer = info_freer;
 
 
-    body->centroid.x = shape.x + shape.w / 2;
-    body->centroid.x = shape.y - shape.h / 2;
+    body->centroid.x = hitbox.x + hitbox.w / 2;
+    body->centroid.y = hitbox.y + hitbox.h / 2;
     body->velocity = VEC_ZERO;
     body->rotation = 0.0;
 

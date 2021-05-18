@@ -4,7 +4,7 @@ DEMOS = game
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
 # This also defines the order in which the tests are run.
-STUDENT_LIBS = vector list color body scene
+STUDENT_LIBS = vector list color body scene forces collision
 
 # If we're not on Windows...
 ifneq ($(OS), Windows_NT)
