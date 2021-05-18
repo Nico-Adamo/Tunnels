@@ -1,13 +1,15 @@
 #include "body.h"
 #include "polygon.h"
+#include "sdl_wrapper.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+// TO DO: Once sprite rendering is done, include it in typedef body_t
 typedef struct body {
-    list_t *shape;
+    SDL_Rect shape;
     double mass;
-    rgb_color_t color;
+    // rgb_color_t color;
     vector_t centroid;
     vector_t velocity;
     double rotation;
@@ -18,17 +20,17 @@ typedef struct body {
     free_func_t info_freer;
 } body_t;
 
-body_t *body_init(list_t *shape, double mass, rgb_color_t color) {
+body_t *body_init(SDL_Rect shape, double mass, rgb_color_t color) {
     return body_init_with_info(shape, mass, color, NULL, NULL);
 }
 
-body_t *body_init_with_info(list_t *shape, double mass, rgb_color_t color, void *info, free_func_t info_freer) {
+body_t *body_init_with_info(SDL_Rect shape, double mass, rgb_color_t color, void *info, free_func_t info_freer) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
     body->shape = shape;
     body->mass = mass;
-    body->color = color;
+    // body->color = color;
     body->net_force.x = 0;
     body->net_force.y = 0;
     body->net_impulse.x = 0;
@@ -38,7 +40,8 @@ body_t *body_init_with_info(list_t *shape, double mass, rgb_color_t color, void 
     body->info_freer = info_freer;
 
 
-    body->centroid = polygon_centroid(shape);
+    body->centroid.x = shape.x + shape.w / 2;
+    body->centroid.x = shape.y - shape.h / 2;
     body->velocity = VEC_ZERO;
     body->rotation = 0.0;
 
@@ -46,20 +49,11 @@ body_t *body_init_with_info(list_t *shape, double mass, rgb_color_t color, void 
 }
 
 void body_free(body_t *body) {
-    list_free(body->shape);
     free(body);
 }
 
-list_t *body_get_shape(body_t *body) {
-    list_t *shape_list = list_init(list_size(body->shape), free);
-    for (size_t i = 0; i < list_size(body->shape); i++) {
-        vector_t *point = list_get(body->shape, i);
-        vector_t *new_point = malloc(sizeof(vector_t));
-        new_point->x = point->x;
-        new_point->y = point->y;
-        list_add(shape_list, new_point);
-    }
-    return shape_list;
+SDL_Rect body_get_shape(body_t *body) {
+    return body->shape;
 }
 
 vector_t body_get_centroid(body_t *body) {
@@ -74,9 +68,11 @@ double body_get_mass(body_t *body) {
     return body->mass;
 }
 
+/*
 rgb_color_t body_get_color(body_t *body) {
     return body->color;
 }
+*/
 
 void *body_get_info(body_t *body) {
     return body->info;
@@ -85,26 +81,33 @@ void *body_get_info(body_t *body) {
 void body_set_centroid(body_t *body, vector_t x) {
     vector_t translation = vec_subtract(x, body->centroid);
     body->centroid = x;
-    polygon_translate(body->shape, translation);
+    body->shape.x += translation.x;
+    body->shape.y += translation.y;
 }
 
 void body_set_velocity(body_t *body, vector_t v) {
     body->velocity = v;
 }
 
+/*
 void body_set_color(body_t *body, rgb_color_t color) {
     body->color = color;
 }
+*/
 
-void body_set_rotation(body_t *body, double angle) {
-    polygon_rotate(body->shape, angle - body->rotation, body->centroid);
+// NOTE: figure out if this would work to "rotate" the body, change the sprite that's being rendered
+void body_set_rotation(body_t *body, SDL_Rect shape, double angle) {
+    body->shape = shape;
     body->rotation = angle;
+    body->centroid.x = shape.x + shape.w / 2;
+    body->centroid.x = shape.y - shape.h / 2;
 }
-
+/*
 void body_rotate(body_t *body, double angle) {
     polygon_rotate(body->shape, angle, body->centroid);
     body->rotation += angle;
 }
+*/
 
 void body_add_force(body_t *body, vector_t force) {
     // F = m*a

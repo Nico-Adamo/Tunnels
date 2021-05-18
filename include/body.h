@@ -18,7 +18,7 @@ typedef struct body body_t;
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
-body_t *body_init(list_t *shape, double mass, rgb_color_t color);
+body_t *body_init(SDL_Rect shape, double mass, rgb_color_t color);
 
 /**
  * Allocates memory for a body with the given parameters.
@@ -34,7 +34,7 @@ body_t *body_init(list_t *shape, double mass, rgb_color_t color);
  * @return a pointer to the newly allocated body
  */
 body_t *body_init_with_info(
-    list_t *shape,
+    SDL_Rect shape,
     double mass,
     rgb_color_t color,
     void *info,
@@ -55,7 +55,7 @@ void body_free(body_t *body);
  * @param body a pointer to a body returned from body_init()
  * @return the polygon describing the body's current position
  */
-list_t *body_get_shape(body_t *body);
+SDL_Rect body_get_shape(body_t *body);
 
 /**
  * Gets the current center of mass of a body.
@@ -90,7 +90,7 @@ double body_get_mass(body_t *body);
  * @param body a pointer to a body returned from body_init()
  * @return the color passed to body_init(), as an (R, G, B) tuple
  */
-rgb_color_t body_get_color(body_t *body);
+// rgb_color_t body_get_color(body_t *body);
 
 /**
  * Gets the information associated with a body.
@@ -123,7 +123,7 @@ void body_set_centroid(body_t *body, vector_t x);
  * @param body a pointer to a body returned from body_init()
  * @param v the body's new velocity
  */
-void body_set_velocity(body_t *body, vector_t v);
+// void body_set_velocity(body_t *body, vector_t v);
 
 /**
  * Changes a body's orientation in the plane.
@@ -133,7 +133,7 @@ void body_set_velocity(body_t *body, vector_t v);
  * @param body a pointer to a body returned from body_init()
  * @param angle the body's new angle in radians. Positive is counterclockwise.
  */
-void body_set_rotation(body_t *body, double angle);
+void body_set_rotation(body_t *body, SDL_Rect shape, double angle);
 
 /**
  * Changes a body's orientation in the plane.
@@ -143,7 +143,7 @@ void body_set_rotation(body_t *body, double angle);
  * @param body a pointer to a body returned from body_init()
  * @param angle the body's new angle in radians. Positive is counterclockwise.
  */
-void body_rotate(body_t *body, double angle);
+// void body_rotate(body_t *body, double angle);
 
 /**
  * Changes a body's color.
@@ -151,7 +151,7 @@ void body_rotate(body_t *body, double angle);
  * @param body a pointer to a body returned from body_init()
  * @param color the body's new color as a color_rgb_t type.
  */
-void body_set_color(body_t *body, rgb_color_t color);
+// void body_set_color(body_t *body, rgb_color_t color);
 
 /**
  * Applies a force to a body over the current tick.

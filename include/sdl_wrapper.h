@@ -6,6 +6,8 @@
 #include "list.h"
 #include "scene.h"
 #include "vector.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 // Values passed to a key handler when the given arrow key is pressed
 typedef enum {

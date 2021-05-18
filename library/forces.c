@@ -139,6 +139,7 @@ void destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *au
     body_remove(body2);
 }
 
+// TO DO: update to cause damage and destroy the second body if health drops below zero
 void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     body_remove(body1);
 }
