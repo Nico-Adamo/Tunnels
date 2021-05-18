@@ -229,3 +229,19 @@ double time_since_last_tick(void) {
     last_clock = now;
     return difference;
 }
+
+/* loads textures */
+SDL_Texture *load_texture(const char *path) {
+    return IMG_Load_Texture(renderer, path);
+}
+
+void draw_texture(SDL_Texture texture, SDL_Rect source, SDL_Rect destination) {
+    //change x and y of destination to window coordinates
+    
+
+    
+    //change width and height of window coordinates
+
+    //render
+    
+}
