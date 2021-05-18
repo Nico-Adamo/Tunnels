@@ -92,4 +92,7 @@ double vec_cross(vector_t v1, vector_t v2);
  */
 vector_t vec_rotate(vector_t v, double angle);
 
+// Returns the unit vector of a given vector
+vector_t vec_unit(vector_t v);
+
 #endif // #ifndef __VECTOR_H__

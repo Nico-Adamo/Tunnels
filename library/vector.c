@@ -42,4 +42,13 @@ vector_t vec_rotate(vector_t v, double angle) {
     return vec_init(x, y);
 }
 
+vector_t vec_unit(vector_t v) {
+    double magnitude = sqrt(pow(v.x, 2) + pow(v.y, 2));
+    vector_t unit = {
+        .x = v.x / magnitude,
+        .y = v.y / magnitude
+    };
+    return unit;
+}
+
 

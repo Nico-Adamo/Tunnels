@@ -19,6 +19,7 @@ typedef struct body {
     bool flipped;
     void *info;
     free_func_t info_freer;
+    vector_t direction;
 } body_t;
 
 body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass) {
@@ -41,6 +42,8 @@ body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture,
     body->removed = false;
     body->info = info;
     body->info_freer = info_freer;
+    body->direction.x = 1;
+    body->direction.y = 0;
 
 
     body->centroid.x = hitbox.x + hitbox.w / 2;
@@ -104,6 +107,14 @@ void body_set_velocity(body_t *body, vector_t v) {
     body->velocity = v;
     if(v.x < 0) body->flipped = true;
     if(v.x > 0) body->flipped = false;
+}
+
+vector_t body_get_direction(body_t *body) {
+    return body->direction;
+}
+
+void body_set_direction(body_t *body, vector_t dir) {
+    body->direction = dir;
 }
 
 /*

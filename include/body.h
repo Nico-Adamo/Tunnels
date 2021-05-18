@@ -83,6 +83,10 @@ vector_t body_get_centroid(body_t *body);
  */
 vector_t body_get_velocity(body_t *body);
 
+vector_t body_get_direction(body_t *body);
+
+void body_set_direction(body_t *body, vector_t dir);
+
 /**
  * Gets the mass of a body.
  *

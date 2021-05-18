@@ -16,10 +16,7 @@ const char *SPRITE = "knight";
 const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
 
 
-const vector_t BULLET_VELOCITY = {
-    .x = 300,
-    .y = 0
-};
+double BULLET_SPEED = 450;
 
 const double MAX_WIDTH = 1000;
 const double MAX_HEIGHT = 500;
@@ -44,27 +41,37 @@ body_t *make_demo_bullet(body_t *sprite) {
     SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
     vector_t spawn_point = body_get_centroid(sprite);
     body_t *bullet = body_init((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 1);
-    body_set_velocity(bullet, BULLET_VELOCITY);
+    vector_t player_dir = body_get_direction(sprite);
+    vector_t bullet_velocity = {
+        .x = player_dir.x * BULLET_SPEED,
+        .y = player_dir.y * BULLET_SPEED
+    };
+    body_set_velocity(bullet, bullet_velocity);
     return bullet;
 }
 
 void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
+    body_t *player = scene_get_body(scene, 0);
     if (type == KEY_PRESSED) {
         switch (key) {
             case 'a':
-                body_set_velocity(scene_get_body(scene, 0), vec_negate(PADDLE_VELOCITY)); //pass player first
+                body_set_velocity(player, vec_negate(PADDLE_VELOCITY)); //pass player first
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case 'd':
-                body_set_velocity(scene_get_body(scene, 0), PADDLE_VELOCITY);
+                body_set_velocity(player, PADDLE_VELOCITY);
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case 's':
-                body_set_velocity(scene_get_body(scene, 0), vec_negate(PADDLE_UP_VELOCITY)); //pass player first
+                body_set_velocity(player, vec_negate(PADDLE_UP_VELOCITY)); //pass player first
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case 'w':
-                body_set_velocity(scene_get_body(scene, 0), PADDLE_UP_VELOCITY);
+                body_set_velocity(player, PADDLE_UP_VELOCITY);
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case ' ':
-                scene_add_body(scene, make_demo_bullet(scene_get_body(scene, 0)));
+                scene_add_body(scene, make_demo_bullet(player));
                 if (scene_bodies(scene) > 2) {
                     // much demo much wow, just creating a collision with what i know to be an enemy lol
                     create_destructive_collision(scene, scene_get_body(scene, 1), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -75,16 +82,20 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
     else if (type == KEY_RELEASED) {
         switch (key) {
             case 'a':
-                body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
+                body_set_velocity(player, VEC_ZERO);
                 break;
             case 'd':
-                body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
+                body_set_velocity(player, VEC_ZERO);
                 break;
             case 's':
-                body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
+                body_set_velocity(player, VEC_ZERO);
                 break;
             case 'w':
-                body_set_velocity(scene_get_body(scene, 0), VEC_ZERO);
+                body_set_direction(player, vec_unit(body_get_velocity(player)));
+                body_set_velocity(player, VEC_ZERO);
                 break;
         }
     }
@@ -120,7 +131,6 @@ int main(int arg_c, char *arg_v[]) {
 
     double seconds = 0;
     scene_t *scene = scene_reset();
-    create_destructive_collision(scene, scene_get_body(scene, 0), scene_get_body(scene, 1));
 
     sdl_on_key(on_key);
     while(!sdl_is_done(scene)) {
