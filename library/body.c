@@ -16,6 +16,7 @@ typedef struct body {
     vector_t net_force;
     vector_t net_impulse;
     bool removed;
+    bool flipped;
     void *info;
     free_func_t info_freer;
 } body_t;
@@ -32,7 +33,7 @@ body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture,
     body->hitbox = hitbox;
     body->texture = texture;
     body->mass = mass;
-    // body->color = color;
+    body->flipped = false;
     body->net_force.x = 0;
     body->net_force.y = 0;
     body->net_impulse.x = 0;
@@ -60,6 +61,10 @@ SDL_Rect body_get_shape(body_t *body) {
 
 rect_t body_get_hitbox(body_t *body) {
     return body->hitbox;
+}
+
+bool body_get_flipped(body_t *body) {
+    return body->flipped;
 }
 
 SDL_Texture *body_get_texture(body_t *body) {
@@ -97,6 +102,8 @@ void body_set_centroid(body_t *body, vector_t x) {
 
 void body_set_velocity(body_t *body, vector_t v) {
     body->velocity = v;
+    if(v.x < 0) body->flipped = true;
+    if(v.x > 0) body->flipped = false;
 }
 
 /*

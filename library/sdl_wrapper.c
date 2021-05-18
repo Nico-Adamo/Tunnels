@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
 #include "sdl_wrapper.h"
@@ -158,7 +159,7 @@ SDL_Texture *sdl_load_texture(const char *path) {
     return IMG_LoadTexture(renderer, path);
 }
 
-void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination) {
+void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped) {
     SDL_Rect dest_window;
     vector_t window_center = get_window_center();
     double scale = get_scene_scale(window_center);
@@ -168,9 +169,16 @@ void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination)
     //change x and y of destination to window coordinates
     vector_t destPos = get_window_position((vector_t) {destination.x, destination.y}, window_center);
     dest_window.x = (int) round(destPos.x);
-    dest_window.y = (int) round(destPos.y) - dest_window.h; // Scene standard: declaring
+    dest_window.y = (int) round(destPos.y) - dest_window.h; // Scene standard: x,y is bottom left of sprite
 
-    SDL_RenderCopy(renderer, texture, &source, &dest_window);
+    SDL_RendererFlip flip;
+    if(flipped == true) {
+        flip = SDL_FLIP_HORIZONTAL;
+    } else {
+        flip = SDL_FLIP_NONE;
+    }
+
+    SDL_RenderCopyEx(renderer, texture, &source, &dest_window, 0, NULL, flip);
 }
 
 void sdl_show(void) {
@@ -201,7 +209,7 @@ void sdl_render_scene(scene_t *scene) {
         SDL_Rect shape = body_get_shape(body);
         rect_t hitbox = body_get_hitbox(body);
         SDL_Texture *texture = body_get_texture(body);
-        sdl_draw_texture(texture, shape, hitbox);
+        sdl_draw_texture(texture, shape, hitbox, body_get_flipped(body));
     }
     sdl_show();
 }

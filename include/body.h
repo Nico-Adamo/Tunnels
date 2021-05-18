@@ -114,6 +114,8 @@ void *body_get_info(body_t *body);
  */
 double body_get_rotation(body_t *body);
 
+bool body_get_flipped(body_t *body);
+
 /**
  * Translates a body to a new position.
  * The position is specified by the position of the body's center of mass.
