@@ -31,6 +31,8 @@ const vector_t PADDLE_UP_VELOCITY = {
     .y = 300
 };
 
+const double player_velocity = 300;
+
 double rand_from(double min, double max) {
     double range = (max - min);
     double div = RAND_MAX / range;
@@ -52,22 +54,27 @@ body_t *make_demo_bullet(body_t *sprite) {
 
 void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
     body_t *player = scene_get_body(scene, 0);
+    vector_t velocity = body_get_velocity(player);
     if (type == KEY_PRESSED) {
         switch (key) {
             case 'a':
-                body_set_velocity(player, vec_negate(PADDLE_VELOCITY)); //pass player first
+                velocity.x = -player_velocity;
+                body_set_velocity(player, velocity); //pass player first
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case 'd':
-                body_set_velocity(player, PADDLE_VELOCITY);
+                velocity.x = player_velocity;
+                body_set_velocity(player, velocity);
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case 's':
-                body_set_velocity(player, vec_negate(PADDLE_UP_VELOCITY)); //pass player first
+                velocity.y = -player_velocity;
+                body_set_velocity(player, velocity); //pass player first
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case 'w':
-                body_set_velocity(player, PADDLE_UP_VELOCITY);
+                velocity.y = player_velocity;
+                body_set_velocity(player, velocity);
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
             case ' ':
@@ -83,19 +90,35 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
         switch (key) {
             case 'a':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                body_set_velocity(player, VEC_ZERO);
+                velocity.x = 0;
+                body_set_velocity(player, velocity);
+                if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
+                    body_set_direction(player, vec_unit(body_get_velocity(player)));
+                }
                 break;
             case 'd':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                body_set_velocity(player, VEC_ZERO);
+                velocity.x = 0;
+                body_set_velocity(player, velocity);
+                if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
+                    body_set_direction(player, vec_unit(body_get_velocity(player)));
+                }
                 break;
             case 's':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                body_set_velocity(player, VEC_ZERO);
+                velocity.y = 0;
+                body_set_velocity(player, velocity);
+                if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
+                    body_set_direction(player, vec_unit(body_get_velocity(player)));
+                }
                 break;
             case 'w':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                body_set_velocity(player, VEC_ZERO);
+                velocity.y = 0;
+                body_set_velocity(player, velocity);
+                if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
+                    body_set_direction(player, vec_unit(body_get_velocity(player)));
+                }
                 break;
         }
     }
