@@ -1,6 +1,8 @@
 #ifndef __VECTOR_H__
 #define __VECTOR_H__
 
+
+
 /**
  * A real-valued 2-dimensional vector.
  * Positive x is towards the right; positive y is towards the top.

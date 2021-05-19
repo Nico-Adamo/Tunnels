@@ -9,7 +9,6 @@ typedef struct body {
     rect_t hitbox; // Position on screen and size
     SDL_Texture *texture;
     double mass;
-    // rgb_color_t color;
     vector_t centroid;
     vector_t velocity;
     double rotation;

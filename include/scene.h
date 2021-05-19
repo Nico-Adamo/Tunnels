@@ -107,9 +107,13 @@ void scene_add_bodies_force_creator(
     free_func_t freer
 );
 
-void scene_add_tile(scene_t *scene, tile_t *tile);
+void scene_add_floor_tile(scene_t *scene, tile_t *tile);
+void scene_add_wall_tile(scene_t *scene, tile_t *tile);
+void scene_add_collider_tile(scene_t *scene, tile_t *tile);
 
-list_t *scene_get_tiles(scene_t *scene);
+list_t *scene_get_floor_tiles(scene_t *scene);
+list_t *scene_get_wall_tiles(scene_t *scene);
+list_t *scene_get_collider_tiles(scene_t *scene);
 
 /**
  * Executes a tick of a given scene over a small time interval.

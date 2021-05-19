@@ -260,7 +260,7 @@ int main(int arg_c, char *arg_v[]) {
                     enemy_info.cooldown = rand_from(min_cooldown, max_cooldown);
                     body_set_sprite_info(enemy, enemy_info);
                 }
-                
+
             }
         }
         int loc = 400;
@@ -276,8 +276,8 @@ int main(int arg_c, char *arg_v[]) {
         if (strcmp(body_get_type(scene_get_body(scene, 0)), "PLAYER") != 0) {
             scene = scene_reset();
         }
-        
-        
+
+
 
         sdl_render_scene(scene);
     }

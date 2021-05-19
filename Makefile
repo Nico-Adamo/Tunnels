@@ -1,10 +1,10 @@
 # List of demo programs
-DEMOS = game
+DEMOS = game_test tilemap_demo
 # List of C files in "libraries" that we provide
 STAFF_LIBS = test_util sdl_wrapper
 # List of C files in "libraries" that you will write.
 # This also defines the order in which the tests are run.
-STUDENT_LIBS = vector list color body scene forces collision
+STUDENT_LIBS = game vector list color body scene forces collision tile map
 
 # If we're not on Windows...
 ifneq ($(OS), Windows_NT)
@@ -36,7 +36,7 @@ TEST_BINS = $(addprefix bin/test_suite_,$(STUDENT_LIBS))
 # List of demo executables, i.e. "bin/game".
 DEMO_BINS = $(addprefix bin/,$(DEMOS))
 # All executables (the concatenation of TEST_BINS and DEMO_BINS)
-BINS = $(TEST_BINS) $(DEMO_BINS)
+BINS = $(DEMO_BINS)
 
 # The first Make rule. It is relatively simple:
 # "To build 'all', make sure all files in BINS are up to date."
@@ -64,10 +64,10 @@ out/%.o: tests/%.c # or "tests"
 # Builds bin/game by linking the necessary .o files.
 # Unlike the out/%.o rule, this uses the LIBS flags and omits the -c flag,
 # since it is building a full executable.
-bin/game: out/game.o out/sdl_wrapper.o $(STUDENT_OBJS)
+bin/game_test: out/game_test.o out/sdl_wrapper.o $(STUDENT_OBJS)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
-bin/gravity: out/gravity.o out/sdl_wrapper.o $(STUDENT_OBJS)
+bin/tilemap_demo: out/tilemap_demo.o out/sdl_wrapper.o $(STUDENT_OBJS)
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@
 
 bin/pacman: out/pacman.o out/sdl_wrapper.o $(STUDENT_OBJS)
@@ -185,7 +185,7 @@ TEST_BINS = $(addsuffix .exe,$(addprefix bin/test_suite_,$(STUDENT_LIBS)))
 # List of demo executables, i.e. "bin/game.exe".
 DEMO_BINS = $(addsuffix .exe,$(addprefix bin/,$(DEMOS)))
 # All executables (the concatenation of TEST_BINS and DEMO_BINS)
-BINS = $(TEST_BINS) $(DEMO_BINS)
+BINS =$(DEMO_BINS)
 
 # The first Make rule. It is relatively simple:
 # "To build 'all', make sure all files in BINS are up to date."
@@ -210,10 +210,10 @@ out/%.obj: demo/%.c # or "demo"
 out/%.obj: tests/%.c # or "tests"
 	$(CC) -c $^ $(CFLAGS) -Fo"$@"
 
-bin/game.exe bin\game.exe: out/game.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+bin/game_test.exe bin\game_test.exe: out/game_test.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
-bin/gravity.exe bin\gravity.exe: out/gravity.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
+bin/tilemap_demo.exe bin\tilemap_demo.exe: out/tilemap_demo.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) $(LIBS) -out:"$@"
 
 bin/pacman.exe bin\pacman.exe: out/pacman.obj out/sdl_wrapper.obj $(STUDENT_OBJS)
@@ -241,8 +241,8 @@ bin/test_suite_%.exe bin\test_suite_%.exe: out/test_suite_%.obj out/test_util.ob
 	$(CC) $^ $(CFLAGS) -link $(LINKEROPTS) -out:"$@"
 
 # Empty recipes for cross-OS task compatibility.
-bin/game bin\game: bin/game.exe ;
-bin/gravity bin\gravity: bin/gravity.exe ;
+bin/game_test bin\game_test: bin/game_test.exe ;
+bin/tilemap_demo bin\tilemap_demo: bin/tilemap_demo.exe ;
 bin/pacman bin\pacman: bin/pacman.exe ;
 bin/nbodies bin\nbodies: bin/nbodies.exe;
 bin/damping bin\damping: bin/damping.exe;

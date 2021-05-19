@@ -6,6 +6,9 @@
 #include "list.h"
 #include "scene.h"
 #include "vector.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_image.h>
 
 // Values passed to a key handler when the given arrow key is pressed
 typedef enum {
@@ -61,6 +64,8 @@ bool sdl_is_done(scene_t *scene);
 SDL_Texture *sdl_load_texture(const char *path);
 
 void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped);
+
+
 
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.

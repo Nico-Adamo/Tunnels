@@ -6,8 +6,8 @@
 #include "sdl_wrapper.h"
 
 const char WINDOW_TITLE[] = "CS 3";
-const int WINDOW_WIDTH = 1000;
-const int WINDOW_HEIGHT = 500;
+const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 512;
 const double MS_PER_S = 1e3;
 const double map_scale = 10;
 
@@ -99,6 +99,7 @@ char get_keycode(SDL_Keycode key) {
     }
 }
 
+
 void sdl_init(vector_t min, vector_t max) {
     // Check parameters
     assert(min.x < max.x);
@@ -150,7 +151,7 @@ bool sdl_is_done(scene_t *scene) {
 }
 
 void sdl_clear(void) {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 32, 32, 32, 255);
     SDL_RenderClear(renderer);
 }
 
@@ -158,6 +159,7 @@ void sdl_clear(void) {
 SDL_Texture *sdl_load_texture(const char *path) {
     return IMG_LoadTexture(renderer, path);
 }
+
 
 void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped) {
     SDL_Rect dest_window;
@@ -181,6 +183,7 @@ void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination,
     SDL_RenderCopyEx(renderer, texture, &source, &dest_window, 0, NULL, flip);
 }
 
+
 void sdl_show(void) {
     // Draw boundary lines
     vector_t window_center = get_window_center();
@@ -199,9 +202,17 @@ void sdl_show(void) {
 
     SDL_RenderPresent(renderer);
 }
-
+void sdl_render_tilemap(list_t *tiles) {
+    for(size_t i = 0; i<list_size(tiles); i++) {
+        tile_t *tile = list_get(tiles, i);
+        tile_draw(tile);
+    }
+}
 void sdl_render_scene(scene_t *scene) {
     sdl_clear();
+    // Tilemap rendering: floor
+    sdl_render_tilemap(scene_get_floor_tiles(scene));
+
     // Sprite rendering
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
@@ -211,6 +222,10 @@ void sdl_render_scene(scene_t *scene) {
         SDL_Texture *texture = body_get_texture(body);
         sdl_draw_texture(texture, shape, hitbox, body_get_flipped(body));
     }
+
+    // Tilemap rendering: walls
+    sdl_render_tilemap(scene_get_wall_tiles(scene));
+
     sdl_show();
 }
 

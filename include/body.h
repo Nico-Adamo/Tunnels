@@ -1,20 +1,19 @@
 #ifndef __BODY_H__
 #define __BODY_H__
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
-#include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include "color.h"
 #include "list.h"
 #include "vector.h"
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_image.h>
 
 typedef struct rect {
     double x;
     double y;
-    int w;
-    int h;
+    double w;
+    double h;
 } rect_t;
 
 typedef struct sprite_info {

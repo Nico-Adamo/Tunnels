@@ -18,7 +18,9 @@ typedef struct force_aux {
 typedef struct scene {
     list_t *bodies;
     list_t *force_creators;
-    list_t *tiles;
+    list_t *floor_tiles;
+    list_t *wall_tiles;
+    list_t *collider_tiles;
 } scene_t;
 
 void force_aux_free(force_aux_t *force_aux) {
@@ -40,7 +42,9 @@ scene_t *scene_init(void) {
 
     scene->bodies = list_init(INIT_NUM_BODIES, body_free);
     scene->force_creators = list_init(INIT_NUM_FC, force_aux_free);
-    scene->tiles = list_init(INIT_NUM_TILES, tile_free);
+    scene->floor_tiles = list_init(INIT_NUM_TILES, tile_free);
+    scene->wall_tiles = list_init(INIT_NUM_TILES, tile_free);
+    scene->collider_tiles = list_init(INIT_NUM_TILES, tile_free);
 
     return scene;
 }
@@ -78,13 +82,30 @@ void scene_add_bodies_force_creator(scene_t *scene, force_creator_t forcer, void
     list_add(scene->force_creators, force_func);
 }
 
-void scene_add_tile(scene_t *scene, tile_t *tile) {
-    list_add(scene->tiles, tile);
+void scene_add_floor_tile(scene_t *scene, tile_t *tile) {
+    list_add(scene->floor_tiles, tile);
 }
 
-list_t *scene_get_tiles(scene_t *scene) {
-    return scene->tiles;
+void scene_add_wall_tile(scene_t *scene, tile_t *tile) {
+    list_add(scene->wall_tiles, tile);
 }
+
+void scene_add_collider_tile(scene_t *scene, tile_t *tile) {
+    list_add(scene->collider_tiles, tile);
+}
+
+list_t *scene_get_floor_tiles(scene_t *scene) {
+    return scene->floor_tiles;
+}
+
+list_t *scene_get_wall_tiles(scene_t *scene) {
+    return scene->wall_tiles;
+}
+
+list_t *scene_get_collider_tiles(scene_t *scene) {
+    return scene->collider_tiles;
+}
+
 
 void scene_tick(scene_t *scene, double dt) {
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
