@@ -1,8 +1,8 @@
-#include "forces.h"
-#include "test_util.h"
-#include <assert.h>
-#include <math.h>
-#include <stdlib.h>
+// #include "forces.h"
+// #include "test_util.h"
+// #include <assert.h>
+// #include <math.h>
+// #include <stdlib.h>
 /*
 list_t *make_shape() {
     list_t *shape = list_init(4, free);

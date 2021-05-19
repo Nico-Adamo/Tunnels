@@ -3,6 +3,7 @@
 
 #include "body.h"
 #include "list.h"
+#include "tile.h"
 
 /**
  * A collection of bodies and force creators.
@@ -105,6 +106,10 @@ void scene_add_bodies_force_creator(
     list_t *bodies,
     free_func_t freer
 );
+
+void scene_add_tile(scene_t *scene, tile_t *tile);
+
+list_t *scene_get_tiles(scene_t *scene);
 
 /**
  * Executes a tick of a given scene over a small time interval.

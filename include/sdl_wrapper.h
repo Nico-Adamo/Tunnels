@@ -60,6 +60,8 @@ bool sdl_is_done(scene_t *scene);
 
 SDL_Texture *sdl_load_texture(const char *path);
 
+void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped);
+
 /**
  * Clears the screen. Should be called before drawing polygons in each frame.
  */

@@ -5,6 +5,7 @@
 
 const size_t INIT_NUM_BODIES = 10;
 const size_t INIT_NUM_FC = 5;
+const size_t INIT_NUM_TILES = 100;
 
 typedef struct force_aux {
     force_creator_t forcer;
@@ -17,6 +18,7 @@ typedef struct force_aux {
 typedef struct scene {
     list_t *bodies;
     list_t *force_creators;
+    list_t *tiles;
 } scene_t;
 
 void force_aux_free(force_aux_t *force_aux) {
@@ -37,7 +39,8 @@ scene_t *scene_init(void) {
     assert(scene != NULL);
 
     scene->bodies = list_init(INIT_NUM_BODIES, body_free);
-    scene->force_creators = list_init(INIT_NUM_FC, force_aux_free); // edit freer
+    scene->force_creators = list_init(INIT_NUM_FC, force_aux_free);
+    scene->tiles = list_init(INIT_NUM_TILES, tile_free);
 
     return scene;
 }
@@ -73,6 +76,14 @@ void scene_add_bodies_force_creator(scene_t *scene, force_creator_t forcer, void
     force_func->bodies = bodies;
     force_func->removed = false;
     list_add(scene->force_creators, force_func);
+}
+
+void scene_add_tile(scene_t *scene, tile_t *tile) {
+    list_add(scene->tiles, tile);
+}
+
+list_t *scene_get_tiles(scene_t *scene) {
+    return scene->tiles;
 }
 
 void scene_tick(scene_t *scene, double dt) {
