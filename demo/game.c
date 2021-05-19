@@ -232,7 +232,7 @@ int main(int arg_c, char *arg_v[]) {
         scene_tick(scene, dt);
         seconds += dt;
         for (size_t i = 0; i < scene_bodies(scene); i++) {
-            if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY")) {
+            if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                 body_t *enemy = scene_get_body(scene, i);
                 sprite_info_t enemy_info = body_get_sprite_info(enemy);
                 if (enemy_info.cooldown > 0) {
