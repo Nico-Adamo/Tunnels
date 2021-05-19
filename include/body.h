@@ -21,6 +21,7 @@ typedef struct sprite_info {
     double experience;
     double health;
     double attack;
+    double cooldown;
 } sprite_info_t;
 
 /**

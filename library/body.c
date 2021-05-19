@@ -24,7 +24,7 @@ typedef struct body {
 } body_t;
 
 body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass) {
-    return body_init_with_info(shape, hitbox, texture, mass, NULL, (sprite_info_t) {0.0, 0.0, 0.0});
+    return body_init_with_info(shape, hitbox, texture, mass, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
 }
 
 body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info) {

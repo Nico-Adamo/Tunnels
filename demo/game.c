@@ -33,6 +33,9 @@ const vector_t PADDLE_UP_VELOCITY = {
 
 const double player_velocity = 300;
 
+const double min_cooldown = 0.5;
+const double max_cooldown = 2;
+
 double rand_from(double min, double max) {
     double range = (max - min);
     double div = RAND_MAX / range;
@@ -46,12 +49,13 @@ body_t *make_demo_bullet(body_t *sprite, vector_t bullet_dir) {
     sprite_info_t info = {
         .experience = 0,
         .attack = body_get_sprite_info(sprite).attack,
-        .health = 0
+        .health = 0,
+        .cooldown = 0
     };
     if (body_get_type(sprite) == "PLAYER") {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 1, "PLAYER_BULLET", info);
+        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "PLAYER_BULLET", info);
     } else {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 1, "ENEMY_BULLET", info);
+        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "ENEMY_BULLET", info);
     }
     //vector_t player_dir = body_get_direction(sprite);
     vector_t bullet_velocity = {
@@ -60,6 +64,12 @@ body_t *make_demo_bullet(body_t *sprite, vector_t bullet_dir) {
     };
     body_set_velocity(bullet, bullet_velocity);
     return bullet;
+}
+
+vector_t find_bullet_direction(body_t *player, body_t *enemy) {
+    vector_t player_center = body_get_centroid(player);
+    vector_t enemy_center = body_get_centroid(enemy);
+    return vec_unit(vec_subtract(player_center, enemy_center));
 }
 
 void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
@@ -172,20 +182,22 @@ body_t *make_demo_sprite(double x, double y, char *type, sprite_info_t info) {
     SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {x, y, 80, 160}, texture, 10, type, info);
+    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {x, y, 80, 160}, texture, 100, type, info);
 }
 
 scene_t *scene_reset() {
     sprite_info_t player_info = {
         .experience = 0,
         .attack = 5,
-        .health = 50
+        .health = 50,
+        .cooldown = 0
     };
 
     sprite_info_t enemy_info = {
         .experience = 0,
         .attack = 5,
-        .health = 30
+        .health = 30,
+        .cooldown = rand_from(min_cooldown, max_cooldown)
     };
 
     // Initialize Sprite/Player
@@ -216,8 +228,31 @@ int main(int arg_c, char *arg_v[]) {
     while(!sdl_is_done(scene)) {
         double dt = time_since_last_tick();
 
+
         scene_tick(scene, dt);
         seconds += dt;
+        for (size_t i = 0; i < scene_bodies(scene); i++) {
+            if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY")) {
+                body_t *enemy = scene_get_body(scene, i);
+                sprite_info_t enemy_info = body_get_sprite_info(enemy);
+                if (enemy_info.cooldown > 0) {
+                    enemy_info.cooldown -= dt;
+                    body_set_sprite_info(enemy, enemy_info);
+                }
+                else {
+                    body_t *bullet = make_demo_bullet(enemy, find_bullet_direction(scene_get_body(scene, 0), enemy));
+                    scene_add_body(scene, bullet);
+                    create_semi_destructive_collision(scene, scene_get_body(scene, 0), bullet);
+                    // create_newtonian_gravity(scene, 10000, scene_get_body(scene, 0), bullet);
+                    enemy_info.cooldown = rand_from(min_cooldown, max_cooldown);
+                    body_set_sprite_info(enemy, enemy_info);
+                }
+                
+            }
+        }
+        
+        
+
         sdl_render_scene(scene);
     }
 
