@@ -36,6 +36,8 @@ const double player_velocity = 300;
 const double min_cooldown = 0.5;
 const double max_cooldown = 2;
 
+const double enemy_cooldown = 5;
+
 double rand_from(double min, double max) {
     double range = (max - min);
     double div = RAND_MAX / range;
@@ -101,33 +103,37 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
             case 'i':
                 bullet_dir.y = 1;
                 scene_add_body(scene, make_demo_bullet(player, bullet_dir));
-                if (scene_bodies(scene) > 2) {
-                    // much demo much wow, just creating a collision with what i know to be an enemy lol
-                    create_semi_destructive_collision(scene, scene_get_body(scene, 1), scene_get_body(scene, scene_bodies(scene) - 1));
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
                 }
                 break;
             case 'j':
                 bullet_dir.x = -1;
                 scene_add_body(scene, make_demo_bullet(player, bullet_dir));
-                if (scene_bodies(scene) > 2) {
-                    // much demo much wow, just creating a collision with what i know to be an enemy lol
-                    create_semi_destructive_collision(scene, scene_get_body(scene, 1), scene_get_body(scene, scene_bodies(scene) - 1));
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
                 }
                 break;
             case 'k':
                 bullet_dir.y = -1;
                 scene_add_body(scene, make_demo_bullet(player, bullet_dir));
-                if (scene_bodies(scene) > 2) {
-                    // much demo much wow, just creating a collision with what i know to be an enemy lol
-                    create_semi_destructive_collision(scene, scene_get_body(scene, 1), scene_get_body(scene, scene_bodies(scene) - 1));
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
                 }
                 break;
             case 'l':
                 bullet_dir.x = 1;
                 scene_add_body(scene, make_demo_bullet(player, bullet_dir));
-                if (scene_bodies(scene) > 2) {
-                    // much demo much wow, just creating a collision with what i know to be an enemy lol
-                    create_semi_destructive_collision(scene, scene_get_body(scene, 1), scene_get_body(scene, scene_bodies(scene) - 1));
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
                 }
                 break;
             /*case ' ':
@@ -216,6 +222,13 @@ scene_t *scene_reset() {
 }
 
 int main(int arg_c, char *arg_v[]) {
+    sprite_info_t enemy_info = {
+        .experience = 0,
+        .attack = 5,
+        .health = 30,
+        .cooldown = rand_from(min_cooldown, max_cooldown)
+    };
+
     vector_t bottom_left = {.x = 0, .y = 0};
     vector_t top_right = {.x = MAX_WIDTH, .y = MAX_HEIGHT};
     sdl_init(bottom_left, top_right);
@@ -249,6 +262,19 @@ int main(int arg_c, char *arg_v[]) {
                 }
                 
             }
+        }
+        int loc = 400;
+
+        if (seconds >= enemy_cooldown) {
+            loc += 100;
+            body_t *new_temp_enemy = make_demo_sprite(loc, 200, "ENEMY", enemy_info);
+            scene_add_body(scene, new_temp_enemy);
+            create_semi_destructive_collision(scene, scene_get_body(scene, 0), new_temp_enemy);
+            seconds = 0;
+        }
+
+        if (strcmp(body_get_type(scene_get_body(scene, 0)), "PLAYER") != 0) {
+            scene = scene_reset();
         }
         
         
