@@ -15,6 +15,9 @@ const double map_scale = 10;
  * The coordinate at the center of the screen.
  */
 vector_t center;
+
+vector_t camera;
+
 /**
  * The coordinate difference from the center to the top right corner.
  */
@@ -116,6 +119,7 @@ void sdl_init(vector_t min, vector_t max) {
         WINDOW_HEIGHT,
         SDL_WINDOW_RESIZABLE
     );
+    camera = (vector_t) {0, 0};
     renderer = SDL_CreateRenderer(window, -1, 0);
 }
 
@@ -160,6 +164,9 @@ SDL_Texture *sdl_load_texture(const char *path) {
     return IMG_LoadTexture(renderer, path);
 }
 
+void sdl_set_camera(vector_t cam) {
+    camera = cam;
+}
 
 void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped) {
     SDL_Rect dest_window;
@@ -169,7 +176,7 @@ void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination,
     dest_window.h = (int) round(destination.h) * scale;
 
     //change x and y of destination to window coordinates
-    vector_t destPos = get_window_position((vector_t) {destination.x, destination.y}, window_center);
+    vector_t destPos = get_window_position(vec_subtract((vector_t) {destination.x, destination.y}, camera), window_center);
     dest_window.x = (int) round(destPos.x);
     dest_window.y = (int) round(destPos.y) - dest_window.h; // Scene standard: x,y is bottom left of sprite
 
