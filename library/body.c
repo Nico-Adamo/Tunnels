@@ -17,16 +17,17 @@ typedef struct body {
     vector_t net_impulse;
     bool removed;
     bool flipped;
-    void *info;
+    char *type;
+    sprite_info_t info;
     free_func_t info_freer;
     vector_t direction;
 } body_t;
 
 body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass) {
-    return body_init_with_info(shape, hitbox, texture, mass, NULL, NULL);
+    return body_init_with_info(shape, hitbox, texture, mass, NULL, (sprite_info_t) {0.0, 0.0, 0.0});
 }
 
-body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, void *info, free_func_t info_freer) {
+body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
@@ -40,8 +41,9 @@ body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture,
     body->net_impulse.x = 0;
     body->net_impulse.y = 0;
     body->removed = false;
+    body->type = type;
     body->info = info;
-    body->info_freer = info_freer;
+    body->info_freer = free;
     body->direction.x = 1;
     body->direction.y = 0;
 
@@ -56,6 +58,14 @@ body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture,
 
 void body_free(body_t *body) {
     free(body);
+}
+
+sprite_info_t body_get_sprite_info(body_t *body) {
+    return body->info;
+}
+
+void body_set_sprite_info(body_t *body, sprite_info_t info) {
+    body->info = info;
 }
 
 SDL_Rect body_get_shape(body_t *body) {
@@ -92,8 +102,8 @@ rgb_color_t body_get_color(body_t *body) {
 }
 */
 
-void *body_get_info(body_t *body) {
-    return body->info;
+char *body_get_type(body_t *body) {
+    return body->type;
 }
 
 void body_set_centroid(body_t *body, vector_t x) {

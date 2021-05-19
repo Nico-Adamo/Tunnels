@@ -7,6 +7,7 @@
 
 // can add these as function parameters and set them in the demo
 const double MIN_DIST = 5;
+const double RECOIL_DIST = 15;
 
 typedef struct aux {
     double param;
@@ -139,11 +140,6 @@ void destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *au
     body_remove(body2);
 }
 
-// TO DO: update to cause damage and destroy the second body if health drops below zero
-void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    body_remove(body1);
-}
-
 
 void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) {
     aux_t *aux = malloc(sizeof(aux_t));
@@ -151,14 +147,6 @@ void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) 
     aux->body1 = body1;
     aux->body2 = body2;
     create_collision(scene, body1, body2, destructive_collision, aux, free);
-}
-
-void create_semi_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) {
-    aux_t *aux = malloc(sizeof(aux_t));
-    aux->param = 0;
-    aux->body1 = body1;
-    aux->body2 = body2;
-    create_collision(scene, body1, body2, semi_destructive_collision, aux, free);
 }
 
 void physics_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
@@ -191,4 +179,63 @@ void create_physics_collision(scene_t *scene, double elasticity, body_t *body1, 
     aux->body1 = body1;
     aux->body2 = body2;
     create_collision(scene, body1, body2, physics_collision, aux, free);
+}
+
+// TO DO: update to cause damage and destroy the second body if health drops below zero
+void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
+    sprite_info_t body1_info = body_get_sprite_info(body1);
+    sprite_info_t body2_info = body_get_sprite_info(body2);
+    /*
+        create_x_collision(player, bullet, etc.)
+        create_x_collison(player, enemy)
+    */
+    // types: PLAYER ENEMY ENEMY_BULLET PLAYER_BULLET(?)
+    if ((strcmp(body_get_type(body1), "PLAYER") == 0 && strcmp(body_get_type(body2), "ENEMY") == 0) ||
+    (strcmp(body_get_type(body1), "ENEMY") == 0 && strcmp(body_get_type(body2), "PLAYER") == 0)) {
+        body1_info.health -= body2_info.attack;
+        body2_info.health -= body1_info.attack;
+        body_set_sprite_info(body1, body1_info);
+        body_set_sprite_info(body2, body2_info);
+        printf("Health: %f\n", body1_info.health);
+        if (body1_info.health <= 0) body_remove(body1);
+        if (body2_info.health <= 0) body_remove(body2);
+        vector_t recoil = {
+            .x = axis.x * RECOIL_DIST,
+            .y = axis.y * RECOIL_DIST
+        };
+        if (axis.x == 1) {
+            if (body_get_centroid(body1).x > body_get_centroid(body2).x) {
+                body_set_centroid(body1, vec_add(body_get_centroid(body1), recoil));
+                body_set_centroid(body2, vec_add(body_get_centroid(body2), vec_negate(recoil)));
+            } else {
+                body_set_centroid(body1, vec_add(body_get_centroid(body1), vec_negate(recoil)));
+                body_set_centroid(body2, vec_add(body_get_centroid(body2), recoil));
+            }
+        } else if (axis.y == 1) {
+            if (body_get_centroid(body1).y > body_get_centroid(body2).y) {
+                body_set_centroid(body1, vec_add(body_get_centroid(body1), recoil));
+                body_set_centroid(body2, vec_add(body_get_centroid(body2), vec_negate(recoil)));
+            } else {
+                body_set_centroid(body1, vec_add(body_get_centroid(body1), vec_negate(recoil)));
+                body_set_centroid(body2, vec_add(body_get_centroid(body2), recoil));
+            }
+        }
+
+    } else if ((strcmp(body_get_type(body1), "PLAYER") == 0 && (strcmp(body_get_type(body2), "ENEMY_BULLET") == 0) ||
+    (strcmp(body_get_type(body1), "ENEMY") == 0 && (strcmp(body_get_type(body2), "PLAYER_BULLET") == 0)))) {
+        body1_info.health -= body2_info.attack;
+        body_set_sprite_info(body1, body1_info);
+        printf("Health: %f\n", body1_info.health);
+        if (body1_info.health <= 0) body_remove(body1);
+        body_remove(body2);
+    }
+
+}
+
+void create_semi_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) {
+    aux_t *aux = malloc(sizeof(aux_t));
+    aux->param = 1;
+    aux->body1 = body1;
+    aux->body2 = body2;
+    create_collision(scene, body1, body2, semi_destructive_collision, aux, free);
 }

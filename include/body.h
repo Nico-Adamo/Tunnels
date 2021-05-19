@@ -17,6 +17,12 @@ typedef struct rect {
     int h;
 } rect_t;
 
+typedef struct sprite_info {
+    double experience;
+    double health;
+    double attack;
+} sprite_info_t;
+
 /**
  * A rigid body constrained to the plane.
  * Implemented as a polygon with uniform density.
@@ -25,13 +31,19 @@ typedef struct rect {
  */
 typedef struct body body_t;
 
+typedef struct sprite_info sprite_info_t;
+
 /**
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
 body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass);
 
-/**
+sprite_info_t body_get_sprite_info(body_t *body);
+
+void body_set_sprite_info(body_t *body, sprite_info_t info);
+
+/** EDIT THIS
  * Allocates memory for a body with the given parameters.
  * The body is initially at rest.
  * Asserts that the mass is positive and that the required memory is allocated.
@@ -44,7 +56,7 @@ body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double ma
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, void *info, free_func_t info_freer);
+body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info);
 
 /**
  * Releases the memory allocated for a body.
@@ -104,12 +116,12 @@ double body_get_mass(body_t *body);
 // rgb_color_t body_get_color(body_t *body);
 
 /**
- * Gets the information associated with a body.
+ * Gets the type associated with a body.
  *
- * @param body a pointer to a body returned from body_init()
+ * @param type a pointer to a type returned from body_init()
  * @return the info passed to body_init()
  */
-void *body_get_info(body_t *body);
+char *body_get_type(body_t *body);
 
 /**
  * Gets the absolute rotation of a body.
