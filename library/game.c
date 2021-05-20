@@ -18,6 +18,11 @@ game_t *game_init(scene_t *initial_scene, double scale) {
     return game;
 }
 
+void game_free(void *game) {
+    game_t *game_c = (game_t *) game;
+    list_free(game_c->tile_infos);
+    free(game_c);
+}
 
 void game_add_tile_info(game_t *game, tile_info_t *tile_info) {
     list_add(game->tile_infos, tile_info);

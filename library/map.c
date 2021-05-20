@@ -88,8 +88,9 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
 
         fscanf(file, "\n");
     }
-
+    free(tile_id_buffer);
 }
+
 void map_load(game_t *game, const char *path, size_t x_tiles, size_t y_tiles) {
     FILE *file = fopen(path, "r");
     map_load_file(game, file, x_tiles, y_tiles, 0);

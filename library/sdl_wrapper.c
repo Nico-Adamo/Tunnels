@@ -105,6 +105,12 @@ char get_keycode(SDL_Keycode key) {
 
 void sdl_init(vector_t min, vector_t max) {
     // Check parameters
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+    int Width = DM.w;
+    int Height = DM.h;
+
+    printf("%d %d\n", Width, Height);
     assert(min.x < max.x);
     assert(min.y < max.y);
 
@@ -122,6 +128,11 @@ void sdl_init(vector_t min, vector_t max) {
     camera = (vector_t) {0, 0};
     renderer = SDL_CreateRenderer(window, -1, 0);
 }
+
+int nearest_window_width_multiple(double width) {
+    printf("New w/h %f %d\n", width, (int) (floor(width) - ((int) floor(width) % 1024)));
+    return (int) (floor(width) - ((int) floor(width) % 1024));
+} 
 
 bool sdl_is_done(scene_t *scene) {
     SDL_Event *event = malloc(sizeof(*event));

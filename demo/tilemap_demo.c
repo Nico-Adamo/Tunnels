@@ -240,11 +240,12 @@ int main(int arg_c, char *arg_v[]) {
 
         scene_tick(scene, dt);
         seconds += dt;
-        sdl_set_camera(vec_subtract(body_get_centroid(scene_get_body(scene, 0)), (vector_t) {1024/2, 512/2}));
+        sdl_set_camera(vec_subtract(body_get_centroid(scene_get_body(scene, 0)), (vector_t) {1024 / 2, 512 / 2}));
 
         sdl_render_scene(scene);
     }
 
     scene_free(scene);
+    game_free(game);
     return 0;
 }

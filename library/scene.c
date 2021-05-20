@@ -33,6 +33,10 @@ void force_aux_free(force_aux_t *force_aux) {
 
 void scene_free(scene_t *scene) {
     list_free(scene->bodies);
+    list_free(scene->floor_tiles);
+    list_free(scene->wall_tiles);
+    list_free(scene->collider_tiles);
+    list_free(scene->force_creators);
     free(scene);
 }
 

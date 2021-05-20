@@ -53,9 +53,13 @@ double is_separating_axis(vector_t axis, rect_t hitbox1, rect_t hitbox2) {
         min2 = fmin(min2, projected_point);
     }
 
+    list_free(shape1);
+    list_free(shape2);
+
     if (max1 >= min2 && max2 >= min1) {
         return fmin(max1 - min2, max2 - min1);
     }
+
 
     return -1;
 }

@@ -8,6 +8,8 @@ typedef struct game game_t;
 
 game_t *game_init(scene_t *initial_scene, double scale);
 
+void game_free(void *game);
+
 void game_add_tile_info(game_t *game, tile_info_t *tile_info);
 
 scene_t *game_get_current_scene(game_t *game);
