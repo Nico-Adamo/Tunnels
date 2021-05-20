@@ -244,8 +244,7 @@ int main(int arg_c, char *arg_v[]) {
 
         sdl_render_scene(scene);
     }
-
-    scene_free(scene);
     game_free(game);
+    printf("Done!\n");
     return 0;
 }

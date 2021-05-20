@@ -21,6 +21,7 @@ game_t *game_init(scene_t *initial_scene, double scale) {
 void game_free(void *game) {
     game_t *game_c = (game_t *) game;
     list_free(game_c->tile_infos);
+    scene_free(game_c->current_scene);
     free(game_c);
 }
 
