@@ -35,10 +35,11 @@ SDL_Rect COLLIDER_TILES[]= {
     {0, 0, 16, 16}, // 0
     {0, 0, 4, 16}, // 1
     {12, 0, 4, 16}, // 2
-    {0, 0, 16, 8} // 3
+    {0, 0, 16, 8}, // 3
+    {12, 0, 4, 8} // 4
 };
 
-tile_info_t *COLLIDER_TILE_INFOS[4];
+tile_info_t *COLLIDER_TILE_INFOS[5];
 
 const int TILE_SIZE = 16;
 
