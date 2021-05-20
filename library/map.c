@@ -49,8 +49,8 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
     scene_t *scene = game->current_scene;
     int *tile_id_buffer = malloc(sizeof(int));
     double game_scale = game_get_scale(game);
-    for (size_t y = 0; y < y_tiles; y++) {
-        for (size_t x = 0; x < x_tiles; x++) {
+    for (int y = y_tiles - 1; y >= 0; y--) {
+        for (int x = 0; x < x_tiles; x++) {
             fscanf(file, "%d,", tile_id_buffer);
 
             if(*tile_id_buffer >= 0) {
@@ -87,4 +87,4 @@ void map_load(game_t *game, const char *path, size_t x_tiles, size_t y_tiles) {
     fclose(file);
 }
 
-//TODO: multiple layers
+//TODO: collider layersw
