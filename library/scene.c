@@ -17,6 +17,7 @@ typedef struct force_aux {
 
 typedef struct scene {
     list_t *bodies;
+    list_t *enemies;
     list_t *force_creators;
     list_t *floor_tiles;
     list_t *wall_tiles;
@@ -33,6 +34,7 @@ void force_aux_free(force_aux_t *force_aux) {
 
 void scene_free(scene_t *scene) {
     list_free(scene->bodies);
+    list_free(scene->enemies);
     list_free(scene->floor_tiles);
     list_free(scene->wall_tiles);
     list_free(scene->collider_tiles);
@@ -45,7 +47,10 @@ scene_t *scene_init(void) {
     assert(scene != NULL);
 
     scene->bodies = list_init(INIT_NUM_BODIES, body_free);
+    scene->enemies = list_init(INIT_NUM_BODIES, NULL);
+
     scene->force_creators = list_init(INIT_NUM_FC, force_aux_free);
+    
     scene->floor_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->wall_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->collider_tiles = list_init(INIT_NUM_TILES, tile_free);
@@ -63,8 +68,10 @@ body_t *scene_get_body(scene_t *scene, size_t index) {
     return (body_t *) list_get(scene->bodies, index);
 }
 
-void scene_add_body(scene_t *scene, body_t *body) {        
+void scene_add_body(scene_t *scene, body_t *body) {    
+    printf("Getting called\n");    
     list_add(scene->bodies, body);
+    if(strcmp(body_get_type(body), "ENEMY") == 0) list_add(scene->enemies, body);
 }
 
 int depth_comparator(void *body1, void *body2) {
@@ -122,6 +129,10 @@ list_t *scene_get_collider_tiles(scene_t *scene) {
     return scene->collider_tiles;
 }
 
+list_t *scene_get_enemies(scene_t *scene) {
+    return scene->enemies;
+}
+
 
 void scene_tick(scene_t *scene, double dt) {
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
@@ -137,6 +148,12 @@ void scene_tick(scene_t *scene, double dt) {
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         if (body_is_removed(list_get(scene->bodies, i))) {
             body_free(list_remove(scene->bodies, i));
+        }
+    }
+
+    for(size_t i = 0; i < list_size(scene->enemies); i++) {
+        if (body_is_removed(list_get(scene->enemies, i))) {
+            list_remove(scene->bodies, i);
         }
     }
 
@@ -158,7 +175,6 @@ void scene_tick(scene_t *scene, double dt) {
         force_func->forcer(force_func->aux, dt);
     }
     //printf("after vel x: %f\n", body_get_velocity(scene_get_body(scene,0)).x);
-
 
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         body_tick(list_get(scene->bodies, i), dt);

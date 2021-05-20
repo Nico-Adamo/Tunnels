@@ -1,5 +1,6 @@
 #include "sdl_wrapper.h"
 #include "game.h"
+#include "enemy.h"
 #include "scene.h"
 #include "color.h"
 #include "list.h"
@@ -18,8 +19,6 @@ const char *SPRITE = "knight";
 const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
 
 
-double BULLET_SPEED = 450;
-
 const double MAX_WIDTH = 1024;
 const double MAX_HEIGHT = 512;
 
@@ -34,43 +33,6 @@ const vector_t PADDLE_UP_VELOCITY = {
 };
 
 const double player_velocity = 300;
-
-const double min_cooldown = 0.5;
-const double max_cooldown = 2;
-
-const double enemy_cooldown = 5;
-
-double rand_from(double min, double max) {
-    double range = (max - min);
-    double div = RAND_MAX / range;
-    return min + (rand() / div);
-}
-
-body_t *make_demo_bullet(scene_t *scene, body_t *sprite, vector_t bullet_dir) {
-    SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
-    vector_t spawn_point = body_get_centroid(sprite);
-    body_t *bullet;
-    sprite_info_t info = {
-        .experience = 0,
-        .attack = body_get_sprite_info(sprite).attack,
-        .health = 0,
-        .cooldown = 0
-    };
-    if (body_get_type(sprite) == "PLAYER") {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, 1, "PLAYER_BULLET", info);
-    } else {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, 1, "ENEMY_BULLET", info);
-    }
-    //vector_t player_dir = body_get_direction(sprite);
-    vector_t bullet_velocity = {
-        .x = bullet_dir.x * BULLET_SPEED,
-        .y = bullet_dir.y * BULLET_SPEED
-    };
-    body_set_velocity(bullet, bullet_velocity);
-    scene_add_body(scene, bullet);
-    create_tile_collision(scene, bullet);
-    return bullet;
-}
 
 void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
     scene_t *scene = game_get_current_scene(game);
@@ -205,7 +167,7 @@ scene_t *scene_reset() {
     scene_t *scene = scene_init();
 
     // Initialize Potential Enemy
-    for(int i=0; i<5; i++) {
+    for(int i=0; i<1; i++) {
         body_t *temp_enemy = make_demo_sprite(400+100*i, 200, "ENEMY", enemy_info);
         scene_add_body(scene, temp_enemy);
     }
@@ -241,12 +203,14 @@ int main(int arg_c, char *arg_v[]) {
 
     sdl_on_key(on_key);
     while(!sdl_is_done(game)) {
+        scene_t *scene = game_get_current_scene(game);
         double dt = time_since_last_tick();
-        scene_tick(game_get_current_scene(game), dt);
+        handle_enemies(game, dt);
+        scene_tick(scene, dt);
         seconds += dt;
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
 
-        sdl_render_scene(game_get_current_scene(game));
+        sdl_render_scene(scene);
     }
     game_free(game);
     return 0;

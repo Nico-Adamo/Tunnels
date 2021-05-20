@@ -44,36 +44,6 @@ double rand_from(double min, double max) {
     return min + (rand() / div);
 }
 
-body_t *make_demo_bullet(body_t *sprite, vector_t bullet_dir) {
-    SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
-    vector_t spawn_point = body_get_centroid(sprite);
-    body_t *bullet;
-    sprite_info_t info = {
-        .experience = 0,
-        .attack = body_get_sprite_info(sprite).attack,
-        .health = 0,
-        .cooldown = 0
-    };
-    if (body_get_type(sprite) == "PLAYER") {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, 1, "PLAYER_BULLET", info);
-    } else {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, 1, "ENEMY_BULLET", info);
-    }
-    //vector_t player_dir = body_get_direction(sprite);
-    vector_t bullet_velocity = {
-        .x = bullet_dir.x * BULLET_SPEED,
-        .y = bullet_dir.y * BULLET_SPEED
-    };
-    body_set_velocity(bullet, bullet_velocity);
-    return bullet;
-}
-
-vector_t find_bullet_direction(body_t *player, body_t *enemy) {
-    vector_t player_center = body_get_centroid(player);
-    vector_t enemy_center = body_get_centroid(enemy);
-    return vec_unit(vec_subtract(player_center, enemy_center));
-}
-
 void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
     body_t *player = scene_get_body(scene, 0);
     vector_t velocity = body_get_velocity(player);
@@ -256,7 +226,7 @@ int main(int arg_c, char *arg_v[]) {
                     body_t *bullet = make_demo_bullet(enemy, find_bullet_direction(scene_get_body(scene, 0), enemy));
                     scene_add_body(scene, bullet);
                     create_semi_destructive_collision(scene, scene_get_body(scene, 0), bullet);
-                    // create_newtonian_gravity(scene, 10000, scene_get_body(scene, 0), bullet);
+                    //create_newtonian_gravity(scene, 10000, scene_get_body(scene, 0), bullet);
                     enemy_info.cooldown = rand_from(min_cooldown, max_cooldown);
                     body_set_sprite_info(enemy, enemy_info);
                 }

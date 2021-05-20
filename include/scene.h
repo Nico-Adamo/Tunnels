@@ -117,6 +117,7 @@ list_t *scene_get_collider_tiles(scene_t *scene);
 
 void scene_sort_by_depth(scene_t *scene);
 
+list_t *scene_get_enemies(scene_t *scene);
 /**
  * Executes a tick of a given scene over a small time interval.
  * This requires executing all the force creators
