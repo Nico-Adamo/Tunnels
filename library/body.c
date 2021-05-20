@@ -10,6 +10,7 @@ typedef struct body {
     rect_t hitbox; // Position on screen and size
     SDL_Texture *texture;
     double mass;
+    double scale;
     vector_t centroid;
     vector_t velocity;
     double rotation;
@@ -24,10 +25,10 @@ typedef struct body {
 } body_t;
 
 body_t *body_init(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass) {
-    return body_init_with_info(shape, collision_shape, hitbox, texture, mass, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
+    return body_init_with_info(shape, collision_shape, hitbox, texture, mass, 0, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
 }
 
-body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info) {
+body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
@@ -36,6 +37,7 @@ body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hit
     body->hitbox = hitbox;
     body->texture = texture;
     body->mass = mass;
+    body->scale = scale;
     body->flipped = false;
     body->net_force.x = 0;
     body->net_force.y = 0;
@@ -80,9 +82,11 @@ rect_t body_get_hitbox(body_t *body) {
 rect_t body_get_collision_hitbox(body_t *body) {
     rect_t hitbox = body->hitbox;
     SDL_Rect collision_box = body->collision_shape;
-    hitbox.x += collision_box.x;
-    hitbox.w = collision_box.w;
-    hitbox.h = collision_box.h;
+    if (!body->flipped) hitbox.x += (collision_box.x * body->scale);
+    hitbox.w = collision_box.w * body->scale;
+    if (body->flipped) hitbox.w -= (collision_box.x * body->scale);
+    hitbox.h = collision_box.h * body->scale;
+    return hitbox;
 }
 
 bool body_get_flipped(body_t *body) {
@@ -103,6 +107,10 @@ vector_t body_get_velocity(body_t *body) {
 
 double body_get_mass(body_t *body) {
     return body->mass;
+}
+
+double body_get_scale(body_t *body) {
+    return body->scale;
 }
 
 /*

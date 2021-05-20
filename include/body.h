@@ -56,7 +56,7 @@ void body_set_sprite_info(body_t *body, sprite_info_t info);
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info);
+body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info);
 
 /**
  * Releases the memory allocated for a body.
@@ -107,6 +107,8 @@ void body_set_direction(body_t *body, vector_t dir);
  * @return the mass passed to body_init(), which must be greater than 0
  */
 double body_get_mass(body_t *body);
+
+double body_get_scale(body_t *body);
 
 /**
  * Gets the display color of a body.
