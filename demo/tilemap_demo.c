@@ -46,9 +46,36 @@ double rand_from(double min, double max) {
     return min + (rand() / div);
 }
 
+body_t *make_demo_bullet(scene_t *scene, body_t *sprite, vector_t bullet_dir) {
+    SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
+    vector_t spawn_point = body_get_centroid(sprite);
+    body_t *bullet;
+    sprite_info_t info = {
+        .experience = 0,
+        .attack = body_get_sprite_info(sprite).attack,
+        .health = 0,
+        .cooldown = 0
+    };
+    if (body_get_type(sprite) == "PLAYER") {
+        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "PLAYER_BULLET", info);
+    } else {
+        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "ENEMY_BULLET", info);
+    }
+    //vector_t player_dir = body_get_direction(sprite);
+    vector_t bullet_velocity = {
+        .x = bullet_dir.x * BULLET_SPEED,
+        .y = bullet_dir.y * BULLET_SPEED
+    };
+    body_set_velocity(bullet, bullet_velocity);
+    scene_add_body(scene, bullet);
+    create_tile_collision(scene, bullet);
+    return bullet;
+}
+
 void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
     body_t *player = scene_get_body(scene, 0);
     vector_t velocity = body_get_velocity(player);
+    vector_t bullet_dir = VEC_ZERO;
     if (type == KEY_PRESSED) {
         switch (key) {
             case 'a':
@@ -71,14 +98,43 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
                 body_set_velocity(player, velocity);
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 break;
-            /*case ' ':
-                scene_add_body(scene, make_demo_bullet(player, bullet_dir));
-                if (scene_bodies(scene) > 2) {
-                    // much demo much wow, just creating a collision with what i know to be an enemy lol
-                    create_destructive_collision(scene, scene_get_body(scene, 1), scene_get_body(scene, scene_bodies(scene) - 1));
+            case 'i':
+                bullet_dir.y = 1;
+                make_demo_bullet(scene, player, bullet_dir);
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
                 }
                 break;
-            */
+            case 'j':
+                bullet_dir.x = -1;
+                make_demo_bullet(scene, player, bullet_dir);
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
+                }
+                break;
+            case 'k':
+                bullet_dir.y = -1;
+                make_demo_bullet(scene, player, bullet_dir);
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
+                }
+                break;
+            case 'l':
+                bullet_dir.x = 1;
+                make_demo_bullet(scene, player, bullet_dir);
+                for (size_t i = 1; i < scene_bodies(scene); i++) {
+                    if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+                        create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
+                    }
+                }
+                break;
+
         }
     }
     else if (type == KEY_RELEASED) {

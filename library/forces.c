@@ -286,10 +286,10 @@ void tile_collision(void *aux) {
 
 void create_tile_collision(scene_t *scene, body_t *body) {
     list_t *tiles = scene_get_collider_tiles(scene);
-    list_t *body_list = list_init(1, NULL);
-    list_add(body_list, body);
     for (size_t i = 0; i < list_size(tiles); i++) {
         tile_aux_t *aux = malloc(sizeof(tile_aux_t));
+        list_t *body_list = list_init(1, NULL);
+        list_add(body_list, body);
         aux->tile = list_get(tiles, i);
         aux->body = body;
         scene_add_bodies_force_creator(scene, tile_collision, aux, body_list, free);
