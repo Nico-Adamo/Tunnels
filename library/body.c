@@ -60,8 +60,7 @@ body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hit
 }
 
 void body_free(body_t *body) {
-    // We let the game handle freeing the player
-    if(strcmp(body->type,"PLAYER") !=0) free(body);
+    free(body);
 }
 
 sprite_info_t body_get_sprite_info(body_t *body) {

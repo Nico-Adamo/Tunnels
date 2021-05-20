@@ -69,7 +69,6 @@ body_t *scene_get_body(scene_t *scene, size_t index) {
 }
 
 void scene_add_body(scene_t *scene, body_t *body) {    
-    printf("Getting called\n");    
     list_add(scene->bodies, body);
     if(strcmp(body_get_type(body), "ENEMY") == 0) list_add(scene->enemies, body);
 }
@@ -144,6 +143,11 @@ void scene_tick(scene_t *scene, double dt) {
             }
         }
     }
+   for(size_t i = 0; i < list_size(scene->enemies); i++) {
+        if (body_is_removed(list_get(scene->enemies, i))) {
+            list_remove(scene->enemies, i);
+        }
+    }
 
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         if (body_is_removed(list_get(scene->bodies, i))) {
@@ -151,11 +155,7 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
-    for(size_t i = 0; i < list_size(scene->enemies); i++) {
-        if (body_is_removed(list_get(scene->enemies, i))) {
-            list_remove(scene->bodies, i);
-        }
-    }
+ 
 
     int idx = 0;
     while (idx < list_size(scene->force_creators)) {

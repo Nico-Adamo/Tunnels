@@ -39,6 +39,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
     body_t *player = game_get_player(game);
     vector_t velocity = body_get_velocity(player);
     vector_t bullet_dir = VEC_ZERO;
+    body_t *bullet;
     if (type == KEY_PRESSED) {
         switch (key) {
             case 'a':
@@ -63,7 +64,8 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             case 'i':
                 bullet_dir.y = 1;
-                make_demo_bullet(scene, player, bullet_dir);
+                bullet = make_demo_bullet(player, bullet_dir);
+                scene_add_body(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -72,7 +74,8 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             case 'j':
                 bullet_dir.x = -1;
-                make_demo_bullet(scene, player, bullet_dir);
+                bullet = make_demo_bullet(player, bullet_dir);
+                scene_add_body(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -81,7 +84,8 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             case 'k':
                 bullet_dir.y = -1;
-                make_demo_bullet(scene, player, bullet_dir);
+                bullet = make_demo_bullet(player, bullet_dir);
+                scene_add_body(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -90,7 +94,8 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             case 'l':
                 bullet_dir.x = 1;
-                make_demo_bullet(scene, player, bullet_dir);
+                bullet = make_demo_bullet(player, bullet_dir);
+                scene_add_body(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -209,8 +214,24 @@ int main(int arg_c, char *arg_v[]) {
         scene_tick(scene, dt);
         seconds += dt;
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
-
+        
         sdl_render_scene(scene);
+
+        body_t *player = game_get_player(game);
+        if (body_get_sprite_info(player).health <= 0) {
+            scene_t *scene_new = scene_reset();
+            player_info = body_get_sprite_info(player);
+            player_info.health = 50;
+            body_t *player_new = make_demo_sprite(100, 100, "PLAYER", player_info);
+            game_set_player(game, player_new);
+            game_set_current_scene(game, scene_new);
+            scene_add_body(scene_new, player_new);
+            scene_free(scene);
+            map_load(game, "assets/levels/map_bigger.map", 20, 20);
+            create_tile_collision(game_get_current_scene(game), game_get_player(game));
+
+        }
+
     }
     game_free(game);
     return 0;
