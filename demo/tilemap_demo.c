@@ -155,6 +155,7 @@ int main(int arg_c, char *arg_v[]) {
     map_register_tiles(game);
     map_load(game, "assets/levels/map.txt", 12, 7);
     double seconds = 0;
+    create_tile_collision(scene, scene_get_body(scene, 0));
 
     sdl_on_key(on_key);
     while(!sdl_is_done(scene)) {

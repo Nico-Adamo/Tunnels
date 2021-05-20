@@ -110,11 +110,15 @@ void create_semi_destructive_collision(scene_t *scene, body_t *body1, body_t *bo
  * @param body1 the first body
  * @param body2 the second body
  */
-void create_physics_collision(
+void create_physics_collision (
     scene_t *scene,
     double elasticity,
     body_t *body1,
     body_t *body2
 );
+
+void create_tile_collision(scene_t *scene, body_t *body1);
+
+
 
 #endif // #ifndef __FORCES_H__
