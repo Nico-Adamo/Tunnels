@@ -7,4 +7,6 @@ void map_load(game_t *game, const char *path, size_t x_tiles, size_t y_tiles);
 
 void map_register_tiles(game_t *game);
 
+void map_register_collider_tiles();
+
 #endif // #ifndef __MAP_H__
