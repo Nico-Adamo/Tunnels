@@ -7,7 +7,8 @@
 
 // can add these as function parameters and set them in the demo
 const double MIN_DIST = 5;
-const double RECOIL_DIST = 15;
+const double RECOIL_DIST = 1;
+const double RECOIL_ENEMY = 15;
 
 typedef struct aux {
     double param;
@@ -205,8 +206,8 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         if (body1_info.health <= 0) body_remove(body1);
         if (body2_info.health <= 0) body_remove(body2);
         vector_t recoil = {
-            .x = axis.x * RECOIL_DIST,
-            .y = axis.y * RECOIL_DIST
+            .x = axis.x * RECOIL_ENEMY,
+            .y = axis.y * RECOIL_ENEMY
         };
         if (axis.x == 1) {
             if (body_get_centroid(body1).x > body_get_centroid(body2).x) {
