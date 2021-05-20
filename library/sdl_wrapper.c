@@ -6,8 +6,8 @@
 #include "sdl_wrapper.h"
 
 const char WINDOW_TITLE[] = "CS 3";
-const int WINDOW_WIDTH = 1024 * 2;
-const int WINDOW_HEIGHT = 512 * 2;
+const int WINDOW_WIDTH = 1024;
+const int WINDOW_HEIGHT = 512;
 const double MS_PER_S = 1e3;
 const double map_scale = 10;
 
