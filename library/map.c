@@ -21,7 +21,7 @@ SDL_Rect COLLIDER_TILES[]= {
     {0, 0, 16, 16}, // 0
     {0, 0, 4, 16}, // 1
     {12, 0, 4, 16}, // 2
-    {0, 8, 16, 8} // 3
+    {0, 0, 16, 8} // 3
 };
 
 tile_info_t *COLLIDER_TILE_INFOS[4];
@@ -66,8 +66,7 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                 
                 } else if(tile_type == 2) {
                     tile_info_t *tile_info = map_get_collider_tile_info(*tile_id_buffer);
-                    tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE});
-                    printf("%f, %f\n", tile->hitbox.x, tile->hitbox.y);
+                    tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*(x*TILE_SIZE + tile_info->shape.x), game_scale*(y*TILE_SIZE + tile_info->shape.y), game_scale*tile_info->shape.w, game_scale*tile_info->shape.h});
                     scene_add_collider_tile(scene, tile);
                 }
             }

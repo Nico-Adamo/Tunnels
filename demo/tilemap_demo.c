@@ -153,6 +153,7 @@ int main(int arg_c, char *arg_v[]) {
     scene_t *scene = scene_reset();
     game_t *game = game_init(scene, 4);
     map_register_tiles(game);
+    map_register_collider_tiles();
     map_load(game, "assets/levels/map.txt", 12, 7);
     double seconds = 0;
     create_tile_collision(scene, scene_get_body(scene, 0));

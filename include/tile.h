@@ -23,6 +23,8 @@ void tile_free(void *tile);
 
 tile_info_t *tile_info_init(const char *path, SDL_Rect shape);
 
+tile_info_t *tile_collider_info_init(SDL_Rect shape);
+
 void tile_info_free(void *tile_info);
 
 void tile_draw(tile_t *tile);

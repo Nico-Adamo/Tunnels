@@ -19,6 +19,15 @@ tile_info_t *tile_info_init(const char *path, SDL_Rect shape) {
     return tile_info;
 }
 
+tile_info_t *tile_collider_info_init(SDL_Rect shape) {
+        tile_info_t *tile_info = malloc(sizeof(tile_info_t));
+
+        tile_info->texture = NULL;
+        tile_info->shape = shape;
+
+        return tile_info;
+}
+
 void tile_info_free(void *tile_info) {
     SDL_DestroyTexture(((tile_info_t *) tile_info)->texture);
     free((tile_info_t *) tile_info);
