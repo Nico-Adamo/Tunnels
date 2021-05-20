@@ -66,6 +66,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 bullet_dir.y = 1;
                 bullet = make_demo_bullet(player, bullet_dir);
                 scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -76,6 +77,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 bullet_dir.x = -1;
                 bullet = make_demo_bullet(player, bullet_dir);
                 scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -86,6 +88,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 bullet_dir.y = -1;
                 bullet = make_demo_bullet(player, bullet_dir);
                 scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
@@ -96,6 +99,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 bullet_dir.x = 1;
                 bullet = make_demo_bullet(player, bullet_dir);
                 scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
                 for (size_t i = 0; i < scene_bodies(scene); i++) {
                     if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
                         create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
