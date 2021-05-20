@@ -17,7 +17,7 @@ typedef struct scene scene_t;
  * e.g. from collisions, gravity, or spring forces.
  * Takes in an auxiliary value that can store parameters or state.
  */
-typedef void (*force_creator_t)(void *aux);
+typedef void (*force_creator_t)(void *aux, double dt);
 
 /**
  * Allocates memory for an empty scene.

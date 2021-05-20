@@ -7,7 +7,7 @@
 
 // can add these as function parameters and set them in the demo
 const double MIN_DIST = 5;
-const double RECOIL_DIST = 1;
+const double RECOIL_DIST = 0.25;
 const double RECOIL_ENEMY = 15;
 
 typedef struct aux {
@@ -28,6 +28,12 @@ typedef struct tile_aux {
     tile_t *tile;
     body_t *body;
 } tile_aux_t;
+
+int sign(double x) {
+  if (x > 0.0) return 0.01;
+  if (x < 0.0) return -0.01;
+  return 0;
+}
 
 void newtonian_gravity(void *aux) {
     aux_t *values = (aux_t *) aux;
@@ -246,11 +252,18 @@ void create_semi_destructive_collision(scene_t *scene, body_t *body1, body_t *bo
     create_collision(scene, body1, body2, semi_destructive_collision, aux, free);
 }
 
-void tile_collision(void *aux) {
+void tile_collision(void *aux, double dt) {
     tile_aux_t *tile_aux = (tile_aux_t *) aux;
     body_t *body = tile_aux->body;
     tile_t *tile = tile_aux->tile;
-    collision_info_t col_info = find_collision(body_get_collision_hitbox(body), tile_get_hitbox(tile));
+    rect_t hitbox = body_get_collision_hitbox(body);
+    vector_t final_velocity = body_calculate_velocity(body, dt);
+    vector_t average_velocity = {
+        .x = (final_velocity.x + body_get_velocity(body).x) / 2,
+        .y = (final_velocity.y + body_get_velocity(body).y) / 2
+    };
+    vector_t displacement = vec_multiply(dt, average_velocity);
+    collision_info_t col_info = find_collision((rect_t) {hitbox.x + displacement.x, hitbox.y + displacement.y, hitbox.w, hitbox.h}, tile_get_hitbox(tile));
     if (col_info.collided) {
         if (strcmp(body_get_type(body), "PLAYER_BULLET") == 0 || strcmp(body_get_type(body), "ENEMY_BULLET") == 0) {
             body_remove(body);
@@ -262,17 +275,13 @@ void tile_collision(void *aux) {
             vector_t new_velocity = body_get_velocity(body);
             if (col_info.axis.x == 1) {
                 new_velocity.x = 0;
-                if (body_get_hitbox(body).x > tile_get_hitbox(tile).x) {
+                if (average_velocity.x == 0) {
                     body_set_centroid(body, vec_add(body_get_centroid(body), recoil));
-                } else {
-                    body_set_centroid(body, vec_add(body_get_centroid(body), vec_negate(recoil)));
                 }
             } else if (col_info.axis.y == 1) {
                 new_velocity.y = 0;
-                if (body_get_hitbox(body).y > tile_get_hitbox(tile).y) {
+                if (average_velocity.y == 0) {
                     body_set_centroid(body, vec_add(body_get_centroid(body), recoil));
-                } else {
-                    body_set_centroid(body, vec_add(body_get_centroid(body), vec_negate(recoil)));
                 }
             }
             body_set_velocity(body, new_velocity);

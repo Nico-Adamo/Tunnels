@@ -203,6 +203,8 @@ void body_add_force(body_t *body, vector_t force);
  */
 void body_add_impulse(body_t *body, vector_t impulse);
 
+vector_t body_calculate_velocity(body_t *body, double dt);
+
 /**
  * Updates the body after a given time interval has elapsed.
  * Sets acceleration and velocity according to the forces and impulses

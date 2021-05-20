@@ -232,7 +232,7 @@ void sdl_render_scene(scene_t *scene) {
 
     // Tilemap rendering: walls
     sdl_render_tilemap(scene_get_wall_tiles(scene));
-    sdl_render_tilemap(scene_get_collider_tiles(scene));
+    //sdl_render_tilemap(scene_get_collider_tiles(scene));
 
     sdl_show();
 }

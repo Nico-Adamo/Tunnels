@@ -14,7 +14,21 @@ const char *TILE_PATHS[] = {
     "assets/wall_side_mid_left.png", // 9
     "assets/wall_side_mid_right.png", // 10
     "assets/wall_inner_corner_l_top_left.png", // 11
-    "assets/wall_inner_corner_l_top_right.png" // 12
+    "assets/wall_inner_corner_l_top_right.png", // 12,
+    "assets/wall_corner_bottom_left.png", // 13
+    "assets/wall_corner_bottom_right.png", // 14
+    "assets/wall_corner_front_left.png", // 15
+    "assets/wall_corner_front_right.png", // 16
+    "assets/wall_side_top_left.png", // 17
+    "assets/wall_side_top_right.png", // 18
+    "assets/floor_2.png", // 19
+    "assets/floor_3.png", // 20
+    "assets/floor_4.png", // 21
+    "assets/floor_5.png", // 22
+    "assets/floor_6.png", // 23
+    "assets/floor_7.png", // 24
+    "assets/floor_8.png", // 25
+    "assets/floor_ladder.png" // 26
 };
 
 SDL_Rect COLLIDER_TILES[]= {
@@ -36,9 +50,9 @@ void map_register_tiles(game_t *game) {
 
 void map_register_collider_tiles() {
     for (size_t i = 0; i < sizeof(COLLIDER_TILE_INFOS) / sizeof(tile_info_t *); i++) {
-        //COLLIDER_TILE_INFOS[i] = tile_collider_info_init(COLLIDER_TILES[i]);
+        // COLLIDER_TILE_INFOS[i] = tile_collider_info_init(COLLIDER_TILES[i]);
         COLLIDER_TILE_INFOS[i] = tile_info_init("assets/collider_tile_temp.png", COLLIDER_TILES[i]);
-    }    
+    }
 }
 
 tile_info_t *map_get_collider_tile_info(size_t tile_id) {
@@ -46,7 +60,7 @@ tile_info_t *map_get_collider_tile_info(size_t tile_id) {
 }
 
 void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uint8_t tile_type) {
-    scene_t *scene = game->current_scene;
+    scene_t *scene = game_get_current_scene(game);
     int *tile_id_buffer = malloc(sizeof(int));
     double game_scale = game_get_scale(game);
     for (int y = y_tiles - 1; y >= 0; y--) {
@@ -58,12 +72,12 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                     tile_info_t *tile_info = game_get_tile_info(game, *tile_id_buffer);
                     tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE});
                     scene_add_floor_tile(scene, tile);
-                
+
                 } else if(tile_type == 1) {
                     tile_info_t *tile_info = game_get_tile_info(game, *tile_id_buffer);
                     tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE});
                     scene_add_wall_tile(scene, tile);
-                
+
                 } else if(tile_type == 2) {
                     tile_info_t *tile_info = map_get_collider_tile_info(*tile_id_buffer);
                     tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*(x*TILE_SIZE + tile_info->shape.x), game_scale*(y*TILE_SIZE + tile_info->shape.y), game_scale*tile_info->shape.w, game_scale*tile_info->shape.h});

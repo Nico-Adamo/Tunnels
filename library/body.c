@@ -82,9 +82,12 @@ rect_t body_get_hitbox(body_t *body) {
 rect_t body_get_collision_hitbox(body_t *body) {
     rect_t hitbox = body->hitbox;
     SDL_Rect collision_box = body->collision_shape;
-    if (!body->flipped) hitbox.x += (collision_box.x * body->scale);
+    if(body->flipped) {
+        hitbox.x += (body->shape.w - (collision_box.x + collision_box.w)) * body->scale;
+    } else {
+        hitbox.x += collision_box.x * body->scale;
+    }
     hitbox.w = collision_box.w * body->scale;
-    if (body->flipped) hitbox.w -= (collision_box.x * body->scale);
     hitbox.h = collision_box.h * body->scale;
     return hitbox;
 }
@@ -176,8 +179,7 @@ void body_add_impulse(body_t *body, vector_t impulse) {
     body->net_impulse.y += impulse.y;
 }
 
-void body_tick(body_t *body, double dt) {
-
+vector_t body_calculate_velocity(body_t *body, double dt) {
     vector_t acceleration = {
         .x = body->net_force.x / body->mass,
         .y = body->net_force.y / body->mass
@@ -190,6 +192,11 @@ void body_tick(body_t *body, double dt) {
         .x = body->velocity.x + velocity_change.x,
         .y = body->velocity.y + velocity_change.y
     };
+    return final_velocity;
+}
+
+void body_tick(body_t *body, double dt) {
+    vector_t final_velocity = body_calculate_velocity(body, dt);
     vector_t average_velocity = {
         .x = (final_velocity.x + body->velocity.x) / 2,
         .y = (final_velocity.y + body->velocity.y) / 2

@@ -135,10 +135,14 @@ void scene_tick(scene_t *scene, double dt) {
         idx++;
     }
 
+    //printf("Initial vel x: %f\n", body_get_velocity(scene_get_body(scene,0)).x);
+
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
         force_aux_t *force_func = list_get(scene->force_creators, i);
-        force_func->forcer(force_func->aux);
+        force_func->forcer(force_func->aux, dt);
     }
+    //printf("after vel x: %f\n", body_get_velocity(scene_get_body(scene,0)).x);
+
 
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         body_tick(list_get(scene->bodies, i), dt);

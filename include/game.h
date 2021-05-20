@@ -4,12 +4,7 @@
 #include "list.h"
 #include "scene.h"
 
-typedef struct game {
-    list_t *tile_infos;
-    scene_t *current_scene;
-    double scale;
-    vector_t camera; // x,y of bottom left of screen
-} game_t;
+typedef struct game game_t;
 
 game_t *game_init(scene_t *initial_scene, double scale);
 

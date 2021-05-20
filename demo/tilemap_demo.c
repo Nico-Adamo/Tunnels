@@ -179,7 +179,7 @@ body_t *make_demo_sprite(double x, double y, char *type, sprite_info_t info) {
     SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 6}, (rect_t) {x, y, 64, 128}, texture, 100, 4, type, info);
+    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 12, 6}, (rect_t) {x, y, 64, 128}, texture, 100, 4, type, info);
 }
 
 scene_t *scene_reset() {
@@ -210,7 +210,7 @@ int main(int arg_c, char *arg_v[]) {
     game_t *game = game_init(scene, 4);
     map_register_tiles(game);
     map_register_collider_tiles();
-    map_load(game, "assets/levels/map.txt", 12, 7);
+    map_load(game, "assets/levels/map_bigger.map", 20, 20);
     double seconds = 0;
     create_tile_collision(scene, scene_get_body(scene, 0));
 
