@@ -202,13 +202,15 @@ scene_t *scene_reset() {
     };
 
     // Initialize Sprite/Player
+    scene_t *scene = scene_init();
 
     // Initialize Potential Enemy
-    body_t *temp_enemy = make_demo_sprite(400, 200, "ENEMY", enemy_info);
+    for(int i=0; i<5; i++) {
+        body_t *temp_enemy = make_demo_sprite(400+100*i, 200, "ENEMY", enemy_info);
+        scene_add_body(scene, temp_enemy);
+    }
 
     // Create Scene
-    scene_t *scene = scene_init();
-    scene_add_body(scene, temp_enemy);
 
     return scene;
 }

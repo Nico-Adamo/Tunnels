@@ -63,8 +63,20 @@ body_t *scene_get_body(scene_t *scene, size_t index) {
     return (body_t *) list_get(scene->bodies, index);
 }
 
-void scene_add_body(scene_t *scene, body_t *body) {
+void scene_add_body(scene_t *scene, body_t *body) {        
     list_add(scene->bodies, body);
+}
+
+int depth_comparator(void *body1, void *body2) {
+    body_t *body1_c = (body_t *) body1;
+    body_t *body2_c = (body_t *) body2;
+    if(body_get_centroid(body1_c).y < body_get_centroid(body2_c).y) return 1;
+    if(body_get_centroid(body1_c).y > body_get_centroid(body2_c).y) return -1;
+    return 0;
+}
+
+void scene_sort_by_depth(scene_t *scene) {
+    list_sort(scene->bodies, depth_comparator);
 }
 
 void scene_remove_body(scene_t *scene, size_t index) {

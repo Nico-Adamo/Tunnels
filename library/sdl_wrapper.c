@@ -6,8 +6,8 @@
 #include "sdl_wrapper.h"
 
 const char WINDOW_TITLE[] = "CS 3";
-const int WINDOW_WIDTH = 1024;
-const int WINDOW_HEIGHT = 512;
+const int WINDOW_WIDTH = 1024 * 2;
+const int WINDOW_HEIGHT = 512 * 2;
 const double MS_PER_S = 1e3;
 const double map_scale = 10;
 
@@ -105,11 +105,6 @@ char get_keycode(SDL_Keycode key) {
 
 void sdl_init(vector_t min, vector_t max) {
     // Check parameters
-    SDL_Rect DM;
-    SDL_GetDisplayBounds(0, &DM);
-    int Width = DM.w;
-    int Height = DM.h;
-
     assert(min.x < max.x);
     assert(min.y < max.y);
 
@@ -238,6 +233,7 @@ void sdl_render_scene(scene_t *scene) {
     sdl_render_tilemap(scene_get_floor_tiles(scene));
 
     // Sprite rendering
+    scene_sort_by_depth(scene);
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
         body_t *body = scene_get_body(scene, i);

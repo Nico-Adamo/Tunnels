@@ -10,6 +10,9 @@
  */
 typedef struct list list_t;
 
+typedef int (*comparator_t)
+    (void* item1, void* item2);
+
 /**
  * A function that can be called on list elements to release their resources.
  * Examples: free, body_free
@@ -74,5 +77,7 @@ void *list_remove(list_t *list, size_t index);
  * @param value the element to add to the end of the list
  */
 void list_add(list_t *list, void *value);
+
+void list_sort(list_t *list, comparator_t compare);
 
 #endif // #ifndef __LIST_H__
