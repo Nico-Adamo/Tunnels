@@ -168,7 +168,17 @@ void sdl_set_camera(vector_t cam) {
     camera = cam;
 }
 
+bool sdl_is_onscreen(double x, double y) {
+    //printf("Camera: %f %f\n", camera.x, camera.y);
+    return x >= camera.x && x <= WINDOW_WIDTH+camera.x && y >= camera.y && y <= WINDOW_HEIGHT+camera.y;
+}
+
 void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped) {
+    // Check all four corners are on screen
+    if(!sdl_is_onscreen(destination.x, destination.y) &&
+       !sdl_is_onscreen(destination.x+destination.w, destination.y+destination.h) &&
+       !sdl_is_onscreen(destination.x+destination.w, destination.y) &&
+       !sdl_is_onscreen(destination.x, destination.y+destination.h)) return;
     SDL_Rect dest_window;
     vector_t window_center = get_window_center();
     double scale = get_scene_scale(window_center);
@@ -209,6 +219,8 @@ void sdl_show(void) {
 
     SDL_RenderPresent(renderer);
 }
+
+
 void sdl_render_tilemap(list_t *tiles) {
     for(size_t i = 0; i<list_size(tiles); i++) {
         tile_t *tile = list_get(tiles, i);

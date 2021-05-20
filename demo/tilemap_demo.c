@@ -141,23 +141,30 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
         switch (key) {
             case 'a':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                velocity.x = 0;
-                body_set_velocity(player, velocity);
+                if(body_get_velocity(player).x == -player_velocity) {
+                    velocity.x = 0;
+                    body_set_velocity(player, velocity);
+                }
                 if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
                     body_set_direction(player, vec_unit(body_get_velocity(player)));
                 }
                 break;
             case 'd':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                velocity.x = 0;
-                body_set_velocity(player, velocity);
+                if(body_get_velocity(player).x == player_velocity) {
+                    velocity.x = 0;
+                    body_set_velocity(player, velocity);
+                }
                 if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
                     body_set_direction(player, vec_unit(body_get_velocity(player)));
                 }
                 break;
             case 's':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                velocity.y = 0;
+                if(body_get_velocity(player).y == -player_velocity) {
+                    velocity.y = 0;
+                    body_set_velocity(player, velocity);
+                }
                 body_set_velocity(player, velocity);
                 if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
                     body_set_direction(player, vec_unit(body_get_velocity(player)));
@@ -165,8 +172,10 @@ void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
                 break;
             case 'w':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
-                velocity.y = 0;
-                body_set_velocity(player, velocity);
+                if(body_get_velocity(player).y == player_velocity) {
+                    velocity.y = 0;
+                    body_set_velocity(player, velocity);
+                }
                 if (body_get_velocity(player).x != 0 || body_get_velocity(player).y != 0) {
                     body_set_direction(player, vec_unit(body_get_velocity(player)));
                 }
@@ -190,12 +199,23 @@ scene_t *scene_reset() {
         .cooldown = 0
     };
 
+    sprite_info_t enemy_info = {
+        .experience = 0,
+        .attack = 5,
+        .health = 30,
+        .cooldown = rand_from(min_cooldown, max_cooldown)
+    };
+
     // Initialize Sprite/Player
     body_t *sprite = make_demo_sprite(100, 100, "PLAYER", player_info);
+
+    // Initialize Potential Enemy
+    body_t *temp_enemy = make_demo_sprite(400, 200, "ENEMY", enemy_info);
 
     // Create Scene
     scene_t *scene = scene_init();
     scene_add_body(scene, sprite);
+    scene_add_body(scene, temp_enemy);
 
     return scene;
 }

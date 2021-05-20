@@ -6,7 +6,6 @@ typedef struct game {
     list_t *tile_infos;
     scene_t *current_scene;
     double scale;
-    vector_t camera; // x,y of bottom left of screen
 } game_t;
 
 game_t *game_init(scene_t *initial_scene, double scale) {
@@ -15,7 +14,6 @@ game_t *game_init(scene_t *initial_scene, double scale) {
     game->current_scene = initial_scene;
     game->tile_infos = list_init(num_tiles, tile_info_free);
     game->scale = scale;
-    game->camera = VEC_ZERO;
 
     return game;
 }
