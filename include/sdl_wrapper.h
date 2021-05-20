@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "color.h"
 #include "list.h"
-#include "scene.h"
+#include "game.h"
 #include "vector.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
@@ -41,7 +41,7 @@ typedef enum {
  * @param held_time if a press event, the time the key has been held in seconds
  * @param scene a scene containing all relevant bodies
  */
-typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time, scene_t *scene);
+typedef void (*key_handler_t)(char key, key_event_type_t type, double held_time, game_t *game);
 
 /**
  * Initializes the SDL window and renderer.
@@ -59,7 +59,7 @@ void sdl_init(vector_t min, vector_t max);
  * @param scene a scene containing all relevant bodies
  * @return true if the window was closed, false otherwise
  */
-bool sdl_is_done(scene_t *scene);
+bool sdl_is_done(game_t *game);
 
 SDL_Texture *sdl_load_texture(const char *path);
 

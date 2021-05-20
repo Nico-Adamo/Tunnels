@@ -72,8 +72,9 @@ body_t *make_demo_bullet(scene_t *scene, body_t *sprite, vector_t bullet_dir) {
     return bullet;
 }
 
-void on_key(char key, key_event_type_t type, double held_time, scene_t *scene) {
-    body_t *player = scene_get_body(scene, 0);
+void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
+    scene_t *scene = game_get_current_scene(game);
+    body_t *player = game_get_player(game);
     vector_t velocity = body_get_velocity(player);
     vector_t bullet_dir = VEC_ZERO;
     if (type == KEY_PRESSED) {
@@ -192,12 +193,6 @@ body_t *make_demo_sprite(double x, double y, char *type, sprite_info_t info) {
 }
 
 scene_t *scene_reset() {
-    sprite_info_t player_info = {
-        .experience = 0,
-        .attack = 5,
-        .health = 50,
-        .cooldown = 0
-    };
 
     sprite_info_t enemy_info = {
         .experience = 0,
@@ -207,44 +202,50 @@ scene_t *scene_reset() {
     };
 
     // Initialize Sprite/Player
-    body_t *sprite = make_demo_sprite(100, 100, "PLAYER", player_info);
 
     // Initialize Potential Enemy
     body_t *temp_enemy = make_demo_sprite(400, 200, "ENEMY", enemy_info);
 
     // Create Scene
     scene_t *scene = scene_init();
-    scene_add_body(scene, sprite);
     scene_add_body(scene, temp_enemy);
 
     return scene;
 }
 
 int main(int arg_c, char *arg_v[]) {
-
     vector_t bottom_left = {.x = 0, .y = 0};
     vector_t top_right = {.x = MAX_WIDTH, .y = MAX_HEIGHT};
     sdl_init(bottom_left, top_right);
 
+    sprite_info_t player_info = {
+        .experience = 0,
+        .attack = 5,
+        .health = 50,
+        .cooldown = 0
+    };
+
+    body_t *player = make_demo_sprite(100, 100, "PLAYER", player_info);
+
     scene_t *scene = scene_reset();
-    game_t *game = game_init(scene, 4);
+    scene_add_body(scene, player);
+
+    game_t *game = game_init(scene, player, 4);
     map_register_tiles(game);
     map_register_collider_tiles();
     map_load(game, "assets/levels/map_bigger.map", 20, 20);
     double seconds = 0;
-    create_tile_collision(scene, scene_get_body(scene, 0));
+    create_tile_collision(game_get_current_scene(game), game_get_player(game));
 
     sdl_on_key(on_key);
-    while(!sdl_is_done(scene)) {
+    while(!sdl_is_done(game)) {
         double dt = time_since_last_tick();
-
-        scene_tick(scene, dt);
+        scene_tick(game_get_current_scene(game), dt);
         seconds += dt;
-        sdl_set_camera(vec_subtract(body_get_centroid(scene_get_body(scene, 0)), (vector_t) {1024 / 2, 512 / 2}));
+        sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
 
-        sdl_render_scene(scene);
+        sdl_render_scene(game_get_current_scene(game));
     }
     game_free(game);
-    printf("Done!\n");
     return 0;
 }

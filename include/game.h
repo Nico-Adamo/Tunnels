@@ -6,7 +6,7 @@
 
 typedef struct game game_t;
 
-game_t *game_init(scene_t *initial_scene, double scale);
+game_t *game_init(scene_t *initial_scene, body_t *player, double scale);
 
 void game_free(void *game);
 
@@ -16,8 +16,8 @@ scene_t *game_get_current_scene(game_t *game);
 
 double game_get_scale(game_t *game);
 
-tile_info_t *game_get_tile_info(game_t *game, size_t tile_id);
+body_t *game_get_player(game_t *game);
 
-// TODO: Game free
+tile_info_t *game_get_tile_info(game_t *game, size_t tile_id);
 
 #endif // #ifndef __GAME_H__

@@ -110,7 +110,6 @@ void sdl_init(vector_t min, vector_t max) {
     int Width = DM.w;
     int Height = DM.h;
 
-    printf("%d %d\n", Width, Height);
     assert(min.x < max.x);
     assert(min.y < max.y);
 
@@ -129,7 +128,7 @@ void sdl_init(vector_t min, vector_t max) {
     renderer = SDL_CreateRenderer(window, -1, 0);
 }
 
-bool sdl_is_done(scene_t *scene) {
+bool sdl_is_done(game_t *game) {
     SDL_Event *event = malloc(sizeof(*event));
     assert(event != NULL);
     while (SDL_PollEvent(event)) {
@@ -152,7 +151,7 @@ bool sdl_is_done(scene_t *scene) {
                 key_event_type_t type =
                     event->type == SDL_KEYDOWN ? KEY_PRESSED : KEY_RELEASED;
                 double held_time = (timestamp - key_start_timestamp) / MS_PER_S;
-                key_handler(key, type, held_time, scene);
+                key_handler(key, type, held_time, game);
                 break;
         }
     }
