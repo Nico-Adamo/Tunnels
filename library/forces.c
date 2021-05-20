@@ -250,7 +250,7 @@ void tile_collision(void *aux) {
     tile_aux_t *tile_aux = (tile_aux_t *) aux;
     body_t *body = tile_aux->body;
     tile_t *tile = tile_aux->tile;
-    collision_info_t col_info = find_collision(body_get_hitbox(body), tile_get_hitbox(tile));
+    collision_info_t col_info = find_collision(body_get_collision_hitbox(body), tile_get_hitbox(tile));
     if (col_info.collided) {
         if (strcmp(body_get_type(body), "PLAYER_BULLET") == 0 || strcmp(body_get_type(body), "ENEMY_BULLET") == 0) {
             body_remove(body);

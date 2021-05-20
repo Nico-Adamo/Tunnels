@@ -55,9 +55,9 @@ body_t *make_demo_bullet(body_t *sprite, vector_t bullet_dir) {
         .cooldown = 0
     };
     if (body_get_type(sprite) == "PLAYER") {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "PLAYER_BULLET", info);
+        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "PLAYER_BULLET", info);
     } else {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "ENEMY_BULLET", info);
+        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, "ENEMY_BULLET", info);
     }
     //vector_t player_dir = body_get_direction(sprite);
     vector_t bullet_velocity = {
@@ -188,7 +188,7 @@ body_t *make_demo_sprite(double x, double y, char *type, sprite_info_t info) {
     SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (rect_t) {x, y, 80, 160}, texture, 100, type, info);
+    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {16, 0, 50, 40}, (rect_t) {x, y, 80, 160}, texture, 100, type, info);
 }
 
 scene_t *scene_reset() {

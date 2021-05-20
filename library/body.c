@@ -6,6 +6,7 @@
 // TO DO: Once sprite rendering is done, include it in typedef body_t
 typedef struct body {
     SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
+    SDL_Rect collision_shape;
     rect_t hitbox; // Position on screen and size
     SDL_Texture *texture;
     double mass;
@@ -22,15 +23,16 @@ typedef struct body {
     vector_t direction;
 } body_t;
 
-body_t *body_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass) {
-    return body_init_with_info(shape, hitbox, texture, mass, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
+body_t *body_init(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass) {
+    return body_init_with_info(shape, collision_shape, hitbox, texture, mass, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
 }
 
-body_t *body_init_with_info(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info) {
+body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, char *type, sprite_info_t info) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
     body->shape = shape;
+    body->collision_shape = collision_shape;
     body->hitbox = hitbox;
     body->texture = texture;
     body->mass = mass;
@@ -73,6 +75,14 @@ SDL_Rect body_get_shape(body_t *body) {
 
 rect_t body_get_hitbox(body_t *body) {
     return body->hitbox;
+}
+
+rect_t body_get_collision_hitbox(body_t *body) {
+    rect_t hitbox = body->hitbox;
+    SDL_Rect collision_box = body->collision_shape;
+    hitbox.x += collision_box.x;
+    hitbox.w = collision_box.w;
+    hitbox.h = collision_box.h;
 }
 
 bool body_get_flipped(body_t *body) {
