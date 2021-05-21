@@ -256,7 +256,7 @@ void sdl_render_scene(scene_t *scene) {
         hitbox.x += camera.x;
         hitbox.y += camera.y;
         SDL_Texture *texture = UI_get_texture(UI);
-        sdl_draw_texture(texture, shape, hitbox, UI);
+        sdl_draw_texture(texture, shape, hitbox, false);
     }
 
     sdl_show();
