@@ -16,7 +16,6 @@ UI_t *UI_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, char *type, d
 
 // Texture??
 void UI_component_free(UI_t *UI) {
-    free(UI->type);
     free(UI);
 }
 
@@ -49,4 +48,8 @@ void UI_set_centroid(UI_t *UI, vector_t x) {
     UI->centroid = x;
     UI->hitbox.x += translation.x;
     UI->hitbox.y += translation.y;
+}
+
+void UI_set_texture(UI_t *UI, SDL_Texture *texture) {
+    UI->texture = texture;
 }

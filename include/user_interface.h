@@ -30,4 +30,6 @@ char *UI_get_type(UI_t *UI);
 
 void UI_set_centroid(UI_t *UI, vector_t x);
 
+void UI_set_texture(UI_t *UI, SDL_Texture *texture);
+
 #endif // #ifndef __USER_INTERFACE_H__
