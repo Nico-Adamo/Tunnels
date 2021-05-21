@@ -23,6 +23,12 @@ typedef struct sprite_info {
     double cooldown;
 } sprite_info_t;
 
+typedef struct body_shape {
+    SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
+    SDL_Rect collision_shape;
+    rect_t hitbox; // Position on screen and size
+} body_shape_t;
+
 /**
  * A rigid body constrained to the plane.
  * Implemented as a polygon with uniform density.
@@ -37,7 +43,7 @@ typedef struct sprite_info sprite_info_t;
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
-body_t *body_init(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass);
+body_t *body_init(body_shape_t shape, SDL_Texture *texture, double mass);
 
 sprite_info_t body_get_sprite_info(body_t *body);
 
@@ -56,7 +62,7 @@ void body_set_sprite_info(body_t *body, sprite_info_t info);
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info);
+body_t *body_init_with_info(body_shape_t shape, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info);
 
 /**
  * Releases the memory allocated for a body.
@@ -72,6 +78,8 @@ void body_free(body_t *body);
  * @param body a pointer to a body returned from body_init()
  * @return the polygon describing the body's current position
  */
+
+body_shape_t body_get_body_shape(body_t *body);
 SDL_Rect body_get_shape(body_t *body);
 rect_t body_get_hitbox(body_t *body);
 rect_t body_get_collision_hitbox(body_t *body);

@@ -15,6 +15,7 @@
 #include <string.h>
 #include "collision.h"
 #include "keyhandler.h"
+#include "user_interface.h"
 
 const char *SPRITE = "knight";
 const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
@@ -36,9 +37,14 @@ const vector_t PADDLE_UP_VELOCITY = {
 
 body_t *make_demo_sprite(double x, double y, char *type, sprite_info_t info) {
     SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
+    body_shape_t body_shape = {
+        .shape = (SDL_Rect) {0, 0, 16, 32},
+        .collision_shape = (SDL_Rect) {3, 0, 12, 6},
+        .hitbox = (rect_t) {x, y, 64, 128}
+    };
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 12, 6}, (rect_t) {x, y, 64, 128}, texture, 100, 4, type, info);
+    return body_init_with_info(body_shape, texture, 100, 4, type, info);
 }
 
 scene_t *scene_reset() {

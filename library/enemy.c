@@ -26,10 +26,15 @@ body_t *make_demo_bullet(body_t *sprite, vector_t bullet_dir) {
         .health = 0,
         .cooldown = 0
     };
+    body_shape_t body_shape = {
+        .shape = (SDL_Rect) {0, 0, 16, 32},
+        .collision_shape = (SDL_Rect) {3, 0, 12, 6},
+        .hitbox = (rect_t) {spawn_point.x, spawn_point.y, 16, 32}
+    };
     if (strcmp(body_get_type(sprite), "PLAYER")==0) {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, 1, "PLAYER_BULLET", info);
+        bullet = body_init_with_info(body_shape, texture, 0.1, 1, "PLAYER_BULLET", info);
     } else {
-        bullet = body_init_with_info((SDL_Rect) {0, 0, 16, 32}, (SDL_Rect) {3, 0, 10, 8}, (rect_t) {spawn_point.x, spawn_point.y, 16, 32}, texture, 0.1, 1, "ENEMY_BULLET", info);
+        bullet = body_init_with_info(body_shape, texture, 0.1, 1, "ENEMY_BULLET", info);
     }
     //vector_t player_dir = body_get_direction(sprite);
     vector_t bullet_velocity = {
