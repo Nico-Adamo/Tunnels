@@ -78,7 +78,7 @@ scene_t *scene_reset() {
         .experience = 0,
         .attack = 5,
         .health = 30,
-        .cooldown = rand_from(min_cooldown, max_cooldown)
+        .cooldown = rand_from(.5, 2)
     };
 
     // Initialize Sprite/Player
@@ -136,33 +136,14 @@ int main(int arg_c, char *arg_v[]) {
         scene_tick(scene, dt);
         seconds += dt;
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
-        
         sdl_render_scene(scene);
-
         body_t *player = game_get_player(game);
-        if (body_get_sprite_info(player).health <= 0) {
-            scene_t *scene_new = scene_reset();
-            player_info = body_get_sprite_info(player);
-            player_info.health = 50;
-            body_t *player_new = make_demo_sprite(100, 100, "PLAYER", player_info);
-            game_set_player(game, player_new);
-            game_set_current_scene(game, scene_new);
-            scene_add_body(scene_new, player_new);
-            scene_free(scene);
-            map_load(game, "assets/levels/map_bigger.map", 20, 20);
-            create_tile_collision(game_get_current_scene(game), game_get_player(game));
 
-        }
-        
-        // Player heart adjustment
-        // Deal with fractions later
+        // Player health display (heart) adjustment
         double lost_player_halves = (PLAYER_HEALTH - body_get_sprite_info(player).health) / HALF_HEART_HEALTH;
         int full_hearts_lost = floor(lost_player_halves / 2);
         bool half_heart_lost = false;
-        if (round(lost_player_halves) > full_hearts_lost * 2) {
-            half_heart_lost = true;
-        }
-
+        if (round(lost_player_halves) > full_hearts_lost * 2) half_heart_lost = true;
         list_t *hearts = get_player_hearts(scene);
         for (size_t i = list_size(hearts) - 1; i > list_size(hearts) - 1 - full_hearts_lost; i--) {
             UI_set_texture(list_get(hearts, i), empty_heart);
@@ -170,6 +151,21 @@ int main(int arg_c, char *arg_v[]) {
         if (half_heart_lost) {
             size_t idx = list_size(hearts) - 1 - full_hearts_lost;
             UI_set_texture(list_get(hearts, idx), half_heart);
+        }
+
+        if (body_get_sprite_info(player).health <= 0) {
+            scene_t *scene_new = scene_reset();
+            player_info = body_get_sprite_info(player);
+            player_info.health = PLAYER_HEALTH;
+            body_t *player_new = make_demo_sprite(100, 100, "PLAYER", player_info);
+            game_set_player(game, player_new);
+            game_set_current_scene(game, scene_new);
+            scene_add_body(scene_new, player_new);
+            list_free(hearts);
+            scene_free(scene);
+            map_load(game, "assets/levels/map_bigger.map", 20, 20);
+            create_tile_collision(game_get_current_scene(game), game_get_player(game));
+
         }
 
 
