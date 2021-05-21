@@ -38,6 +38,12 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 7, 7},
     "assets/circle_bullet_test_2.png"
     },
+    // 3 - ENEMY
+    {{0, 0, 16, 32},
+    {3, 0, 12, 6},
+    {3, 0, 9, 16},
+    "assets/wizzard_f_idle_anim_f0.png"
+    }
 
 };
 

@@ -50,6 +50,12 @@ body_t *make_demo_sprite(game_t *game, double x, double y, char *type, stats_inf
     return body_init_with_info(game_get_sprite(game, 0), bottom_left, 100, 4, type, info);
 }
 
+body_t *make_enemy_sprite(game_t *game, double x, double y, char *type, stats_info_t info) {
+    vector_t bottom_left = {x, y};
+    // First argument: Sprite size (x,y are always 0)
+    // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
+    return body_init_with_info(game_get_sprite(game, 3), bottom_left, 100, 4, type, info);
+}
 UI_t *make_demo_heart(double x, double y, char *texture_name, char *type) {
     SDL_Texture *texture = sdl_load_texture(texture_name);
     SDL_Rect shape = (SDL_Rect) {0, 0, 16, 16};
@@ -82,7 +88,7 @@ scene_t *scene_reset(game_t *game) {
 
     // Initialize Potential Enemy
     for(int i=0; i<1; i++) {
-        body_t *temp_enemy = make_demo_sprite(game, 400+100*i, 200, "ENEMY", enemy_info);
+        body_t *temp_enemy = make_enemy_sprite(game, 400+100*i, 200, "ENEMY", enemy_info);
         scene_add_body(scene, temp_enemy);
     }
 
