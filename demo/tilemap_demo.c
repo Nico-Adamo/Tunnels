@@ -16,9 +16,10 @@
 #include "collision.h"
 #include "keyhandler.h"
 #include "user_interface.h"
+#include "sprite.h"
 
 const char *SPRITE = "knight";
-const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
+// const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
 const char *FULL_HEART = "assets/ui/ui_heart_full.png";
 const char *HALF_HEART = "assets/ui/ui_heart_half.png";
 const char *EMPTY_HEART = "assets/ui/ui_heart_empty.png";
@@ -42,16 +43,11 @@ const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
 
 
-body_t *make_demo_sprite(double x, double y, char *type, sprite_info_t info) {
-    SDL_Texture *texture = sdl_load_texture(SPRITE_PATH);
-    body_shape_t body_shape = {
-        .shape = (SDL_Rect) {0, 0, 16, 32},
-        .collision_shape = (SDL_Rect) {3, 0, 12, 6},
-        .hitbox = (rect_t) {x, y, 64, 128}
-    };
+body_t *make_demo_sprite(game_t *game, double x, double y, char *type, stats_info_t info) {
+    vector_t bottom_left = {x, y};
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info(body_shape, texture, 100, 4, type, info);
+    return body_init_with_info(game_get_sprite(game, 0), bottom_left, 100, 4, type, info);
 }
 
 UI_t *make_demo_heart(double x, double y, char *texture_name, char *type) {
@@ -72,9 +68,9 @@ list_t *get_player_hearts(scene_t *scene) {
     return hearts;
 }
 
-scene_t *scene_reset() {
+scene_t *scene_reset(game_t *game) {
 
-    sprite_info_t enemy_info = {
+    stats_info_t enemy_info = {
         .experience = 0,
         .attack = 5,
         .health = 30,
@@ -86,7 +82,7 @@ scene_t *scene_reset() {
 
     // Initialize Potential Enemy
     for(int i=0; i<1; i++) {
-        body_t *temp_enemy = make_demo_sprite(400+100*i, 200, "ENEMY", enemy_info);
+        body_t *temp_enemy = make_demo_sprite(game, 400+100*i, 200, "ENEMY", enemy_info);
         scene_add_body(scene, temp_enemy);
     }
 
@@ -107,22 +103,31 @@ int main(int arg_c, char *arg_v[]) {
     vector_t top_right = {.x = MAX_WIDTH, .y = MAX_HEIGHT};
     sdl_init(bottom_left, top_right);
 
-    sprite_info_t player_info = {
+    stats_info_t player_info = {
         .experience = 0,
         .attack = 5,
         .health = PLAYER_HEALTH,
         .cooldown = 0
     };
 
-    body_t *player = make_demo_sprite(100, 100, "PLAYER", player_info);
+    game_t *game = game_init(4);
 
-    scene_t *scene = scene_reset();
-    scene_add_body(scene, player);
-
-    game_t *game = game_init(scene, player, 4);
     map_register_tiles(game);
     map_register_collider_tiles();
     map_load(game, "assets/levels/map_bigger.map", 20, 20);
+
+    sprite_register_sprites(game);
+
+    body_t *player = make_demo_sprite(game, 100, 100, "PLAYER", player_info);
+    scene_t *scene = scene_reset(game);
+    
+    scene_add_body(scene, player);
+
+    game_set_player(game, player);
+    game_set_current_scene(game, scene);
+
+
+
     double seconds = 0;
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
     SDL_Texture *half_heart = sdl_load_texture(HALF_HEART);
@@ -140,7 +145,7 @@ int main(int arg_c, char *arg_v[]) {
         body_t *player = game_get_player(game);
 
         // Player health display (heart) adjustment
-        double lost_player_halves = (PLAYER_HEALTH - body_get_sprite_info(player).health) / HALF_HEART_HEALTH;
+        double lost_player_halves = (PLAYER_HEALTH - body_get_stats_info(player).health) / HALF_HEART_HEALTH;
         int full_hearts_lost = floor(lost_player_halves / 2);
         bool half_heart_lost = false;
         if (round(lost_player_halves) > full_hearts_lost * 2) half_heart_lost = true;
@@ -153,11 +158,11 @@ int main(int arg_c, char *arg_v[]) {
             UI_set_texture(list_get(hearts, idx), half_heart);
         }
 
-        if (body_get_sprite_info(player).health <= 0) {
-            scene_t *scene_new = scene_reset();
-            player_info = body_get_sprite_info(player);
+        if (body_get_stats_info(player).health <= 0) {
+            scene_t *scene_new = scene_reset(game);
+            player_info = body_get_stats_info(player);
             player_info.health = PLAYER_HEALTH;
-            body_t *player_new = make_demo_sprite(100, 100, "PLAYER", player_info);
+            body_t *player_new = make_demo_sprite(game, 100, 100, "PLAYER", player_info);
             game_set_player(game, player_new);
             game_set_current_scene(game, scene_new);
             scene_add_body(scene_new, player_new);
@@ -167,10 +172,6 @@ int main(int arg_c, char *arg_v[]) {
             create_tile_collision(game_get_current_scene(game), game_get_player(game));
 
         }
-
-
-
-
 
     }
     game_free(game);

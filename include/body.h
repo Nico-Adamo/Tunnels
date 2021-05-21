@@ -5,6 +5,7 @@
 #include "color.h"
 #include "list.h"
 #include "vector.h"
+#include "sprite.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
@@ -16,18 +17,12 @@ typedef struct rect {
     double h;
 } rect_t;
 
-typedef struct sprite_info {
+typedef struct stats_info {
     double experience;
     double health;
     double attack;
     double cooldown;
-} sprite_info_t;
-
-typedef struct body_shape {
-    SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
-    SDL_Rect collision_shape;
-    rect_t hitbox; // Position on screen and size
-} body_shape_t;
+} stats_info_t;
 
 /**
  * A rigid body constrained to the plane.
@@ -37,17 +32,15 @@ typedef struct body_shape {
  */
 typedef struct body body_t;
 
-typedef struct sprite_info sprite_info_t;
-
 /**
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
-body_t *body_init(body_shape_t shape, SDL_Texture *texture, double mass);
+body_t *body_init(sprite_t *sprite, vector_t bottom_left, double mass, double scale);
 
-sprite_info_t body_get_sprite_info(body_t *body);
+stats_info_t body_get_stats_info(body_t *body);
 
-void body_set_sprite_info(body_t *body, sprite_info_t info);
+void body_set_stats_info(body_t *body, stats_info_t info);
 
 /** EDIT THIS
  * Allocates memory for a body with the given parameters.
@@ -62,7 +55,7 @@ void body_set_sprite_info(body_t *body, sprite_info_t info);
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(body_shape_t shape, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info);
+body_t *body_init_with_info(sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info);
 
 /**
  * Releases the memory allocated for a body.
@@ -79,8 +72,11 @@ void body_free(body_t *body);
  * @return the polygon describing the body's current position
  */
 
-body_shape_t body_get_body_shape(body_t *body);
-SDL_Rect body_get_shape(body_t *body);
+sprite_t *body_get_sprite(body_t *body);
+SDL_Rect body_get_hitbox_shape(body_t *body);
+SDL_Rect body_get_draw_shape(body_t *body);
+SDL_Rect body_get_collision_shape(body_t *body);
+rect_t body_get_draw_hitbox(body_t *body);
 rect_t body_get_hitbox(body_t *body);
 rect_t body_get_collision_hitbox(body_t *body);
 SDL_Texture *body_get_texture(body_t *body);
@@ -119,28 +115,12 @@ double body_get_mass(body_t *body);
 double body_get_scale(body_t *body);
 
 /**
- * Gets the display color of a body.
- *
- * @param body a pointer to a body returned from body_init()
- * @return the color passed to body_init(), as an (R, G, B) tuple
- */
-// rgb_color_t body_get_color(body_t *body);
-
-/**
  * Gets the type associated with a body.
  *
  * @param type a pointer to a type returned from body_init()
  * @return the info passed to body_init()
  */
 char *body_get_type(body_t *body);
-
-/**
- * Gets the absolute rotation of a body.
- *
- * @param body a pointer to a body returned from body_init()
- * @return the body's angle, as a double
- */
-double body_get_rotation(body_t *body);
 
 bool body_get_flipped(body_t *body);
 
@@ -160,34 +140,6 @@ void body_set_centroid(body_t *body, vector_t x);
  * @param v the body's new velocity
  */
 void body_set_velocity(body_t *body, vector_t v);
-
-/**
- * Changes a body's orientation in the plane.
- * The body is rotated about its center of mass.
- * Note that the angle is *absolute*, not relative to the current orientation.
- *
- * @param body a pointer to a body returned from body_init()
- * @param angle the body's new angle in radians. Positive is counterclockwise.
- */
-void body_set_rotation(body_t *body, SDL_Rect shape, double angle);
-
-/**
- * Changes a body's orientation in the plane.
- * The body is rotated about its center of mass.
- * Note that the angle is *relative* to the current orientation.
- *
- * @param body a pointer to a body returned from body_init()
- * @param angle the body's new angle in radians. Positive is counterclockwise.
- */
-// void body_rotate(body_t *body, double angle);
-
-/**
- * Changes a body's color.
- *
- * @param body a pointer to a body returned from body_init()
- * @param color the body's new color as a color_rgb_t type.
- */
-// void body_set_color(body_t *body, rgb_color_t color);
 
 /**
  * Applies a force to a body over the current tick.

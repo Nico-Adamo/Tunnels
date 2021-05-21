@@ -195,8 +195,8 @@ void create_physics_collision(scene_t *scene, double elasticity, body_t *body1, 
 
 // TO DO: update to cause damage and destroy the second body if health drops below zero
 void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
-    sprite_info_t body1_info = body_get_sprite_info(body1);
-    sprite_info_t body2_info = body_get_sprite_info(body2);
+    stats_info_t body1_info = body_get_stats_info(body1);
+    stats_info_t body2_info = body_get_stats_info(body2);
     /*
         create_x_collision(player, bullet, etc.)
         create_x_collison(player, enemy)

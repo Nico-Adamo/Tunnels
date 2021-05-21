@@ -237,8 +237,8 @@ void sdl_render_scene(scene_t *scene) {
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
         body_t *body = scene_get_body(scene, i);
-        SDL_Rect shape = body_get_shape(body);
-        rect_t hitbox = body_get_hitbox(body);
+        SDL_Rect shape = body_get_draw_shape(body);
+        rect_t hitbox = body_get_draw_hitbox(body);
         SDL_Texture *texture = body_get_texture(body);
         sdl_draw_texture(texture, shape, hitbox, body_get_flipped(body));
     }

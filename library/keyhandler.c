@@ -7,8 +7,8 @@ void body_set_velocity_and_direction(body_t *player, vector_t velocity) {
     body_set_direction(player, vec_unit(body_get_velocity(player)));
 }
 
-void player_make_bullet(body_t *player, scene_t *scene, vector_t bullet_dir) {
-    body_t *bullet = make_demo_bullet(player, bullet_dir);
+void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t bullet_dir) {
+    body_t *bullet = make_bullet(game, player, bullet_dir, 1, 400); //TODO: Magic numbers
     scene_add_body(scene, bullet);
     create_tile_collision(scene, bullet);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
@@ -50,19 +50,19 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             case 'i':
                 bullet_dir.y = 1;
-                player_make_bullet(player, scene, bullet_dir);
+                player_make_bullet(game, player, scene, bullet_dir);
                 break;
             case 'j':
                 bullet_dir.x = -1;
-                player_make_bullet(player, scene, bullet_dir);
+                player_make_bullet(game, player, scene, bullet_dir);
                 break;
             case 'k':
                 bullet_dir.y = -1;
-                player_make_bullet(player, scene, bullet_dir);
+                player_make_bullet(game, player, scene, bullet_dir);
                 break;
             case 'l':
                 bullet_dir.x = 1;
-                player_make_bullet(player, scene, bullet_dir);
+                player_make_bullet(game, player, scene, bullet_dir);
                 break;
 
         }

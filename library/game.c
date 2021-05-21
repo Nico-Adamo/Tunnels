@@ -1,21 +1,24 @@
 #include "game.h"
 
-const size_t num_tiles = 40; //TODO: update
+const size_t NUM_TILES = 40; //TODO: update
+const size_t NUM_SPRITES = 40;
 
 typedef struct game {
     list_t *tile_infos;
+    list_t *sprites;
     scene_t *current_scene;
     double scale;
     body_t *player;
 } game_t;
 
-game_t *game_init(scene_t *initial_scene, body_t *player, double scale) {
+game_t *game_init(double scale) {
     game_t *game = malloc(sizeof(game_t));
 
-    game->current_scene = initial_scene;
-    game->tile_infos = list_init(num_tiles, tile_info_free);
+    game->current_scene = NULL;
+    game->tile_infos = list_init(NUM_TILES, tile_info_free);
+    game->sprites = list_init(NUM_SPRITES, tile_info_free);
     game->scale = scale;
-    game->player = player;
+    game->player = NULL;
 
     return game;
 }
@@ -29,6 +32,10 @@ void game_free(void *game) {
 
 void game_add_tile_info(game_t *game, tile_info_t *tile_info) {
     list_add(game->tile_infos, tile_info);
+}
+
+void game_add_sprite(game_t *game, sprite_t *sprite) {
+    list_add(game->sprites, sprite);
 }
 
 scene_t *game_get_current_scene(game_t *game) {
@@ -53,4 +60,8 @@ void game_set_player(game_t *game, body_t *player) {
 
 tile_info_t *game_get_tile_info(game_t *game, size_t tile_id) {
     return list_get(game->tile_infos, tile_id);
+}
+
+sprite_t *game_get_sprite(game_t *game, size_t sprite_id) {
+    return list_get(game->sprites, sprite_id);
 }
