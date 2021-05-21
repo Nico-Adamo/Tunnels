@@ -6,6 +6,7 @@
 #include "list.h"
 #include "game.h"
 #include "vector.h"
+#include "user_interface.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>

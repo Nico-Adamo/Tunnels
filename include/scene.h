@@ -4,6 +4,7 @@
 #include "body.h"
 #include "list.h"
 #include "tile.h"
+#include "user_interface.h"
 
 /**
  * A collection of bodies and force creators.
@@ -110,10 +111,12 @@ void scene_add_bodies_force_creator(
 void scene_add_floor_tile(scene_t *scene, tile_t *tile);
 void scene_add_wall_tile(scene_t *scene, tile_t *tile);
 void scene_add_collider_tile(scene_t *scene, tile_t *tile);
+void scene_add_UI_component(scene_t *scene, UI_t *UI);
 
 list_t *scene_get_floor_tiles(scene_t *scene);
 list_t *scene_get_wall_tiles(scene_t *scene);
 list_t *scene_get_collider_tiles(scene_t *scene);
+list_t *scene_get_UI_components(scene_t *scene);
 
 void scene_sort_by_depth(scene_t *scene);
 

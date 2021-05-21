@@ -5,9 +5,7 @@
 
 // TO DO: Once sprite rendering is done, include it in typedef body_t
 typedef struct body {
-    SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
-    SDL_Rect collision_shape;
-    rect_t hitbox; // Position on screen and size
+    body_shape_t shape;
     SDL_Texture *texture;
     double mass;
     double scale;
@@ -24,17 +22,15 @@ typedef struct body {
     vector_t direction;
 } body_t;
 
-body_t *body_init(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass) {
-    return body_init_with_info(shape, collision_shape, hitbox, texture, mass, 0, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
+body_t *body_init(body_shape_t shape, SDL_Texture *texture, double mass) {
+    return body_init_with_info(shape, texture, mass, 0, NULL, (sprite_info_t) {0.0, 0.0, 0.0, 0.0});
 }
 
-body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hitbox, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info) {
+body_t *body_init_with_info(body_shape_t shape, SDL_Texture *texture, double mass, double scale, char *type, sprite_info_t info) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
     body->shape = shape;
-    body->collision_shape = collision_shape;
-    body->hitbox = hitbox;
     body->texture = texture;
     body->mass = mass;
     body->scale = scale;
@@ -51,14 +47,15 @@ body_t *body_init_with_info(SDL_Rect shape, SDL_Rect collision_shape, rect_t hit
     body->direction.y = 0;
 
 
-    body->centroid.x = hitbox.x + hitbox.w / 2;
-    body->centroid.y = hitbox.y + hitbox.h / 2;
+    body->centroid.x = shape.hitbox.x + shape.hitbox.w / 2;
+    body->centroid.y = shape.hitbox.y + shape.hitbox.h / 2;
     body->velocity = VEC_ZERO;
     body->rotation = 0.0;
 
     return body;
 }
 
+// Texture??
 void body_free(body_t *body) {
     free(body);
 }
@@ -71,19 +68,23 @@ void body_set_sprite_info(body_t *body, sprite_info_t info) {
     body->info = info;
 }
 
-SDL_Rect body_get_shape(body_t *body) {
+body_shape_t body_get_body_shape(body_t *body) {
     return body->shape;
 }
 
+SDL_Rect body_get_shape(body_t *body) {
+    return body->shape.shape;
+}
+
 rect_t body_get_hitbox(body_t *body) {
-    return body->hitbox;
+    return body->shape.hitbox;
 }
 
 rect_t body_get_collision_hitbox(body_t *body) {
-    rect_t hitbox = body->hitbox;
-    SDL_Rect collision_box = body->collision_shape;
+    rect_t hitbox = body->shape.hitbox;
+    SDL_Rect collision_box = body->shape.collision_shape;
     if(body->flipped) {
-        hitbox.x += (body->shape.w - (collision_box.x + collision_box.w)) * body->scale;
+        hitbox.x += (body->shape.shape.w - (collision_box.x + collision_box.w)) * body->scale;
     } else {
         hitbox.x += collision_box.x * body->scale;
     }
@@ -129,8 +130,8 @@ char *body_get_type(body_t *body) {
 void body_set_centroid(body_t *body, vector_t x) {
     vector_t translation = vec_subtract(x, body->centroid);
     body->centroid = x;
-    body->hitbox.x += translation.x;
-    body->hitbox.y += translation.y;
+    body->shape.hitbox.x += translation.x;
+    body->shape.hitbox.y += translation.y;
 }
 
 void body_set_velocity(body_t *body, vector_t v) {
@@ -155,7 +156,7 @@ void body_set_color(body_t *body, rgb_color_t color) {
 
 // NOTE: figure out if this would work to "rotate" the body, change the sprite that's being rendered
 void body_set_rotation(body_t *body, SDL_Rect shape, double angle) {
-    body->shape = shape;
+    body->shape.shape = shape;
     body->rotation = angle;
     body->centroid.x = shape.x + shape.w / 2;
     body->centroid.x = shape.y - shape.h / 2;

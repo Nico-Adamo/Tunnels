@@ -6,6 +6,7 @@
 const size_t INIT_NUM_BODIES = 10;
 const size_t INIT_NUM_FC = 5;
 const size_t INIT_NUM_TILES = 100;
+const size_t INIT_NUM_UIs = 100;
 
 typedef struct force_aux {
     force_creator_t forcer;
@@ -22,6 +23,7 @@ typedef struct scene {
     list_t *floor_tiles;
     list_t *wall_tiles;
     list_t *collider_tiles;
+    list_t *UI_components;
 } scene_t;
 
 void force_aux_free(force_aux_t *force_aux) {
@@ -39,6 +41,7 @@ void scene_free(scene_t *scene) {
     list_free(scene->wall_tiles);
     list_free(scene->collider_tiles);
     list_free(scene->force_creators);
+    list_free(scene->UI_components);
     free(scene);
 }
 
@@ -54,6 +57,7 @@ scene_t *scene_init(void) {
     scene->floor_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->wall_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->collider_tiles = list_init(INIT_NUM_TILES, tile_free);
+    scene->UI_components = list_init(INIT_NUM_UIs, UI_component_free);
 
     return scene;
 }
@@ -116,6 +120,10 @@ void scene_add_collider_tile(scene_t *scene, tile_t *tile) {
     list_add(scene->collider_tiles, tile);
 }
 
+void scene_add_UI_component(scene_t *scene, UI_t *UI) {
+    list_add(scene->UI_components, UI);
+}
+
 list_t *scene_get_floor_tiles(scene_t *scene) {
     return scene->floor_tiles;
 }
@@ -130,6 +138,10 @@ list_t *scene_get_collider_tiles(scene_t *scene) {
 
 list_t *scene_get_enemies(scene_t *scene) {
     return scene->enemies;
+}
+
+list_t *scene_get_UI_components(scene_t *scene) {
+    return scene->UI_components;
 }
 
 
