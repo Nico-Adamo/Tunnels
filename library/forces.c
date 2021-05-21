@@ -206,8 +206,8 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
     (strcmp(body_get_type(body1), "ENEMY") == 0 && strcmp(body_get_type(body2), "PLAYER") == 0)) {
         body1_info.health -= body2_info.attack;
         body2_info.health -= body1_info.attack;
-        body_set_sprite_info(body1, body1_info);
-        body_set_sprite_info(body2, body2_info);
+        body_set_stats_info(body1, body1_info);
+        body_set_stats_info(body2, body2_info);
         printf("Health: %f\n", body1_info.health);
         if (body1_info.health <= 0) body_remove(body1);
         if (body2_info.health <= 0) body_remove(body2);
@@ -236,7 +236,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
     } else if ((strcmp(body_get_type(body1), "PLAYER") == 0 && (strcmp(body_get_type(body2), "ENEMY_BULLET") == 0) ||
     (strcmp(body_get_type(body1), "ENEMY") == 0 && (strcmp(body_get_type(body2), "PLAYER_BULLET") == 0)))) {
         body1_info.health -= body2_info.attack;
-        body_set_sprite_info(body1, body1_info);
+        body_set_stats_info(body1, body1_info);
         printf("Health: %f\n", body1_info.health);
         if (body1_info.health <= 0) body_remove(body1);
         body_remove(body2);

@@ -114,17 +114,17 @@ int main(int arg_c, char *arg_v[]) {
 
     map_register_tiles(game);
     map_register_collider_tiles();
-    map_load(game, "assets/levels/map_bigger.map", 20, 20);
 
-    sprite_register_sprites(game);
+    game_register_sprites(game);
 
     body_t *player = make_demo_sprite(game, 100, 100, "PLAYER", player_info);
     scene_t *scene = scene_reset(game);
-    
+
     scene_add_body(scene, player);
 
     game_set_player(game, player);
     game_set_current_scene(game, scene);
+    map_load(game, "assets/levels/map_bigger.map", 20, 20);
 
 
 

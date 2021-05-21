@@ -28,7 +28,7 @@ void handle_enemies(game_t *game, double dt) {
             body_set_stats_info(enemy, enemy_info);
         }
         else {
-            body_t *bullet = make_demo_bullet(enemy, find_bullet_direction(game_get_player(game), enemy));
+            body_t *bullet = make_bullet(game, enemy, find_direction(game_get_player(game), enemy), 2, 400);
             scene_add_body(scene, bullet);
             create_tile_collision(scene, bullet);
             create_semi_destructive_collision(scene, game_get_player(game), bullet);

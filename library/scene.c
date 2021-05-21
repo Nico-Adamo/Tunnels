@@ -53,7 +53,7 @@ scene_t *scene_init(void) {
     scene->enemies = list_init(INIT_NUM_BODIES, NULL);
 
     scene->force_creators = list_init(INIT_NUM_FC, force_aux_free);
-    
+
     scene->floor_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->wall_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->collider_tiles = list_init(INIT_NUM_TILES, tile_free);
@@ -72,7 +72,7 @@ body_t *scene_get_body(scene_t *scene, size_t index) {
     return (body_t *) list_get(scene->bodies, index);
 }
 
-void scene_add_body(scene_t *scene, body_t *body) {    
+void scene_add_body(scene_t *scene, body_t *body) {
     list_add(scene->bodies, body);
     if(strcmp(body_get_type(body), "ENEMY") == 0) list_add(scene->enemies, body);
 }
@@ -167,7 +167,7 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
- 
+
 
     int idx = 0;
     while (idx < list_size(scene->force_creators)) {

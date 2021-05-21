@@ -11,6 +11,36 @@ typedef struct game {
     body_t *player;
 } game_t;
 
+typedef struct sprite_info {
+    SDL_Rect shape; // Actual pixel shape, eg 16x16 or 16x32
+    SDL_Rect collision_shape;
+    SDL_Rect hitbox_shape;
+    const char *path;
+} sprite_info_t;
+
+const sprite_info_t SPRITE_INFOS[] = {
+    // **** PLAYER RELATED *****
+    // 0 - PLAYER
+    {{0, 0, 16, 32},
+    {3, 0, 12, 6},
+    {3, 0, 9, 16},
+    "assets/knight_f_idle_anim_f0.png"
+    },
+    // 1 - HORIZONTAL BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/circle_bullet_test_3.png"
+    },
+    // 2 - ENEMY  BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/circle_bullet_test_2.png"
+    },
+
+};
+
 game_t *game_init(double scale) {
     game_t *game = malloc(sizeof(game_t));
 
@@ -64,4 +94,11 @@ tile_info_t *game_get_tile_info(game_t *game, size_t tile_id) {
 
 sprite_t *game_get_sprite(game_t *game, size_t sprite_id) {
     return list_get(game->sprites, sprite_id);
+}
+
+void game_register_sprites(game_t *game) {
+    for(int i = 0; i< sizeof(SPRITE_INFOS) / sizeof(sprite_info_t); i++) {
+        sprite_info_t sprite_info = SPRITE_INFOS[i];
+        game_add_sprite(game, sprite_init(sprite_info.path, sprite_info.shape, sprite_info.collision_shape, sprite_info.hitbox_shape));
+    }
 }

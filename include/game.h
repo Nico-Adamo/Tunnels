@@ -29,4 +29,6 @@ tile_info_t *game_get_tile_info(game_t *game, size_t tile_id);
 
 sprite_t *game_get_sprite(game_t *game, size_t sprite_id);
 
+void game_register_sprites(game_t *game);
+
 #endif // #ifndef __GAME_H__

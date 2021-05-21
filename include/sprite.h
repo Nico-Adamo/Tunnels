@@ -1,14 +1,13 @@
 #ifndef __SPRITE_H__
 #define __SPRITE_H__
 
-#include "sdl_wrapper.h"
-#include "game.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_image.h>
 
 typedef struct sprite sprite_t;
 
 sprite_t *sprite_init(const char *path, SDL_Rect shape, SDL_Rect collision_shape, SDL_Rect hitbox_shape);
-
-void sprite_register_sprites(game_t *game);
 
 // Getters
 

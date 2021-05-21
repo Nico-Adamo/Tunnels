@@ -46,8 +46,8 @@ body_t *body_init_with_info(sprite_t *sprite, vector_t bottom_left, double mass,
     body->direction.y = 0;
 
 
-    body->centroid.x = body->bottom_left.x + sprite_get_hitbox_shape(sprite).w / 2;
-    body->centroid.y = body->bottom_left.y + sprite_get_hitbox_shape(sprite).h / 2;
+    body->centroid.x = body->bottom_left.x + body->scale * (sprite_get_hitbox_shape(sprite).x + sprite_get_hitbox_shape(sprite).w / 2);
+    body->centroid.y = body->bottom_left.y + body->scale * (sprite_get_hitbox_shape(sprite).y + sprite_get_hitbox_shape(sprite).h / 2);
     body->velocity = VEC_ZERO;
 
     return body;
