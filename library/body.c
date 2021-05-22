@@ -20,6 +20,7 @@ typedef struct body {
     free_func_t info_freer;
     vector_t direction;
     double animation_timer;
+    double invulnerability_timer;
 } body_t;
 
 body_t *body_init(sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
@@ -46,6 +47,7 @@ body_t *body_init_with_info(sprite_t *sprite, vector_t bottom_left, double mass,
     body->direction.x = 1;
     body->direction.y = 0;
     body->animation_timer = 0;
+    body->invulnerability_timer = 0;
 
 
     body->centroid.x = body->bottom_left.x + body->scale * (sprite_get_hitbox_shape(sprite).x + sprite_get_hitbox_shape(sprite).w / 2);
@@ -116,6 +118,22 @@ bool body_get_flipped(body_t *body) {
 
 SDL_Texture *body_get_texture(body_t *body) {
     return sprite_get_texture(body->sprite);
+}
+
+sprite_t *body_get_sprite(body_t *body) {
+    return body->sprite;
+}
+
+void body_set_sprite(body_t *body, sprite_t *sprite) {
+    body->sprite = sprite;
+}
+
+double body_get_invulnerability_timer(body_t *body) {
+    return body->invulnerability_timer;
+}
+
+void body_set_invulnerability_timer(body_t *body, double invulnerability_timer) {
+    body->invulnerability_timer = invulnerability_timer;
 }
 
 vector_t body_get_centroid(body_t *body) {

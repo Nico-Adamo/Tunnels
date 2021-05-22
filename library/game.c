@@ -30,6 +30,7 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/knight_f_idle_anim_full.png",
     true, .125, 4
     },
+
     // 1 - HORIZONTAL BULLET
     {{0, 0, 7, 7},
     {0, 0, 7, 7},
@@ -48,9 +49,24 @@ const sprite_info_t SPRITE_INFOS[] = {
     {{0, 0, 16, 32},
     {3, 0, 12, 6},
     {3, 0, 9, 16},
-    "assets/wizzard_f_idle_anim_f0.png",
-    false, 0, 0
-    }
+    "assets/wizzard_m_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 4 - RUNNING PLAYER
+    {{0, 0, 16, 28},
+    {3, 0, 12, 6},
+    {3, 0, 9, 16},
+    "assets/knight_f_run_anim_full.png",
+    true, .1, 4
+    },
+    // 4 - HIT PLAYER
+    {{0, 0, 16, 28},
+    {3, 0, 12, 6},
+    {3, 0, 9, 16},
+    "assets/knight_f_hit_anim_full.png",
+    true, .25, 2
+    },
+
 
 };
 

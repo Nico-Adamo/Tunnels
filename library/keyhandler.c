@@ -35,18 +35,22 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
             case 'a':
                 velocity.x = -player_velocity;
                 body_set_velocity_and_direction(player, velocity);
+                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 'd':
                 velocity.x = player_velocity;
                 body_set_velocity_and_direction(player, velocity);
+                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 's':
                 velocity.y = -player_velocity;
                 body_set_velocity_and_direction(player, velocity);
+                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 'w':
                 velocity.y = player_velocity;
                 body_set_velocity_and_direction(player, velocity);
+                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 'i':
                 bullet_dir.y = 1;
@@ -76,6 +80,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     body_set_velocity(player, velocity);
                 }
                 set_zero_velocity_direction(player);
+                if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
             case 'd':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
@@ -84,6 +89,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     body_set_velocity(player, velocity);
                 }
                 set_zero_velocity_direction(player);
+                if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
             case 's':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
@@ -92,6 +98,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     body_set_velocity(player, velocity);
                 }
                 set_zero_velocity_direction(player);
+                if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
             case 'w':
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
@@ -100,6 +107,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     body_set_velocity(player, velocity);
                 }
                 set_zero_velocity_direction(player);
+                if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
         }
     }

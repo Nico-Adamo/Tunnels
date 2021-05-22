@@ -73,6 +73,13 @@ void body_free(body_t *body);
  */
 
 sprite_t *body_get_sprite(body_t *body);
+void body_set_sprite(body_t *body, sprite_t *sprite);
+
+double body_get_invulnerability_timer(body_t *body);
+
+void body_set_invulnerability_timer(body_t *body, double invulnerability_timer);
+
+
 SDL_Rect body_get_hitbox_shape(body_t *body);
 SDL_Rect body_get_draw_shape(body_t *body);
 SDL_Rect body_get_collision_shape(body_t *body);
