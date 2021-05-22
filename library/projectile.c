@@ -18,10 +18,19 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
         bullet = body_init_with_info(sprite, body_get_centroid(body), 0.1, 4, "ENEMY_BULLET", info);
     }
     //vector_t player_dir = body_get_direction(body);
+
     vector_t bullet_velocity = {
         .x = bullet_dir.x * bullet_speed,
         .y = bullet_dir.y * bullet_speed
     };
+
+    vector_t bullet_shift = {
+        .x = (1 - abs(bullet_dir.x)) * .5 * body_get_velocity(body).x, //TODO: magic numbers
+        .y = (1 - abs(bullet_dir.y)) * .5 * body_get_velocity(body).y
+    };
+
+    bullet_velocity = vec_add(bullet_velocity, bullet_shift);
+
     body_set_velocity(bullet, bullet_velocity);
     return bullet;
 
