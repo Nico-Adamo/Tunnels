@@ -247,6 +247,7 @@ void sdl_render_scene(scene_t *scene) {
     sdl_render_tilemap(scene_get_wall_tiles(scene));
     //sdl_render_tilemap(scene_get_collider_tiles(scene));
 
+    // UI rendering
     list_t *UIs = scene_get_UI_components(scene);
     size_t UI_count = list_size(UIs);
     for (size_t i = 0; i < UI_count; i++) {

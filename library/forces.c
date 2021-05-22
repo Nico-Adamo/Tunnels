@@ -276,12 +276,20 @@ void tile_collision(void *aux, double dt) {
             if (col_info.axis.x == 1) {
                 new_velocity.x = 0;
                 if (average_velocity.x == 0) {
-                    body_set_centroid(body, vec_add(body_get_centroid(body), recoil));
+                    if (body_get_hitbox(body).x > tile_get_hitbox(tile).x) {
+                        body_set_centroid(body, vec_add(body_get_centroid(body), recoil));
+                    } else {
+                        body_set_centroid(body, vec_add(body_get_centroid(body), vec_negate(recoil)));
+                    }
                 }
             } else if (col_info.axis.y == 1) {
                 new_velocity.y = 0;
                 if (average_velocity.y == 0) {
-                    body_set_centroid(body, vec_add(body_get_centroid(body), recoil));
+                    if (body_get_hitbox(body).y > tile_get_hitbox(tile).y) {
+                        body_set_centroid(body, vec_add(body_get_centroid(body), recoil));
+                    } else {
+                        body_set_centroid(body, vec_add(body_get_centroid(body), vec_negate(recoil)));
+                    }
                 }
             }
             body_set_velocity(body, new_velocity);

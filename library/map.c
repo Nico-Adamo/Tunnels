@@ -32,11 +32,11 @@ const char *TILE_PATHS[] = {
 };
 
 SDL_Rect COLLIDER_TILES[]= {
-    {0, 0, 16, 16}, // 0
-    {0, 0, 4, 16}, // 1
-    {12, 0, 4, 16}, // 2
-    {0, 0, 16, 8}, // 3
-    {12, 0, 4, 8} // 4
+    {0, 0, 16, 16}, // 0 - Full
+    {0, 0, 4, 16}, // 1 - Left quarter
+    {12, 0, 4, 16}, // 2 - Right quarter
+    {0, 0, 16, 8}, // 3 - Bottom half
+    {12, 0, 4, 8} // 4 - Right quarter, half height
 };
 
 tile_info_t *COLLIDER_TILE_INFOS[5];
@@ -60,6 +60,12 @@ tile_info_t *map_get_collider_tile_info(size_t tile_id) {
     return COLLIDER_TILE_INFOS[tile_id];
 }
 
+void add_collider_tile(scene_t *scene, int tile_id, int x, int y, double game_scale) {
+    tile_info_t *tile_info = map_get_collider_tile_info(tile_id);
+    tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*(x*TILE_SIZE + tile_info->shape.x), game_scale*(y*TILE_SIZE + tile_info->shape.y), game_scale*tile_info->shape.w, game_scale*tile_info->shape.h});
+    scene_add_collider_tile(scene, tile);
+}
+
 void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uint8_t tile_type) {
     scene_t *scene = game_get_current_scene(game);
     int *tile_id_buffer = malloc(sizeof(int));
@@ -80,9 +86,16 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                     scene_add_wall_tile(scene, tile);
 
                 } else if(tile_type == 2) {
-                    tile_info_t *tile_info = map_get_collider_tile_info(*tile_id_buffer);
-                    tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*(x*TILE_SIZE + tile_info->shape.x), game_scale*(y*TILE_SIZE + tile_info->shape.y), game_scale*tile_info->shape.w, game_scale*tile_info->shape.h});
-                    scene_add_collider_tile(scene, tile);
+                    // (Ugly hard code) Checks for corner overlap collisions; ID represents combination of tiles
+                    if (*tile_id_buffer == 31) {
+                        add_collider_tile(scene, 3, x, y, game_scale);
+                        add_collider_tile(scene, 1, x, y, game_scale);
+                    } else if (*tile_id_buffer == 32) {
+                        add_collider_tile(scene, 2, x, y, game_scale);
+                        add_collider_tile(scene, 3, x, y, game_scale);
+                    } else {
+                        add_collider_tile(scene, *tile_id_buffer, x, y, game_scale);
+                    }
                 }
             }
         }

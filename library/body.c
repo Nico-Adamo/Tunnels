@@ -19,6 +19,7 @@ typedef struct body {
     stats_info_t info;
     free_func_t info_freer;
     vector_t direction;
+    double animation_timer;
 } body_t;
 
 body_t *body_init(sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
@@ -44,6 +45,7 @@ body_t *body_init_with_info(sprite_t *sprite, vector_t bottom_left, double mass,
     body->info_freer = free;
     body->direction.x = 1;
     body->direction.y = 0;
+    body->animation_timer = 0;
 
 
     body->centroid.x = body->bottom_left.x + body->scale * (sprite_get_hitbox_shape(sprite).x + sprite_get_hitbox_shape(sprite).w / 2);
@@ -197,6 +199,15 @@ void body_tick(body_t *body, double dt) {
         .x = (final_velocity.x + body->velocity.x) / 2,
         .y = (final_velocity.y + body->velocity.y) / 2
     };
+
+    if (sprite_is_animated(body->sprite)) {
+        body->animation_timer += dt;
+        if (body->animation_timer >= sprite_get_animation_speed(body->sprite)) {
+            sprite_set_current_frame(body->sprite, (sprite_get_current_frame(body->sprite) + 1) % sprite_get_animation_frames(body->sprite));
+            body->animation_timer = 0;
+        }
+    }
+    
     body_set_velocity(body, final_velocity);
     body_set_centroid(body, vec_add(body->centroid, vec_multiply(dt, average_velocity)));
     body->net_force = (vector_t) {0, 0};

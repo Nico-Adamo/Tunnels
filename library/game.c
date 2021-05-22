@@ -16,33 +16,40 @@ typedef struct sprite_info {
     SDL_Rect collision_shape;
     SDL_Rect hitbox_shape;
     const char *path;
+    bool is_animated;
+    double animation_speed;
+    size_t animation_frames;
 } sprite_info_t;
 
 const sprite_info_t SPRITE_INFOS[] = {
     // **** PLAYER RELATED *****
     // 0 - PLAYER
-    {{0, 0, 16, 32},
+    {{0, 0, 16, 28},
     {3, 0, 12, 6},
     {3, 0, 9, 16},
-    "assets/knight_f_idle_anim_f0.png"
+    "assets/knight_f_idle_anim_full.png",
+    true, .125, 4
     },
     // 1 - HORIZONTAL BULLET
     {{0, 0, 7, 7},
     {0, 0, 7, 7},
     {0, 0, 7, 7},
-    "assets/circle_bullet_test_3.png"
+    "assets/circle_bullet_test_3.png",
+    false, 0, 0
     },
     // 2 - ENEMY  BULLET
     {{0, 0, 7, 7},
     {0, 0, 7, 7},
     {0, 0, 7, 7},
-    "assets/circle_bullet_test_2.png"
+    "assets/circle_bullet_test_2.png",
+    false, 0, 0
     },
     // 3 - ENEMY
     {{0, 0, 16, 32},
     {3, 0, 12, 6},
     {3, 0, 9, 16},
-    "assets/wizzard_f_idle_anim_f0.png"
+    "assets/wizzard_f_idle_anim_f0.png",
+    false, 0, 0
     }
 
 };
@@ -105,6 +112,6 @@ sprite_t *game_get_sprite(game_t *game, size_t sprite_id) {
 void game_register_sprites(game_t *game) {
     for(int i = 0; i< sizeof(SPRITE_INFOS) / sizeof(sprite_info_t); i++) {
         sprite_info_t sprite_info = SPRITE_INFOS[i];
-        game_add_sprite(game, sprite_init(sprite_info.path, sprite_info.shape, sprite_info.collision_shape, sprite_info.hitbox_shape));
+        game_add_sprite(game, sprite_init(sprite_info.path, sprite_info.shape, sprite_info.collision_shape, sprite_info.hitbox_shape, sprite_info.is_animated, sprite_info.animation_speed, sprite_info.animation_frames));
     }
 }
