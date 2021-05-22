@@ -129,8 +129,6 @@ void collision(void *aux) {
         values->handler(body1, body2, col_info.axis, values->aux);
         values->collided = true;
     }
-
-
 }
 
 void create_collision(scene_t *scene, body_t *body1, body_t *body2, collision_handler_t handler, void *aux, free_func_t freer) {
@@ -237,6 +235,8 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
     (strcmp(body_get_type(body1), "ENEMY") == 0 && (strcmp(body_get_type(body2), "PLAYER_BULLET") == 0)))) {
         body1_info.health -= body2_info.attack;
         body_set_stats_info(body1, body1_info);
+        body_set_invulnerability_timer(body1, 1); // TODO: Invulnerability timer magic number
+        body_set_invulnerability_timer(body2, 1);
         printf("Health: %f\n", body1_info.health);
         if (body1_info.health <= 0) body_remove(body1);
         body_remove(body2);

@@ -45,16 +45,28 @@ const double HEART_PADDING = 4;
 
 body_t *make_demo_sprite(game_t *game, double x, double y, char *type, stats_info_t info) {
     vector_t bottom_left = {x, y};
+    body_sprite_info_t player_sprite_info = {
+        .idle_sprite_id = 0,
+        .walking_anim_id = 4,
+        .hit_anim_id = -1,
+        .invulnerable_anim_id = 5
+    };
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info(game_get_sprite(game, 0), bottom_left, 100, 4, type, info);
+    return body_init_with_info(player_sprite_info, game_get_sprite(game, player_sprite_info.idle_sprite_id), bottom_left, 100, 4, type, info);
 }
 
 body_t *make_enemy_sprite(game_t *game, double x, double y, char *type, stats_info_t info) {
     vector_t bottom_left = {x, y};
+    body_sprite_info_t enemy_sprite_info = {
+        .idle_sprite_id = 3,
+        .walking_anim_id = -1,
+        .hit_anim_id = -1,
+        .invulnerable_anim_id = -1
+    };
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info(game_get_sprite(game, 3), bottom_left, 100, 4, type, info);
+    return body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, type, info);
 }
 UI_t *make_demo_heart(double x, double y, char *texture_name, char *type) {
     SDL_Texture *texture = sdl_load_texture(texture_name);
@@ -147,7 +159,6 @@ int main(int arg_c, char *arg_v[]) {
         scene_tick(scene, dt);
         seconds += dt;
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
-        sdl_render_scene(scene);
         body_t *player = game_get_player(game);
 
         // Player health display (heart) adjustment
@@ -179,6 +190,7 @@ int main(int arg_c, char *arg_v[]) {
 
         }
 
+        sdl_render_game(game);
     }
     game_free(game);
     return 0;

@@ -35,22 +35,18 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
             case 'a':
                 velocity.x = -player_velocity;
                 body_set_velocity_and_direction(player, velocity);
-                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 'd':
                 velocity.x = player_velocity;
                 body_set_velocity_and_direction(player, velocity);
-                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 's':
                 velocity.y = -player_velocity;
                 body_set_velocity_and_direction(player, velocity);
-                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 'w':
                 velocity.y = player_velocity;
                 body_set_velocity_and_direction(player, velocity);
-                body_set_sprite(player, game_get_sprite(game, 4));
                 break;
             case 'i':
                 bullet_dir.y = 1;

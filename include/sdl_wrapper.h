@@ -60,7 +60,7 @@ void sdl_init(vector_t min, vector_t max);
  * @param scene a scene containing all relevant bodies
  * @return true if the window was closed, false otherwise
  */
-bool sdl_is_done(game_t *game);
+bool sdl_is_done(scene_t *scene);
 
 SDL_Texture *sdl_load_texture(const char *path);
 

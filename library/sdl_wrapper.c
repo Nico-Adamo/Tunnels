@@ -123,7 +123,7 @@ void sdl_init(vector_t min, vector_t max) {
     renderer = SDL_CreateRenderer(window, -1, 0);
 }
 
-bool sdl_is_done(game_t *game) {
+bool sdl_is_done(scene_t *game) {
     SDL_Event *event = malloc(sizeof(*event));
     assert(event != NULL);
     while (SDL_PollEvent(event)) {
@@ -227,7 +227,8 @@ void sdl_render_tilemap(list_t *tiles) {
         tile_draw(tile);
     }
 }
-void sdl_render_scene(scene_t *scene) {
+void sdl_render_game(game_t *game) {
+    scene_t *scene = game_get_current_scene(game);
     sdl_clear();
     // Tilemap rendering: floor
     sdl_render_tilemap(scene_get_floor_tiles(scene));
@@ -237,6 +238,7 @@ void sdl_render_scene(scene_t *scene) {
     size_t body_count = scene_bodies(scene);
     for (size_t i = 0; i < body_count; i++) {
         body_t *body = scene_get_body(scene, i);
+        body_set_sprite(body, game_get_sprite(game, body_get_cur_sprite_id(body))); // Check for body updating animation
         SDL_Rect shape = body_get_draw_shape(body);
         rect_t hitbox = body_get_draw_hitbox(body);
         SDL_Texture *texture = body_get_texture(body);

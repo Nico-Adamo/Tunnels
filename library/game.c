@@ -59,7 +59,7 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/knight_f_run_anim_full.png",
     true, .1, 4
     },
-    // 4 - HIT PLAYER
+    // 5 - HIT PLAYER
     {{0, 0, 16, 28},
     {3, 0, 12, 6},
     {3, 0, 9, 16},

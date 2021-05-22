@@ -10,19 +10,19 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
 
-typedef struct rect {
-    double x;
-    double y;
-    double w;
-    double h;
-} rect_t;
-
 typedef struct stats_info {
     double experience;
     double health;
     double attack;
     double cooldown;
 } stats_info_t;
+
+typedef struct body_sprite_info {
+    int idle_sprite_id;
+    int walking_anim_id;
+    int hit_anim_id;
+    int invulnerable_anim_id;
+} body_sprite_info_t;
 
 /**
  * A rigid body constrained to the plane.
@@ -32,11 +32,13 @@ typedef struct stats_info {
  */
 typedef struct body body_t;
 
+typedef struct body_sprite_info body_sprite_info_t;
+
 /**
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
-body_t *body_init(sprite_t *sprite, vector_t bottom_left, double mass, double scale);
+body_t *body_init(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale);
 
 stats_info_t body_get_stats_info(body_t *body);
 
@@ -55,8 +57,7 @@ void body_set_stats_info(body_t *body, stats_info_t info);
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info);
-
+body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info);
 /**
  * Releases the memory allocated for a body.
  *
@@ -72,6 +73,10 @@ void body_free(body_t *body);
  * @return the polygon describing the body's current position
  */
 
+int body_get_cur_sprite_id(body_t *body);
+body_sprite_info_t body_get_sprite_ids(body_t *body);
+
+void body_set_sprite_id(body_t *body, int sprite_id);
 sprite_t *body_get_sprite(body_t *body);
 void body_set_sprite(body_t *body, sprite_t *sprite);
 

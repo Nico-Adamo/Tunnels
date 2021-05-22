@@ -13,6 +13,12 @@ typedef struct {
     double y;
 } vector_t;
 
+typedef struct rect {
+    double x;
+    double y;
+    double w;
+    double h;
+} rect_t;
 /**
  * The zero vector, i.e. (0, 0).
  * "extern" declares this global variable without allocating memory for it.

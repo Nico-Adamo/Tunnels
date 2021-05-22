@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// TO DO: Once sprite rendering is done, include it in typedef body_t
+
 typedef struct body {
+    body_sprite_info_t sprite_ids;
+    int cur_sprite_id;
     sprite_t *sprite;
     vector_t bottom_left;
     double mass;
@@ -23,14 +25,16 @@ typedef struct body {
     double invulnerability_timer;
 } body_t;
 
-body_t *body_init(sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
-    return body_init_with_info(sprite, bottom_left, mass, scale, NULL, (stats_info_t) {0.0, 0.0, 0.0, 0.0});
+body_t *body_init(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
+    return body_init_with_info(sprite_ids, sprite, bottom_left, mass, scale, NULL, (stats_info_t) {0.0, 0.0, 0.0, 0.0});
 }
 
-body_t *body_init_with_info(sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info) {
+body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
+    body->sprite_ids = sprite_ids;
+    body->cur_sprite_id = sprite_ids.idle_sprite_id;
     body->sprite = sprite;
     body->bottom_left = bottom_left;
     body->mass = mass;
@@ -68,6 +72,18 @@ stats_info_t body_get_stats_info(body_t *body) {
 
 void body_set_stats_info(body_t *body, stats_info_t info) {
     body->info = info;
+}
+
+body_sprite_info_t body_get_sprite_ids(body_t *body) {
+    return body->sprite_ids;
+}
+
+int body_get_cur_sprite_id(body_t *body) {
+    return body->cur_sprite_id;
+}
+
+void body_set_sprite_ids(body_t *body, body_sprite_info_t sprite_ids) {
+    body->sprite_ids = sprite_ids;
 }
 
 SDL_Rect body_get_hitbox_shape(body_t *body) {
@@ -224,8 +240,16 @@ void body_tick(body_t *body, double dt) {
             sprite_set_current_frame(body->sprite, (sprite_get_current_frame(body->sprite) + 1) % sprite_get_animation_frames(body->sprite));
             body->animation_timer = 0;
         }
+        if(body->invulnerability_timer > 0 && body->sprite_ids.invulnerable_anim_id != -1) {
+            body->invulnerability_timer -= dt;
+            body->cur_sprite_id = body->sprite_ids.invulnerable_anim_id;
+        } else if(body->velocity.x != 0 || body->velocity.y != 0 && body->sprite_ids.walking_anim_id != -1) {
+            body->cur_sprite_id = body->sprite_ids.walking_anim_id;
+        } else {
+            body->cur_sprite_id = body->sprite_ids.idle_sprite_id;
+        }
     }
-    
+
     body_set_velocity(body, final_velocity);
     body_set_centroid(body, vec_add(body->centroid, vec_multiply(dt, average_velocity)));
     body->net_force = (vector_t) {0, 0};

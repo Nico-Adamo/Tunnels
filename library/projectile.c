@@ -2,7 +2,12 @@
 
 body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_id, double bullet_speed) {
     sprite_t *sprite = game_get_sprite(game, sprite_id);
-
+    body_sprite_info_t bullet_info = {
+        .idle_sprite_id = sprite_id,
+        .walking_anim_id = -1,
+        .hit_anim_id = -1,
+        .invulnerable_anim_id = -1
+    };
     vector_t spawn_point = body_get_centroid(body);
     body_t *bullet;
     stats_info_t info = {
@@ -13,9 +18,9 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
     };
 
     if (strcmp(body_get_type(body), "PLAYER")==0) {
-        bullet = body_init_with_info(sprite, body_get_centroid(body), 0.1, 4, "PLAYER_BULLET", info);
+        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, "PLAYER_BULLET", info);
     } else {
-        bullet = body_init_with_info(sprite, body_get_centroid(body), 0.1, 4, "ENEMY_BULLET", info);
+        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, "ENEMY_BULLET", info);
     }
     //vector_t player_dir = body_get_direction(body);
 
