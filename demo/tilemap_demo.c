@@ -99,8 +99,8 @@ scene_t *scene_reset(game_t *game) {
     scene_t *scene = scene_init();
 
     // Initialize Potential Enemy
-    for(int i=0; i<1; i++) {
-        body_t *temp_enemy = make_enemy_sprite(game, 400+100*i, 200, "ENEMY", enemy_info);
+    for(int i=0; i<3; i++) {
+        body_t *temp_enemy = make_enemy_sprite(game, 400+100*i, 200 + rand_from(-50,50), "ENEMY", enemy_info);
         scene_add_body(scene, temp_enemy);
     }
 
