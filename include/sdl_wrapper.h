@@ -88,6 +88,8 @@ void sdl_show(void);
  */
 void sdl_render_scene(scene_t *scene);
 
+void sdl_render_game(game_t *game);
+
 /**
  * Registers a function to be called every time a key is pressed.
  * Overwrites any existing handler.

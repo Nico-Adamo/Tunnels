@@ -1,4 +1,3 @@
-#include "sdl_wrapper.h"
 #include "game.h"
 #include "enemy.h"
 #include "scene.h"
@@ -15,14 +14,16 @@
 #include <string.h>
 #include "collision.h"
 #include "keyhandler.h"
-#include "user_interface.h"
+#include "user_interface.h";
 #include "sprite.h"
+#include "sdl_wrapper.h"
 
 const char *SPRITE = "knight";
 // const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
 const char *FULL_HEART = "assets/ui/ui_heart_full.png";
 const char *HALF_HEART = "assets/ui/ui_heart_half.png";
 const char *EMPTY_HEART = "assets/ui/ui_heart_empty.png";
+const char *START = "assets/ui/game_start_screen.png";
 
 
 const double MAX_WIDTH = 1024;
@@ -111,6 +112,13 @@ scene_t *scene_reset(game_t *game) {
         scene_add_UI_component(scene, heart);
     }
 
+    //Initialize Game Screen
+    SDL_Texture *start = sdl_load_texture(START);
+    SDL_Rect shape = (SDL_Rect) {0, 0, 1024, 512};
+    rect_t hitbox = (rect_t) {0, 0, 1024, 512};
+    UI_t *start_screen = UI_init(shape, hitbox, start, "START", 2);
+    scene_add_UI_component(scene, start_screen);
+
     // Create Scene
 
     return scene;
@@ -151,11 +159,21 @@ int main(int arg_c, char *arg_v[]) {
     SDL_Texture *half_heart = sdl_load_texture(HALF_HEART);
     SDL_Texture *empty_heart = sdl_load_texture(EMPTY_HEART);
 
+    bool spacebar_pressed = false;
+
     sdl_on_key(on_key);
     while(!sdl_is_done(game)) {
+        list_t *UIs = scene_get_UI_components(game_get_current_scene(game));
+        UI_t *game_screen = list_get(UIs, list_size(UIs) - 1);
+        if (strcmp(UI_get_type(game_screen), "START") != 0 && !spacebar_pressed) {
+            spacebar_pressed = true;
+        }
+
         scene_t *scene = game_get_current_scene(game);
         double dt = time_since_last_tick();
-        handle_enemies(game, dt);
+        if (spacebar_pressed) {
+            handle_enemies(game, dt);
+        }
         scene_tick(scene, dt);
         seconds += dt;
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));

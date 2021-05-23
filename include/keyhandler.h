@@ -10,6 +10,7 @@
 #include "collision.h"
 #include "enemy.h"
 #include "projectile.h"
+#include "user_interface.h"
 
 void on_key(char key, key_event_type_t type, double held_time, game_t *game);
 

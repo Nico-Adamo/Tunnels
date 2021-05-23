@@ -30,8 +30,15 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
     vector_t velocity = body_get_velocity(player);
     vector_t bullet_dir = VEC_ZERO;
     // body_t *bullet;
+    list_t *UIs = scene_get_UI_components(game_get_current_scene(game));
+    UI_t *game_screen = list_get(UIs, list_size(UIs) - 1);
     if (type == KEY_PRESSED) {
         switch (key) {
+            case ' ':
+                if (strcmp(UI_get_type(game_screen), "START") == 0) {
+                    list_remove(scene_get_UI_components(game_get_current_scene(game)), list_size(UIs) - 1);
+                }
+                break;
             case 'a':
                 velocity.x = -player_velocity;
                 body_set_velocity_and_direction(player, velocity);
