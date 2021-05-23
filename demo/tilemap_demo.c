@@ -14,7 +14,7 @@
 #include <string.h>
 #include "collision.h"
 #include "keyhandler.h"
-#include "user_interface.h";
+#include "user_interface.h"
 #include "sprite.h"
 #include "sdl_wrapper.h"
 
@@ -112,16 +112,32 @@ scene_t *scene_reset(game_t *game) {
         scene_add_UI_component(scene, heart);
     }
 
-    //Initialize Game Screen
+    return scene;
+}
+
+scene_t *make_title(game_t *game) {
+    scene_t *scene = scene_init();
+
     SDL_Texture *start = sdl_load_texture(START);
     SDL_Rect shape = (SDL_Rect) {0, 0, 1024, 512};
     rect_t hitbox = (rect_t) {0, 0, 1024, 512};
     UI_t *start_screen = UI_init(shape, hitbox, start, "START", 2);
     scene_add_UI_component(scene, start_screen);
-
-    // Create Scene
-
+    scene_set_is_menu(scene, true);
     return scene;
+
+}
+void make_level(game_t *game){
+    body_t *player = game_get_player(game);
+    scene_t *scene_new = scene_reset(game);
+    stats_info_t player_info = body_get_stats_info(player);
+    player_info.health = PLAYER_HEALTH;
+    body_t *player_new = make_demo_sprite(game, 100, 100, "PLAYER", player_info);
+    game_set_player(game, player_new);
+    game_set_current_scene(game, scene_new);
+    scene_add_body(scene_new, player_new);
+    map_load(game, "assets/levels/map_bigger.map", 20, 20);
+    create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 
 int main(int arg_c, char *arg_v[]) {
@@ -144,18 +160,13 @@ int main(int arg_c, char *arg_v[]) {
     game_register_sprites(game);
 
     body_t *player = make_demo_sprite(game, 100, 100, "PLAYER", player_info);
-    scene_t *scene = scene_reset(game);
-
+    scene_t *scene = make_title(game);
     scene_add_body(scene, player);
 
     game_set_player(game, player);
     game_set_current_scene(game, scene);
-    map_load(game, "assets/levels/map_bigger.map", 20, 20);
 
 
-
-    double seconds = 0;
-    create_tile_collision(game_get_current_scene(game), game_get_player(game));
     SDL_Texture *half_heart = sdl_load_texture(HALF_HEART);
     SDL_Texture *empty_heart = sdl_load_texture(EMPTY_HEART);
 
@@ -163,10 +174,10 @@ int main(int arg_c, char *arg_v[]) {
 
     sdl_on_key(on_key);
     while(!sdl_is_done(game)) {
-        list_t *UIs = scene_get_UI_components(game_get_current_scene(game));
-        UI_t *game_screen = list_get(UIs, list_size(UIs) - 1);
-        if (strcmp(UI_get_type(game_screen), "START") != 0 && !spacebar_pressed) {
+        if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
+            make_level(game);
+            scene_free(scene);
         }
 
         scene_t *scene = game_get_current_scene(game);
@@ -175,7 +186,6 @@ int main(int arg_c, char *arg_v[]) {
             handle_enemies(game, dt);
         }
         scene_tick(scene, dt);
-        seconds += dt;
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
         body_t *player = game_get_player(game);
 

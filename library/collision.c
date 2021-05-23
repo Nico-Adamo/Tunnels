@@ -13,8 +13,10 @@ double x_separation( rect_t hitbox1, rect_t hitbox2) {
     double min2 = hitbox2.x;
     double max2 = hitbox2.x + + hitbox2.w;
 
-    if (hitbox1.x < hitbox2.x + hitbox2.w &&
-    hitbox1.x + hitbox1.w > hitbox2.x) {
+    if ((hitbox1.x < hitbox2.x + hitbox2.w &&
+    hitbox1.x + hitbox1.w > hitbox2.x) ||
+    (hitbox2.x < hitbox1.x + hitbox1.w &&
+    hitbox2.x + hitbox2.w > hitbox1.x)) {
         return fmin(max1 - min2, max2 - min1);
     }
 
@@ -27,8 +29,10 @@ double y_separation(rect_t hitbox1, rect_t hitbox2) {
     double min2 = hitbox2.y;
     double max2 = hitbox2.y + hitbox2.h;
 
-    if (hitbox1.y < hitbox2.y + hitbox2.h &&
-    hitbox1.y + hitbox2.h > hitbox2.y) {
+    if ((hitbox1.y < hitbox2.y + hitbox2.h &&
+    hitbox1.y + hitbox2.h > hitbox2.y) ||
+    (hitbox2.y < hitbox1.y + hitbox1.h &&
+    hitbox2.y + hitbox1.h > hitbox1.y)) {
         return fmin(max1 - min2, max2 - min1);
     }
 

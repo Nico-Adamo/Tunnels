@@ -1,4 +1,5 @@
 #include "keyhandler.h"
+#include "collision.h"
 
 const double player_velocity = 300;
 
@@ -30,13 +31,11 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
     vector_t velocity = body_get_velocity(player);
     vector_t bullet_dir = VEC_ZERO;
     // body_t *bullet;
-    list_t *UIs = scene_get_UI_components(game_get_current_scene(game));
-    UI_t *game_screen = list_get(UIs, list_size(UIs) - 1);
     if (type == KEY_PRESSED) {
         switch (key) {
             case ' ':
-                if (strcmp(UI_get_type(game_screen), "START") == 0) {
-                    list_remove(scene_get_UI_components(game_get_current_scene(game)), list_size(UIs) - 1);
+                if (scene_is_menu(game_get_current_scene(game))) {
+                    scene_set_is_menu(game_get_current_scene(game), false);
                 }
                 break;
             case 'a':
@@ -71,7 +70,14 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 bullet_dir.x = 1;
                 player_make_bullet(game, player, scene, bullet_dir);
                 break;
-
+            case 'f':
+                list_t *interactors = game_get_tile_interactors(game);
+                for(size_t i = 0; i<list_size(interactors); i++) {
+                    tile_interactor_t *interactor = list_get(interactors, i);
+                    if(find_collision(interactor->area, body_get_hitbox(player)).collided) {
+                        interactor->interaction(game);
+                    }
+                }
         }
     }
     else if (type == KEY_RELEASED) {

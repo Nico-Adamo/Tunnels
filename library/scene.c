@@ -24,6 +24,7 @@ typedef struct scene {
     list_t *wall_tiles;
     list_t *collider_tiles;
     list_t *UI_components;
+    bool is_menu;
 } scene_t;
 
 void force_aux_free(force_aux_t *force_aux) {
@@ -58,13 +59,21 @@ scene_t *scene_init(void) {
     scene->wall_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->collider_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->UI_components = list_init(INIT_NUM_UIs, UI_component_free);
-
+    scene->is_menu = false;
     return scene;
 }
 
 
 size_t scene_bodies(scene_t *scene) {
     return list_size(scene->bodies);
+}
+
+void scene_set_is_menu(scene_t *scene, bool is_menu) {
+    scene->is_menu = is_menu;
+}
+
+bool scene_is_menu(scene_t *scene) {
+    return scene->is_menu;
 }
 
 body_t *scene_get_body(scene_t *scene, size_t index) {

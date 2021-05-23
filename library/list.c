@@ -9,7 +9,7 @@ typedef struct list {
     size_t max_size;
     free_func_t freer;
 } list_t;
- 
+
 
 list_t *list_init(size_t initial_size, free_func_t freer) {
     list_t *list = malloc(sizeof(list_t));
@@ -42,7 +42,6 @@ size_t list_capacity(list_t *list) {
 }
 
 void *list_get(list_t *list, size_t index) {
-    assert(index < list->size);
     return list->obj_array[index];
 }
 
@@ -86,7 +85,7 @@ void list_sort(list_t *list, comparator_t compare) {
     for (i = 1; i < size; i++) {
         key = list->obj_array[i];
         j = i - 1;
- 
+
         while (j >= 0 && compare(list->obj_array[j], key) >= 0) {
             list->obj_array[j + 1] = list->obj_array[j];
             j = j - 1;

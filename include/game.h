@@ -7,11 +7,24 @@
 
 typedef struct game game_t;
 
+typedef void (*tile_interaction)(game_t *game);
+
+typedef struct tile_interactor {
+    rect_t area;
+    tile_interaction interaction;
+} tile_interactor_t;
+
 game_t *game_init(double scale);
 
 void game_free(void *game);
 
 void game_add_tile_info(game_t *game, tile_info_t *tile_info);
+
+tile_interactor_t *tile_interactor_init(rect_t area, tile_interaction interaction);
+
+void game_add_tile_interactor(game_t *game, tile_interactor_t *interactor);
+
+list_t *game_get_tile_interactors(game_t *game);
 
 void game_add_sprite(game_t *game, sprite_t *sprite);
 
@@ -30,5 +43,7 @@ tile_info_t *game_get_tile_info(game_t *game, size_t tile_id);
 sprite_t *game_get_sprite(game_t *game, size_t sprite_id);
 
 void game_register_sprites(game_t *game);
+
+void game_end_level(game_t *game);
 
 #endif // #ifndef __GAME_H__

@@ -6,6 +6,7 @@ const size_t NUM_SPRITES = 40;
 typedef struct game {
     list_t *tile_infos;
     list_t *sprites;
+    list_t *tile_interactors;
     scene_t *current_scene;
     double scale;
     body_t *player;
@@ -75,6 +76,7 @@ game_t *game_init(double scale) {
 
     game->current_scene = NULL;
     game->tile_infos = list_init(NUM_TILES, tile_info_free);
+    game->tile_interactors = list_init(2, free); // TODO: Magic number
     game->sprites = list_init(NUM_SPRITES, tile_info_free);
     game->scale = scale;
     game->player = NULL;
@@ -91,6 +93,21 @@ void game_free(void *game) {
 
 void game_add_tile_info(game_t *game, tile_info_t *tile_info) {
     list_add(game->tile_infos, tile_info);
+}
+
+tile_interactor_t *tile_interactor_init(rect_t area, tile_interaction interaction) {
+    tile_interactor_t *tile_interactor = malloc(sizeof(tile_interactor_t));
+    tile_interactor->area = area;
+    tile_interactor->interaction = interaction;
+    return tile_interactor;
+}
+
+void game_add_tile_interactor(game_t *game, tile_interactor_t *interactor) {
+    list_add(game->tile_interactors, interactor);
+}
+
+list_t *game_get_tile_interactors(game_t *game) {
+    return game->tile_interactors;
 }
 
 void game_add_sprite(game_t *game, sprite_t *sprite) {
@@ -130,4 +147,9 @@ void game_register_sprites(game_t *game) {
         sprite_info_t sprite_info = SPRITE_INFOS[i];
         game_add_sprite(game, sprite_init(sprite_info.path, sprite_info.shape, sprite_info.collision_shape, sprite_info.hitbox_shape, sprite_info.is_animated, sprite_info.animation_speed, sprite_info.animation_frames));
     }
+}
+
+void game_end_level(game_t *game) {
+    printf("Next level");
+    // Remember to remove game tile interactors so it doesn't get called again
 }

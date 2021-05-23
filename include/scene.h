@@ -5,6 +5,7 @@
 #include "list.h"
 #include "tile.h"
 #include "user_interface.h"
+#include <stdbool.h>
 
 /**
  * A collection of bodies and force creators.
@@ -45,6 +46,8 @@ void scene_free(scene_t *scene);
  */
 size_t scene_bodies(scene_t *scene);
 
+void scene_set_is_menu(scene_t *scene, bool is_menu);
+bool scene_is_menu(scene_t *scene);
 /**
  * Gets the body at a given index in a scene.
  * Asserts that the index is valid.
