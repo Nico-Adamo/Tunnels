@@ -8,6 +8,7 @@ typedef struct body {
     body_sprite_info_t sprite_ids;
     int cur_sprite_id;
     sprite_t *sprite;
+    size_t cur_frame;
     vector_t bottom_left;
     double mass;
     double scale;
@@ -36,6 +37,7 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
     body->sprite_ids = sprite_ids;
     body->cur_sprite_id = sprite_ids.idle_sprite_id;
     body->sprite = sprite;
+    body->cur_frame = 0;
     body->bottom_left = bottom_left;
     body->mass = mass;
     body->scale = scale;
@@ -91,7 +93,7 @@ SDL_Rect body_get_hitbox_shape(body_t *body) {
 }
 
 SDL_Rect body_get_draw_shape(body_t *body) {
-    return sprite_get_shape(body->sprite);
+    return sprite_get_shape(body->sprite, body->cur_frame);
 }
 
 SDL_Rect body_get_collision_shape(body_t *body) {
@@ -99,14 +101,14 @@ SDL_Rect body_get_collision_shape(body_t *body) {
 }
 
 rect_t body_get_draw_hitbox(body_t *body) {
-    return (rect_t) {body->bottom_left.x, body->bottom_left.y, sprite_get_shape(body->sprite).w*body->scale, sprite_get_shape(body->sprite).h*body->scale};
+    return (rect_t) {body->bottom_left.x, body->bottom_left.y, sprite_get_shape(body->sprite, body->cur_frame).w*body->scale, sprite_get_shape(body->sprite, body->cur_frame).h*body->scale};
 }
 
 rect_t body_get_hitbox(body_t *body) {
     rect_t hitbox = body_get_draw_hitbox(body);
     SDL_Rect collision_box = sprite_get_hitbox_shape(body->sprite);
     if(body->flipped) {
-        hitbox.x += (sprite_get_shape(body->sprite).w - (collision_box.x + collision_box.w)) * body->scale;
+        hitbox.x += (sprite_get_shape(body->sprite, body->cur_frame).w - (collision_box.x + collision_box.w)) * body->scale;
     } else {
         hitbox.x += collision_box.x * body->scale;
     }
@@ -119,7 +121,7 @@ rect_t body_get_collision_hitbox(body_t *body) {
     rect_t hitbox = body_get_draw_hitbox(body);
     SDL_Rect collision_box = sprite_get_collision_shape(body->sprite);
     if(body->flipped) {
-        hitbox.x += (sprite_get_shape(body->sprite).w - (collision_box.x + collision_box.w)) * body->scale;
+        hitbox.x += (sprite_get_shape(body->sprite, body->cur_frame).w - (collision_box.x + collision_box.w)) * body->scale;
     } else {
         hitbox.x += collision_box.x * body->scale;
     }
@@ -235,14 +237,20 @@ void body_tick(body_t *body, double dt) {
     };
 
     if (sprite_is_animated(body->sprite)) {
+        if(body->cur_frame >= sprite_get_animation_frames(body->sprite)) {
+            body->cur_frame = 0;
+        }
         body->animation_timer += dt;
         if (body->animation_timer >= sprite_get_animation_speed(body->sprite)) {
-            sprite_set_current_frame(body->sprite, (sprite_get_current_frame(body->sprite) + 1) % sprite_get_animation_frames(body->sprite));
+            body->cur_frame = (body->cur_frame + 1) % sprite_get_animation_frames(body->sprite);
             body->animation_timer = 0;
         }
         if(body->invulnerability_timer > 0 && body->sprite_ids.invulnerable_anim_id != -1) {
             body->invulnerability_timer -= dt;
-            body->cur_sprite_id = body->sprite_ids.invulnerable_anim_id;
+            if(body->cur_sprite_id != body->sprite_ids.invulnerable_anim_id) {
+                body->cur_sprite_id = body->sprite_ids.invulnerable_anim_id;
+                body->cur_frame = 0;
+            }
         } else if(body->velocity.x != 0 || body->velocity.y != 0 && body->sprite_ids.walking_anim_id != -1) {
             body->cur_sprite_id = body->sprite_ids.walking_anim_id;
         } else {

@@ -9,7 +9,6 @@ typedef struct sprite {
     bool is_animated;
     double animation_speed;
     size_t animation_frames;
-    size_t current_frame;
 } sprite_t;
 
 sprite_t *sprite_init(const char *path, SDL_Rect shape, SDL_Rect collision_shape, SDL_Rect hitbox_shape,  bool is_animated, double animation_speed, size_t animation_frames) {
@@ -21,17 +20,16 @@ sprite_t *sprite_init(const char *path, SDL_Rect shape, SDL_Rect collision_shape
     sprite->hitbox_shape = hitbox_shape;
     sprite->animation_speed = animation_speed;
     sprite->animation_frames = animation_frames;
-    sprite->current_frame = 0;
     sprite->is_animated = is_animated;
 
     return sprite;
 }
 
 // Getters
-SDL_Rect sprite_get_shape(sprite_t *sprite) {
+SDL_Rect sprite_get_shape(sprite_t *sprite, size_t cur_frame) {
     if (!sprite->is_animated) return sprite->shape;
     SDL_Rect curr_draw_shape = {
-        sprite->shape.x + sprite->current_frame * sprite->shape.w,
+        sprite->shape.x + cur_frame * sprite->shape.w,
         sprite->shape.y,
         sprite->shape.w,
         sprite->shape.h
@@ -61,9 +59,6 @@ size_t sprite_get_animation_frames(sprite_t *sprite) {
     return sprite->animation_frames;
 }
 
-size_t sprite_get_current_frame(sprite_t *sprite) {
-    return sprite->current_frame;
-}
 
 bool sprite_is_animated(sprite_t *sprite) {
     return sprite->is_animated;
@@ -92,8 +87,4 @@ void sprite_set_animation_speed(sprite_t *sprite, double animation_speed) {
 
 void sprite_set_animation_frames(sprite_t *sprite, size_t animation_frames) {
     sprite->animation_frames = animation_frames;
-}
-
-void sprite_set_current_frame(sprite_t *sprite, size_t current_frame) {
-    sprite->current_frame = current_frame;
 }

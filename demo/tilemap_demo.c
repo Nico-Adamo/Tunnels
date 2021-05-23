@@ -166,7 +166,7 @@ int main(int arg_c, char *arg_v[]) {
     game_set_player(game, player);
     game_set_current_scene(game, scene);
 
-
+    double seconds = 0;
     SDL_Texture *half_heart = sdl_load_texture(HALF_HEART);
     SDL_Texture *empty_heart = sdl_load_texture(EMPTY_HEART);
 
@@ -182,9 +182,7 @@ int main(int arg_c, char *arg_v[]) {
 
         scene_t *scene = game_get_current_scene(game);
         double dt = time_since_last_tick();
-        if (spacebar_pressed) {
-            handle_enemies(game, dt);
-        }
+        handle_enemies(game, dt);
         scene_tick(scene, dt);
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
         body_t *player = game_get_player(game);
