@@ -111,10 +111,10 @@ void game_end_level(game_t *game) {
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
-    body_t *player_new = make_player(game, 100, 100, "PLAYER", player_info);
+    body_t *player_new = make_player(game, 200, 200, "PLAYER", player_info);
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
-    map_load(game, "assets/levels/b_room_01b.map", 20, 20);
+    map_load(game, "assets/levels/b_room_01b.map", 40, 25);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
