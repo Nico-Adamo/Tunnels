@@ -23,18 +23,13 @@ void handle_enemies(game_t *game, double dt) {
     for(int i=0; i<list_size(enemies); i++) {
         body_t *enemy = list_get(enemies, i);
         stats_info_t enemy_info = body_get_stats_info(enemy);
-        if (enemy_info.cooldown > 0) {
-            enemy_info.cooldown -= dt;
-            body_set_stats_info(enemy, enemy_info);
-        }
-        else {
+        if (body_get_shoot_cooldown(enemy) == 0) {
             body_t *bullet = make_bullet(game, enemy, find_direction(game_get_player(game), enemy), body_get_stats_info(enemy).bullet_id, 400);
             scene_add_body(scene, bullet);
             create_tile_collision(scene, bullet);
             create_semi_destructive_collision(scene, game_get_player(game), bullet);
                     //create_newtonian_gravity(scene, 10000, scene_get_body(scene, 0), bullet);
-            enemy_info.cooldown = rand_from(0.2, 4);
-            body_set_stats_info(enemy, enemy_info);
+            body_set_shoot_cooldown(enemy, rand_from(enemy_info.cooldown-1, enemy_info.cooldown+1));
         }
     }
 }

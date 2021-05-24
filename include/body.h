@@ -84,7 +84,8 @@ void body_set_sprite(body_t *body, sprite_t *sprite);
 double body_get_invulnerability_timer(body_t *body);
 
 void body_set_invulnerability_timer(body_t *body, double invulnerability_timer);
-
+void body_set_shoot_cooldown(body_t *body, double cooldown);
+double body_get_shoot_cooldown(body_t *body);
 
 SDL_Rect body_get_hitbox_shape(body_t *body);
 SDL_Rect body_get_draw_shape(body_t *body);
