@@ -148,8 +148,3 @@ void game_register_sprites(game_t *game) {
         game_add_sprite(game, sprite_init(sprite_info.path, sprite_info.shape, sprite_info.collision_shape, sprite_info.hitbox_shape, sprite_info.is_animated, sprite_info.animation_speed, sprite_info.animation_frames));
     }
 }
-
-void game_end_level(game_t *game) {
-    printf("Next level");
-    // Remember to remove game tile interactors so it doesn't get called again
-}
