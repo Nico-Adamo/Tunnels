@@ -108,7 +108,6 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
     for (int y = y_tiles - 1; y >= 0; y--) {
         for (int x = 0; x < x_tiles; x++) {
             fscanf(file, "%d,", tile_id_buffer);
-
             if(*tile_id_buffer >= 0) {
                 if(tile_type == 0) {
                     tile_info_t *tile_info = game_get_tile_info(game, *tile_id_buffer);
@@ -135,7 +134,21 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                         add_collider_tile(scene, *tile_id_buffer, x, y, game_scale);
                     }
                 } else if(tile_type == 3) {
-                    scene_add_body(scene, make_enemy(game, game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, *tile_id_buffer));
+                    if(*tile_id_buffer == 100) {
+                        body_set_centroid(game_get_player(game), (vector_t) {game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE});
+                    } else {
+                        int enemy_id;
+                        if(*tile_id_buffer == 19) {
+                            enemy_id = rand() % 5; // Random small enemy
+                        } else if(*tile_id_buffer == 20) {
+                            enemy_id = rand() % 19; // Random medium enemy
+                        } else if(*tile_id_buffer == 21) {
+                            enemy_id = rand() % 19; // Random large enemy
+                        } else {
+                            enemy_id = *tile_id_buffer;
+                        }
+                        scene_add_body(scene, make_enemy(game, game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, enemy_id));
+                    }
                 }
             }
         }
@@ -145,15 +158,19 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
     free(tile_id_buffer);
 }
 
-void map_load(game_t *game, const char *path, size_t x_tiles, size_t y_tiles) {
+void map_load(game_t *game, const char *path) {
+    int *x_tiles = malloc(sizeof(int));
+    int *y_tiles = malloc(sizeof(int));
     FILE *file = fopen(path, "r");
-    map_load_file(game, file, x_tiles, y_tiles, 0);
+    fscanf(file, "%d\n", x_tiles);
+    fscanf(file, "%d\n", y_tiles);
+    map_load_file(game, file, *x_tiles, *y_tiles, 0);
     fscanf(file,"\n");
-    map_load_file(game, file, x_tiles, y_tiles, 1);
+    map_load_file(game, file, *x_tiles, *y_tiles, 1);
     fscanf(file,"\n");
-    map_load_file(game, file, x_tiles, y_tiles, 2);
+    map_load_file(game, file, *x_tiles, *y_tiles, 2);
     fscanf(file,"\n");
-    map_load_file(game, file, x_tiles, y_tiles, 3);
+    map_load_file(game, file, *x_tiles, *y_tiles, 3);
     fclose(file);
 }
 

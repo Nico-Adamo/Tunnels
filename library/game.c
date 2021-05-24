@@ -10,6 +10,7 @@ typedef struct game {
     scene_t *current_scene;
     double scale;
     body_t *player;
+    list_t *dungeon;
 } game_t;
 
 typedef struct sprite_info {
@@ -371,6 +372,7 @@ game_t *game_init(double scale) {
     game->sprites = list_init(NUM_SPRITES, tile_info_free);
     game->scale = scale;
     game->player = NULL;
+    game->dungeon = list_init(5, free); // Todo: magic number
 
     return game;
 }
@@ -399,6 +401,18 @@ void game_add_tile_interactor(game_t *game, tile_interactor_t *interactor) {
 
 list_t *game_get_tile_interactors(game_t *game) {
     return game->tile_interactors;
+}
+
+list_t *game_get_dungeon(game_t *game) {
+    return game->dungeon;
+}
+
+void game_reset_dungeon(game_t *game) {
+    game->dungeon = list_init(5, free); // Todo: magic number
+}
+
+void game_add_room(game_t *game, char *room_path) {
+    list_add(game->dungeon, room_path);
 }
 
 void game_add_sprite(game_t *game, sprite_t *sprite) {

@@ -18,7 +18,7 @@ void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t b
             create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
         }
     }
-    body_set_shoot_cooldown(player, 0.5); // TODO: magic number
+    body_set_shoot_cooldown(player, 0.3); // TODO: magic number
 }
 
 void set_zero_velocity_direction(body_t *player) {

@@ -47,6 +47,11 @@ int main(int arg_c, char *arg_v[]) {
     game_set_player(game, player);
     game_set_current_scene(game, scene);
 
+    game_add_room(game, "assets/levels/b_room_02a_full.txt");
+    game_add_room(game, "assets/levels/b_room_03a_full.txt");
+    game_add_room(game, "assets/levels/b_room_04a_full.txt");
+    game_add_room(game, "assets/levels/b_room_05a_full.txt");
+
     double seconds = 0;
     SDL_Texture *half_heart = sdl_load_texture(HALF_HEART);
     SDL_Texture *empty_heart = sdl_load_texture(EMPTY_HEART);
