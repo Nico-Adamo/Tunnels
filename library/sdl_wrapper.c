@@ -242,7 +242,11 @@ void sdl_render_game(game_t *game) {
         SDL_Rect shape = body_get_draw_shape(body);
         rect_t hitbox = body_get_draw_hitbox(body);
         SDL_Texture *texture = body_get_texture(body);
+        if(body_get_hit_timer(body) > 0) {
+            SDL_SetTextureColorMod(texture, 255, 50, 50);
+        }
         sdl_draw_texture(texture, shape, hitbox, body_get_flipped(body));
+        SDL_SetTextureColorMod(texture, 255,255,255);
     }
 
     // Tilemap rendering: walls

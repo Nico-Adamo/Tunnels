@@ -11,12 +11,6 @@ const double max_cooldown = 2;
 
 const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
 
-double rand_from(double min, double max) {
-    double range = (max - min);
-    double div = RAND_MAX / range;
-    return min + (rand() / div);
-}
-
 void handle_enemies(game_t *game, double dt) {
     scene_t *scene = game_get_current_scene(game);
     list_t *enemies = scene_get_enemies(scene);

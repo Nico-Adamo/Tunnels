@@ -73,6 +73,7 @@ void body_free(body_t *body);
  * @param body a pointer to a body returned from body_init()
  * @return the polygon describing the body's current position
  */
+double rand_from(double min, double max);
 
 int body_get_cur_sprite_id(body_t *body);
 body_sprite_info_t body_get_sprite_ids(body_t *body);
@@ -86,6 +87,8 @@ double body_get_invulnerability_timer(body_t *body);
 void body_set_invulnerability_timer(body_t *body, double invulnerability_timer);
 void body_set_shoot_cooldown(body_t *body, double cooldown);
 double body_get_shoot_cooldown(body_t *body);
+double body_get_hit_timer(body_t *body);
+void body_set_hit_timer(body_t *body, double timer);
 
 SDL_Rect body_get_hitbox_shape(body_t *body);
 SDL_Rect body_get_draw_shape(body_t *body);
