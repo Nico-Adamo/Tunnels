@@ -70,10 +70,11 @@ SDL_Rect COLLIDER_TILES[]= {
     {0, 0, 4, 16}, // 1 - Left quarter
     {12, 0, 4, 16}, // 2 - Right quarter
     {0, 0, 16, 8}, // 3 - Bottom half
-    {12, 0, 4, 8} // 4 - Right quarter, half height
+    {12, 0, 4, 8}, // 4 - Right quarter, half height
+    {0, 0, 4, 8} // 5 - Left quarter, half height
 };
 
-tile_info_t *COLLIDER_TILE_INFOS[5];
+tile_info_t *COLLIDER_TILE_INFOS[6];
 
 const int TILE_SIZE = 16;
 
@@ -133,6 +134,8 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                     } else {
                         add_collider_tile(scene, *tile_id_buffer, x, y, game_scale);
                     }
+                } else if(tile_type == 3) {
+                    scene_add_body(scene, make_enemy(game, game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, *tile_id_buffer));
                 }
             }
         }
@@ -149,6 +152,8 @@ void map_load(game_t *game, const char *path, size_t x_tiles, size_t y_tiles) {
     map_load_file(game, file, x_tiles, y_tiles, 1);
     fscanf(file,"\n");
     map_load_file(game, file, x_tiles, y_tiles, 2);
+    fscanf(file,"\n");
+    map_load_file(game, file, x_tiles, y_tiles, 3);
     fclose(file);
 }
 

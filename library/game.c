@@ -31,44 +31,335 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/knight_f_idle_anim_full.png",
     true, .125, 4
     },
-
-    // 1 - HORIZONTAL BULLET
-    {{0, 0, 7, 7},
-    {0, 0, 7, 7},
-    {0, 0, 7, 7},
-    "assets/circle_bullet_test_3.png",
-    false, 0, 0
-    },
-    // 2 - ENEMY  BULLET
-    {{0, 0, 7, 7},
-    {0, 0, 7, 7},
-    {0, 0, 7, 7},
-    "assets/circle_bullet_test_2.png",
-    false, 0, 0
-    },
-    // 3 - ENEMY
-    {{0, 0, 16, 32},
-    {3, 0, 12, 6},
-    {3, 0, 9, 16},
-    "assets/wizzard_m_idle_anim_full.png",
-    true, .25, 4
-    },
-    // 4 - RUNNING PLAYER
+    // 1 - RUNNING PLAYER
     {{0, 0, 16, 28},
     {3, 0, 12, 6},
     {3, 0, 9, 16},
     "assets/knight_f_run_anim_full.png",
     true, .1, 4
     },
-    // 5 - HIT PLAYER
+    // 2 - HIT PLAYER
     {{0, 0, 16, 28},
     {3, 0, 12, 6},
     {3, 0, 9, 16},
     "assets/knight_f_hit_anim_full.png",
     true, .25, 2
     },
-
-
+    // 3 - PLAYER BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/player_bullet.png",
+    false, 0, 0
+    },
+    // 4 - TINY ZOMBIE IDLE
+    {{0, 0, 16, 16},
+    {5, 0, 9, 10},
+    {5, 0, 9, 10},
+    "assets/tiny_zombie_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 5 - TINY ZOMBIE RUN
+    {{0, 0, 16, 16},
+    {5, 0, 9, 10},
+    {5, 0, 9, 10},
+    "assets/tiny_zombie_run_anim_full.png",
+    true, .25, 4
+    },
+    // 6 - GOBLIN IDLE
+    {{0, 0, 16, 16},
+    {5, 0, 9, 10},
+    {5, 0, 9, 10},
+    "assets/goblin_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 7 - GOBLIN RUN
+    {{0, 0, 16, 16},
+    {5, 0, 9, 10},
+    {5, 0, 9, 10},
+    "assets/goblin_run_anim_full.png",
+    true, .25, 4
+    },
+    // 8 - IMP IDLE
+    {{0, 0, 16, 16},
+    {5, 0, 9, 10},
+    {5, 0, 9, 10},
+    "assets/imp_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 9 - IMP RUN
+    {{0, 0, 16, 16},
+    {4, 0, 9, 10},
+    {4, 0, 9, 10},
+    "assets/imp_run_anim_full.png",
+    true, .25, 4
+    },
+    // 10 - SKELET IDLE
+    {{0, 0, 16, 16},
+    {4, 0, 10, 14},
+    {4, 0, 10, 14},
+    "assets/skelet_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 11 - SKELET RUN
+    {{0, 0, 16, 16},
+    {4, 0, 10, 14},
+    {4, 0, 10, 14},
+    "assets/skelet_run_anim_full.png",
+    true, .25, 4
+    },
+    // 12 - MUDDY IDLE/RUN
+    {{0, 0, 16, 16},
+    {0, 0, 16, 13},
+    {0, 0, 16, 13},
+    "assets/muddy_anim_full.png",
+    true, .25, 4
+    },
+    // 13 - SWAMPY IDLE/RUN
+    {{0, 0, 16, 16},
+    {4, 0, 16, 13},
+    {4, 0, 16, 13},
+    "assets/swampy_anim_full.png",
+    true, .25, 4
+    },
+    // 14 - ZOMBIE IDLE/RUN
+    {{0, 0, 16, 16},
+    {5, 0, 8, 16},
+    {5, 0, 8, 16},
+    "assets/zombie_anim_full.png",
+    true, .25, 4
+    },
+    // 15 - ICE_ZOMBIE IDLE/RUN
+    {{0, 0, 16, 16},
+    {5, 0, 8, 16},
+    {5, 0, 8, 16},
+    "assets/ice_zombie_anim_full.png",
+    true, .25, 4
+    },
+    // 16 - MASKED_ORC IDLE
+    {{0, 0, 16, 20},
+    {4, 0, 12, 16},
+    {4, 0, 12, 16},
+    "assets/masked_orc_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 17 - MASKED_ORC RUN
+    {{0, 0, 16, 20},
+    {4, 0, 12, 16},
+    {4, 0, 12, 16},
+    "assets/masked_orc_run_anim_full.png",
+    true, .25, 4
+    },
+    // 18 - ORC_WARRIOR IDLE
+    {{0, 0, 16, 20},
+    {5, 0, 11, 16},
+    {5, 0, 11, 16},
+    "assets/orc_warrior_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 19 - ORC_WARRIOR RUN
+    {{0, 0, 16, 20},
+    {5, 0, 11, 16},
+    {5, 0, 11, 16},
+    "assets/orc_warrior_run_anim_full.png",
+    true, .25, 4
+    },
+    // 20 - ORC_SHAMAN IDLE
+    {{0, 0, 16, 20},
+    {5, 0, 11, 16},
+    {5, 0, 11, 16},
+    "assets/orc_shaman_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 21 - ORC_SHAMAN RUN
+    {{0, 0, 16, 20},
+    {5, 0, 11, 16},
+    {5, 0, 11, 16},
+    "assets/orc_shaman_run_anim_full.png",
+    true, .25, 4
+    },
+    // 22 - NECROMANCER IDLE/RUN
+    {{0, 0, 16, 20},
+    {2, 0, 13, 16},
+    {2, 0, 13, 16},
+    "assets/necromancer_anim_full.png",
+    true, .25, 4
+    },
+    // 23 - WOGUL IDLE
+    {{0, 0, 16, 24},
+    {4, 0, 10, 16},
+    {4, 0, 10, 16},
+    "assets/wogul_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 24 - WOGUL RUN
+    {{0, 0, 16, 24},
+    {4, 0, 10, 16},
+    {4, 0, 10, 16},
+    "assets/wogul_run_anim_full.png",
+    true, .25, 4
+    },
+    // 25 - CHORT IDLE
+    {{0, 0, 16, 24},
+    {4, 0, 10, 18},
+    {4, 0, 10, 18},
+    "assets/chort_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 26 - CHORT RUN
+    {{0, 0, 16, 24},
+    {4, 0, 10, 18},
+    {4, 0, 10, 18},
+    "assets/chort_run_anim_full.png",
+    true, .25, 4
+    },
+    // 27 - WIZARD IDLE
+    {{0, 0, 16, 28},
+    {4, 0, 11, 20},
+    {4, 0, 11, 20},
+    "assets/wizzard_m_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 28 - WIZARD RUN
+    {{0, 0, 16, 28},
+    {4, 0, 11, 18},
+    {4, 0, 11, 18},
+    "assets/wizzard_m_run_anim_full.png",
+    true, .25, 4
+    },
+    // 29 - NECROMANCER_WIZARD IDLE
+    {{0, 0, 16, 28},
+    {4, 0, 11, 18},
+    {4, 0, 11, 18},
+    "assets/necromancer_wizard_run_anim_full.png",
+    true, .25, 4
+    },
+    // 30 - NECROMANCER_WIZARD RUN
+    {{0, 0, 16, 28},
+    {4, 0, 11, 18},
+    {4, 0, 11, 18},
+    "assets/necromancer_wizard_run_anim_full.png",
+    true, .25, 4
+    },
+    // 31 - BIG_ZOMBIE IDLE
+    {{0, 0, 32, 36},
+    {8, 0, 18, 27},
+    {8, 0, 18, 27},
+    "assets/big_zombie_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 32 - BIG_ZOMBIE RUN
+    {{0, 0, 32, 36},
+    {8, 0, 18, 27},
+    {8, 0, 18, 27},
+    "assets/big_zombie_run_anim_full.png",
+    true, .25, 4
+    },
+    // 33 - OGRE IDLE
+    {{0, 0, 32, 36},
+    {8, 0, 21, 26},
+    {8, 0, 21, 26},
+    "assets/ogre_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 34 - OGRE RUN
+    {{0, 0, 32, 36},
+    {8, 0, 21, 26},
+    {8, 0, 21, 26},
+    "assets/ogre_run_anim_full.png",
+    true, .25, 4
+    },
+    // 35 - BIG_DEMON IDLE
+    {{0, 0, 32, 36},
+    {6, 0, 22, 30},
+    {6, 0, 22, 30},
+    "assets/big_demon_idle_anim_full.png",
+    true, .25, 4
+    },
+    // 36 - BIG_DEMON RUN
+    {{0, 0, 32, 36},
+    {6, 0, 22, 30},
+    {6, 0, 22, 30},
+    "assets/big_demon_run_anim_full.png",
+    true, .25, 4
+    },
+    // 37 - DEMON BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/demon_bullet.png",
+    false, 0, 0
+    },
+    // 38 - ICE ZOMBIE BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/ice_zombie_bullet.png",
+    false, 0, 0
+    },
+    // 39 - MUDDY BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/muddy_bullet.png",
+    false, 0, 0
+    },
+    // 40 - NECROMANCER BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/necromancer_bullet.png",
+    false, 0, 0
+    },
+    // 41 - NECROMANCER WIZARD BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/necromancer_wizard_bullet.png",
+    false, 0, 0
+    },
+    // 42 - ORC BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/orc_bullet.png",
+    false, 0, 0
+    },
+    // 43 - ORC SHAMAN BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/orc_shaman_bullet.png",
+    false, 0, 0
+    },
+    // 44 - SKELET BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/skelet_bullet.png",
+    false, 0, 0
+    },
+    // 45 - SWAMPY BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/swampy_bullet.png",
+    false, 0, 0
+    },
+    // 46 - ZOMBIE BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/zombie_bullet.png",
+    false, 0, 0
+    },
+    // 47 - WIZARD BULLET
+    {{0, 0, 7, 7},
+    {0, 0, 7, 7},
+    {0, 0, 7, 7},
+    "assets/wizzard_bullet.png",
+    false, 0, 0
+    }
 };
 
 game_t *game_init(double scale) {

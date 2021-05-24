@@ -9,7 +9,7 @@ void body_set_velocity_and_direction(body_t *player, vector_t velocity) {
 }
 
 void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t bullet_dir) {
-    body_t *bullet = make_bullet(game, player, bullet_dir, 1, 400); //TODO: Magic numbers
+    body_t *bullet = make_bullet(game, player, bullet_dir, 3, 400); //TODO: Magic numbers
     scene_add_body(scene, bullet);
     create_tile_collision(scene, bullet);
     for (size_t i = 0; i < scene_bodies(scene); i++) {

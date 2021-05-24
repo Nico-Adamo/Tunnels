@@ -18,26 +18,21 @@ body_t *make_player(game_t *game, double x, double y, char *type, stats_info_t i
     vector_t bottom_left = {x, y};
     body_sprite_info_t player_sprite_info = {
         .idle_sprite_id = 0,
-        .walking_anim_id = 4,
+        .walking_anim_id = 1,
         .hit_anim_id = -1,
-        .invulnerable_anim_id = 5
+        .invulnerable_anim_id = 2
     };
     // First argument: Sprite size (x,y are always 0)
     // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
     return body_init_with_info(player_sprite_info, game_get_sprite(game, player_sprite_info.idle_sprite_id), bottom_left, 100, 4, type, info);
 }
 
-body_t *make_enemy(game_t *game, double x, double y, char *type, stats_info_t info) {
+body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
     vector_t bottom_left = {x, y};
-    body_sprite_info_t enemy_sprite_info = {
-        .idle_sprite_id = 3,
-        .walking_anim_id = -1,
-        .hit_anim_id = -1,
-        .invulnerable_anim_id = -1
-    };
-    // First argument: Sprite size (x,y are always 0)
-    // Second argument: Bottom left corner of sprite, and size (we should eventually change to scale factor rather than specifying explicit width and height)
-    return body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, type, info);
+    stats_info_t info = enemy_get_stats(type);
+    body_sprite_info_t enemy_sprite_info = enemy_get_sprite_info(type);
+    printf("%d %d %f %f\n", enemy_sprite_info.idle_sprite_id, info.bullet_id, bottom_left.x, bottom_left.y);
+    return body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, "ENEMY", info);
 }
 
 UI_t *make_heart(double x, double y, char *texture_name, char *type) {
@@ -71,10 +66,10 @@ scene_t *scene_reset(game_t *game) {
     scene_t *scene = scene_init();
 
     // Initialize Potential Enemy
-    for(int i=0; i<3; i++) {
-        body_t *temp_enemy = make_enemy(game, 400+100*i, 200 + rand_from(-50,50), "ENEMY", enemy_info);
-        scene_add_body(scene, temp_enemy);
-    }
+    // for(int i=0; i<3; i++) {
+    //     body_t *temp_enemy = make_enemy(game, 400+100*i, 200 + rand_from(-50,50), "ENEMY", enemy_info);
+    //     scene_add_body(scene, temp_enemy);
+    // }
 
     // Initialize Demo Heart
     int heart_num = PLAYER_HEALTH / (HALF_HEART_HEALTH * 2);
@@ -103,11 +98,11 @@ void make_level(game_t *game){
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
     player_info.health = PLAYER_HEALTH;
-    body_t *player_new = make_player(game, 100, 100, "PLAYER", player_info);
+    body_t *player_new = make_player(game, 200, 200, "PLAYER", player_info);
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
-    map_load(game, "assets/levels/map_bigger.map", 20, 20);
+    map_load(game, "assets/levels/b_room_01b.map", 40, 25);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 
@@ -120,6 +115,6 @@ void game_end_level(game_t *game) {
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
-    map_load(game, "assets/levels/map_bigger.map", 20, 20);
+    map_load(game, "assets/levels/b_room_01b.map", 20, 20);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }

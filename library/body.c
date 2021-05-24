@@ -251,7 +251,7 @@ void body_tick(body_t *body, double dt) {
                 body->cur_sprite_id = body->sprite_ids.invulnerable_anim_id;
                 body->cur_frame = 0;
             }
-        } else if(body->velocity.x != 0 || body->velocity.y != 0 && body->sprite_ids.walking_anim_id != -1) {
+        } else if((body->velocity.x != 0 || body->velocity.y != 0) && (body->sprite_ids.walking_anim_id != -1)) {
             body->cur_sprite_id = body->sprite_ids.walking_anim_id;
         } else {
             body->cur_sprite_id = body->sprite_ids.idle_sprite_id;

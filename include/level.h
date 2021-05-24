@@ -1,6 +1,8 @@
 #include "game.h"
 #include "sdl_wrapper.h"
 #include "enemy.h"
+#include "map.h"
+#include "forces.h"
 
 extern const char *SPRITE;
 // const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
@@ -22,7 +24,7 @@ list_t *get_player_hearts(scene_t *scene);
 
 body_t *make_player(game_t *game, double x, double y, char *type, stats_info_t info);
 
-body_t *make_enemy(game_t *game, double x, double y, char *type, stats_info_t info);
+body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type);
 
 scene_t *scene_reset(game_t *game);
 
