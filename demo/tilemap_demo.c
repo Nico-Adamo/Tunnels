@@ -83,23 +83,7 @@ int main(int arg_c, char *arg_v[]) {
             UI_set_texture(list_get(hearts, idx), half_heart);
         }
 
-        if (body_get_stats_info(player).health <= 0) {
-            scene_t *scene_new = scene_reset(game);
-            player_info = body_get_stats_info(player);
-            player_info.health = PLAYER_HEALTH;
-            body_t *player_new = make_player(game, 100, 100, "PLAYER", player_info);
-            game_set_player(game, player_new);
-            game_set_current_scene(game, scene_new);
-            scene_add_body(scene_new, player_new);
-            list_free(hearts);
-            scene_free(scene);
-            // TODO: Update to load the correct level/ room
-            map_load(game, "assets/levels/map_bigger.map", 20, 20);
-            create_tile_collision(game_get_current_scene(game), game_get_player(game));
-
-        }
-
-
+        // Interaction UI display
         list_t *interactors = game_get_tile_interactors(game);
         body_t *player_current = game_get_player(game);
         for(size_t i = 0; i<list_size(interactors); i++) {
@@ -122,6 +106,22 @@ int main(int arg_c, char *arg_v[]) {
                 }
                 pressed_F = false;
             }
+        }
+
+        if (body_get_stats_info(player).health <= 0) {
+            scene_t *scene_new = scene_reset(game);
+            player_info = body_get_stats_info(player);
+            player_info.health = PLAYER_HEALTH;
+            body_t *player_new = make_player(game, 100, 100, "PLAYER", player_info);
+            game_set_player(game, player_new);
+            game_set_current_scene(game, scene_new);
+            scene_add_body(scene_new, player_new);
+            list_free(hearts);
+            scene_free(scene);
+            // TODO: Update to load the correct level/ room
+            map_load(game, "assets/levels/map_bigger.map", 20, 20);
+            create_tile_collision(game_get_current_scene(game), game_get_player(game));
+
         }
 
         sdl_render_game(game);
