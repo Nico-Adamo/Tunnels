@@ -38,7 +38,31 @@ const char *TILE_PATHS[] = {
     "assets/door_bottom_m_right.png", // 33
     "assets/door_bottom_right.png", // 34
     "assets/door_cap_left.png", // 35
-    "assets/door_cap_right.png" // 36
+    "assets/door_cap_right.png", // 36
+    "assets/wall_mid_mural.png", // 37
+    "assets/wall_banner_red.png", // 38
+    "assets/wall_banner_yellow.png", // 39
+    "assets/wall_banner_green.png", // 40
+    "assets/wall_banner_blue.png", // 41
+    "assets/wall_banner_black.png", // 42
+    "assets/wall_column_top.png", // 43
+    "assets/wall_column_mid.png", // 44
+    "assets/wall_column_base.png", // 45
+    "assets/column_base.png", // 46
+    "assets/wall_hole_1.png", // 47
+    "assets/wall_hole_2.png", // 48
+    "assets/wall_goo.png", // 49
+    "assets/wall_goo_base.png", // 50
+    "assets/skull_floor_1.png", // 51
+    "assets/skull_floor_2.png", // 52
+    "assets/skull_floor_3.png", // 53
+    "assets/skull_floor_4.png", // 54
+    "assets/skull_floor_5.png", // 55
+    "assets/skull_floor_6.png", // 56
+    "assets/skull_floor_7.png", // 57
+    "assets/skull_floor_8.png", // 58
+    "assets/eyes_wall_hole_1.png", // 59
+    "assets/eyes_wall_hole_2.png", // 60
 };
 
 SDL_Rect COLLIDER_TILES[]= {
