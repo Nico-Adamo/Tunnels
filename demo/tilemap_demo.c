@@ -107,16 +107,12 @@ int main(int arg_c, char *arg_v[]) {
                 SDL_Texture *press_F_texture = sdl_load_texture(PRESS_F);
                 SDL_Rect shape = (SDL_Rect) {0, 0, 600, 230};
                 rect_t player_hitbox = body_get_draw_hitbox(player_current);
-                rect_t hitbox = (rect_t) {player_hitbox.x, player_hitbox.y - 50, 120, 46};
+                rect_t hitbox = (rect_t) {MAX_WIDTH - 125, MAX_HEIGHT - 50, 120, 46};
                 UI_t *press_F = UI_init(shape, hitbox, press_F_texture, "PRESS_F", 0.1);
                 scene_add_UI_component(scene, press_F);
                 pressed_F = true;
             }
-            /*
             else if (!find_collision(interactor->area, body_get_hitbox(player_current)).collided) {
-                if (pressed_F) {
-                    printf("goodbye \n");
-                }
                 list_t *UIs = scene_get_UI_components(scene);
                 for (size_t i = 0; i < list_size(UIs); i++) {
                     if (strcmp(UI_get_type(list_get(UIs, i)), "PRESS_F") == 0) {
@@ -125,7 +121,6 @@ int main(int arg_c, char *arg_v[]) {
                 }
                 pressed_F = false;
             }
-            */
         }
 
         sdl_render_game(game);
