@@ -72,7 +72,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 bullet_dir.x = 1;
                 player_make_bullet(game, player, scene, bullet_dir);
                 break;
-            case 'f':
+            case 'f': {
                 list_t *interactors = game_get_tile_interactors(game);
                 for(size_t i = 0; i<list_size(interactors); i++) {
                     tile_interactor_t *interactor = list_get(interactors, i);
@@ -81,6 +81,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                         break;
                     }
                 }
+            }
         }
     }
     else if (type == KEY_RELEASED) {

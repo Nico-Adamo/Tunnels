@@ -19,6 +19,8 @@
 #include "sdl_wrapper.h"
 #include "level.h"
 
+const char *PRESS_F = "assets/ui/pressF.png";
+
 int main(int arg_c, char *arg_v[]) {
     vector_t bottom_left = {.x = 0, .y = 0};
     vector_t top_right = {.x = MAX_WIDTH, .y = MAX_HEIGHT};
@@ -50,6 +52,7 @@ int main(int arg_c, char *arg_v[]) {
     SDL_Texture *empty_heart = sdl_load_texture(EMPTY_HEART);
 
     bool spacebar_pressed = false;
+    bool pressed_F = false;
 
     sdl_on_key(on_key);
     while(!sdl_is_done(game)) {
@@ -93,6 +96,36 @@ int main(int arg_c, char *arg_v[]) {
             map_load(game, "assets/levels/map_bigger.map", 20, 20);
             create_tile_collision(game_get_current_scene(game), game_get_player(game));
 
+        }
+
+
+        list_t *interactors = game_get_tile_interactors(game);
+        body_t *player_current = game_get_player(game);
+        for(size_t i = 0; i<list_size(interactors); i++) {
+            tile_interactor_t *interactor = list_get(interactors, i);
+            if (find_collision(interactor->area, body_get_hitbox(player_current)).collided && !pressed_F) {
+                SDL_Texture *press_F_texture = sdl_load_texture(PRESS_F);
+                SDL_Rect shape = (SDL_Rect) {0, 0, 600, 230};
+                rect_t player_hitbox = body_get_draw_hitbox(player_current);
+                rect_t hitbox = (rect_t) {player_hitbox.x, player_hitbox.y - 50, 120, 46};
+                UI_t *press_F = UI_init(shape, hitbox, press_F_texture, "PRESS_F", 0.1);
+                scene_add_UI_component(scene, press_F);
+                pressed_F = true;
+            }
+            /*
+            else if (!find_collision(interactor->area, body_get_hitbox(player_current)).collided) {
+                if (pressed_F) {
+                    printf("goodbye \n");
+                }
+                list_t *UIs = scene_get_UI_components(scene);
+                for (size_t i = 0; i < list_size(UIs); i++) {
+                    if (strcmp(UI_get_type(list_get(UIs, i)), "PRESS_F") == 0) {
+                        list_remove(UIs, i);
+                    }
+                }
+                pressed_F = false;
+            }
+            */
         }
 
         sdl_render_game(game);
