@@ -24,6 +24,7 @@ typedef struct body {
     vector_t direction;
     double animation_timer;
     double invulnerability_timer;
+    double shoot_cooldown;
 } body_t;
 
 body_t *body_init(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
@@ -54,6 +55,7 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
     body->direction.y = 0;
     body->animation_timer = 0;
     body->invulnerability_timer = 0;
+    body->shoot_cooldown = info.cooldown;
 
 
     body->centroid.x = body->bottom_left.x + body->scale * (sprite_get_hitbox_shape(sprite).x + sprite_get_hitbox_shape(sprite).w / 2);
@@ -236,6 +238,10 @@ void body_tick(body_t *body, double dt) {
         .y = (final_velocity.y + body->velocity.y) / 2
     };
 
+    if(body->shoot_cooldown > 0) {
+        body->shoot_cooldown -= dt;
+        if(body->shoot_cooldown <= 0) body->shoot_cooldown = 0;
+    }
     if (sprite_is_animated(body->sprite)) {
         if(body->cur_frame >= sprite_get_animation_frames(body->sprite)) {
             body->cur_frame = 0;
@@ -270,4 +276,12 @@ void body_remove(body_t *body) {
 
 bool body_is_removed(body_t *body) {
     return body->removed;
+}
+
+void body_set_shoot_cooldown(body_t *body, double cooldown) {
+    body->shoot_cooldown = cooldown;
+}
+
+double body_get_shoot_cooldown(body_t *body) {
+    return body->shoot_cooldown;
 }
