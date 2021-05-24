@@ -164,8 +164,22 @@ void scene_tick(scene_t *scene, double dt) {
             }
         }
     }
-   for(size_t i = 0; i < list_size(scene->enemies); i++) {
+
+    body_t *player;
+    for(size_t i = 0; i < list_size(scene->bodies); i++) {
+        if (strcmp(body_get_type(list_get(scene->bodies, i)), "PLAYER") == 0) {
+            player = list_get(scene->bodies, i);
+            break;
+        }
+    }
+
+    for(size_t i = 0; i < list_size(scene->enemies); i++) {
         if (body_is_removed(list_get(scene->enemies, i))) {
+            double exp = body_get_stats_info(list_get(scene->enemies, i)).experience;
+            stats_info_t player_stats = body_get_stats_info(player);
+            player_stats.experience += exp;
+            //printf("Current Player Exp: %f, Enemy Exp: %f\n", player_stats.experience, exp);
+            body_set_stats_info(player, player_stats);
             list_remove(scene->enemies, i);
         }
     }

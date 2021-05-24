@@ -93,6 +93,7 @@ int main(int arg_c, char *arg_v[]) {
             scene_add_body(scene_new, player_new);
             list_free(hearts);
             scene_free(scene);
+            // TODO: Update to load the correct level/ room
             map_load(game, "assets/levels/map_bigger.map", 20, 20);
             create_tile_collision(game_get_current_scene(game), game_get_player(game));
 

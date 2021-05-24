@@ -133,133 +133,133 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .attack = 2,
      .cooldown = 0,
      .bullet_id = 46,
-     .experience = 0
+     .experience = 5
     },
     // GOBLIN
     {.health = 10,
      .attack = 2,
      .cooldown = 0,
      .bullet_id = 42,
-     .experience = 0
+     .experience = 5
     },
      // IMP
     {.health = 10,
      .attack = 2,
      .cooldown = 0,
      .bullet_id = 37,
-     .experience = 0
+     .experience = 5
     },
      // SKELET
     {.health = 15,
      .attack = 5,
      .cooldown = 2,
      .bullet_id = 44,
-     .experience = 0
+     .experience = 5
     },
      // MUDDY
     {.health = 20,
      .attack = 5,
      .cooldown = 4,
      .bullet_id = 39,
-     .experience = 0
+     .experience = 10
     },
      // SWAMPY
     {.health = 20,
      .attack = 5,
      .cooldown = 4,
      .bullet_id = 45,
-     .experience = 0
+     .experience = 10
     },
      // ZOMBIE
     {.health = 15,
      .attack = 5,
      .cooldown = 2,
      .bullet_id = 46,
-     .experience = 0
+     .experience = 5
     },
      // ICE_ZOMBIE
     {.health = 15,
      .attack = 5,
      .cooldown = 2,
      .bullet_id = 38,
-     .experience = 0
+     .experience = 5
     },
      // MASKED_ORC
     {.health = 20,
      .attack = 5,
      .cooldown = 3,
      .bullet_id = 42,
-     .experience = 0
+     .experience = 10
     },
      // ORC_WARRIOR
     {.health = 20,
      .attack = 5,
      .cooldown = 3,
      .bullet_id = 42,
-     .experience = 0
+     .experience = 10
     },
      // ORC_SHAMAN
     {.health = 20,
      .attack = 5,
      .cooldown = 3,
      .bullet_id = 42,
-     .experience = 0
+     .experience = 10
     },
      // NECROMANCER
     {.health = 30,
      .attack = 10,
      .cooldown = 5,
      .bullet_id = 42,
-     .experience = 0
+     .experience = 15
     },
      // WOGUL
     {.health = 30,
      .attack = 10,
      .cooldown = 4,
      .bullet_id = 37,
-     .experience = 0
+     .experience = 15
     },
      // CHORT
     {.health = 30,
      .attack = 10,
      .cooldown = 4,
      .bullet_id = 37,
-     .experience = 0
+     .experience = 15
     },
      // WIZARD
     {.health = 30,
      .attack = 10,
      .cooldown = 5,
      .bullet_id = 47,
-     .experience = 0
+     .experience = 15
     },
      // NECROMANCER_WIZARD
     {.health = 40,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 41,
-     .experience = 0
+     .experience = 20
     },
      // BIG_ZOMBIE
     {.health = 40,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 46,
-     .experience = 0
+     .experience = 20
     },
      // OGRE
     {.health = 40,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 42,
-     .experience = 0
+     .experience = 20
     },
      // BIG_DEMON
     {.health = 60,
      .attack = 20,
      .cooldown = 5,
      .bullet_id = 37,
-     .experience = 0
+     .experience = 30
     }
 };
 
