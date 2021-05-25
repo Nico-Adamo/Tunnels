@@ -6,10 +6,6 @@
 
 extern const char *SPRITE;
 // const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
-extern const char *FULL_HEART;
-extern const char *HALF_HEART;
-extern const char *EMPTY_HEART;
-extern const char *START;
 
 extern const double MAX_WIDTH;
 extern const double MAX_HEIGHT;

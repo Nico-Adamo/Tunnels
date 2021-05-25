@@ -19,7 +19,7 @@
 #include "sdl_wrapper.h"
 #include "level.h"
 
-const char *PRESS_F = "assets/ui/pressF.png";
+const char *PRESS_F_PATH = "assets/ui/pressF.png";
 
 int main(int arg_c, char *arg_v[]) {
     vector_t bottom_left = {.x = 0, .y = 0};
@@ -53,11 +53,11 @@ int main(int arg_c, char *arg_v[]) {
     game_add_room(game, "assets/levels/b_room_05a_full.txt");
 
     double seconds = 0;
-    SDL_Texture *half_heart = sdl_load_texture(HALF_HEART);
-    SDL_Texture *empty_heart = sdl_load_texture(EMPTY_HEART);
+    sprite_t *half_heart = game_get_sprite(game, HALF_HEART_ID);
+    sprite_t *empty_heart = game_get_sprite(game, EMPTY_HEART_ID);
 
     bool spacebar_pressed = false;
-    bool pressed_F = false;
+    bool entered_door = false;
 
     sdl_on_key(on_key);
     while(!sdl_is_done(game)) {
@@ -81,35 +81,22 @@ int main(int arg_c, char *arg_v[]) {
         if (round(lost_player_halves) > full_hearts_lost * 2) half_heart_lost = true;
         list_t *hearts = get_player_hearts(scene);
         for (size_t i = list_size(hearts) - 1; i > list_size(hearts) - 1 - full_hearts_lost; i--) {
-            UI_set_texture(list_get(hearts, i), empty_heart);
+            UI_set_sprite(list_get(hearts, i), empty_heart);
         }
         if (half_heart_lost) {
             size_t idx = list_size(hearts) - 1 - full_hearts_lost;
-            UI_set_texture(list_get(hearts, idx), half_heart);
+            UI_set_sprite(list_get(hearts, idx), half_heart);
         }
 
         // Interaction UI display
-        list_t *interactors = game_get_tile_interactors(game);
-        body_t *player_current = game_get_player(game);
-        for(size_t i = 0; i<list_size(interactors); i++) {
-            tile_interactor_t *interactor = list_get(interactors, i);
-            if (find_collision(interactor->area, body_get_hitbox(player_current)).collided && !pressed_F) {
-                SDL_Texture *press_F_texture = sdl_load_texture(PRESS_F);
-                SDL_Rect shape = (SDL_Rect) {0, 0, 600, 230};
-                rect_t player_hitbox = body_get_draw_hitbox(player_current);
-                rect_t hitbox = (rect_t) {MAX_WIDTH - 125, MAX_HEIGHT - 50, 120, 46};
-                UI_t *press_F = UI_init(shape, hitbox, press_F_texture, "PRESS_F", 0.1);
-                scene_add_UI_component(scene, press_F);
-                pressed_F = true;
-            }
-            else if (!find_collision(interactor->area, body_get_hitbox(player_current)).collided) {
-                list_t *UIs = scene_get_UI_components(scene);
-                for (size_t i = 0; i < list_size(UIs); i++) {
-                    if (strcmp(UI_get_type(list_get(UIs, i)), "PRESS_F") == 0) {
-                        list_remove(UIs, i);
-                    }
+        bool in_flag = entered_door;
+        entered_door = UI_handle_door_interaction(game, entered_door);
+        if(entered_door == false && in_flag == true) { // Leaving
+            list_t *UIs = scene_get_UI_components(scene);
+            for (size_t i = 0; i < list_size(UIs); i++) {
+                if (strcmp(UI_get_type(list_get(UIs, i)), "PRESS_F") == 0) {
+                    list_remove(UIs, i);
                 }
-                pressed_F = false;
             }
         }
 

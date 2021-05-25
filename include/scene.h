@@ -4,7 +4,7 @@
 #include "body.h"
 #include "list.h"
 #include "tile.h"
-#include "user_interface.h"
+#include "ui_component.h"
 #include <stdbool.h>
 
 /**

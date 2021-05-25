@@ -114,7 +114,7 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                     tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE});
                     scene_add_floor_tile(scene, tile);
                     if(*tile_id_buffer == 32 || *tile_id_buffer == 33) {
-                        tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y-1)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_end_level);
+                        tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y-1)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_end_level, PRESS_F);
                         game_add_tile_interactor(game, interactor);
                     }
                 } else if(tile_type == 1) {

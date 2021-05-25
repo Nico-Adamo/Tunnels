@@ -2,10 +2,6 @@
 
 const char *SPRITE = "knight";
 // const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
-const char *FULL_HEART = "assets/ui/ui_heart_full.png";
-const char *HALF_HEART = "assets/ui/ui_heart_half.png";
-const char *EMPTY_HEART = "assets/ui/ui_heart_empty.png";
-const char *START = "assets/ui/game_start_screen.png";
 
 const double MAX_WIDTH = 1024;
 const double MAX_HEIGHT = 512;
@@ -35,11 +31,10 @@ body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
     return body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, "ENEMY", info);
 }
 
-UI_t *make_heart(double x, double y, char *texture_name, char *type) {
-    SDL_Texture *texture = sdl_load_texture(texture_name);
+UI_t *make_heart(double x, double y, sprite_t *sprite, char *type) {
     SDL_Rect shape = (SDL_Rect) {0, 0, 16, 16};
     rect_t hitbox = (rect_t) {x, y, 32, 32};
-    return UI_init(shape, hitbox, texture, type, 2);
+    return UI_init(sprite, hitbox, type, 2);
 }
 
 list_t *get_player_hearts(scene_t *scene) {
@@ -74,7 +69,7 @@ scene_t *scene_reset(game_t *game) {
     // Initialize Demo Heart
     int heart_num = PLAYER_HEALTH / (HALF_HEART_HEALTH * 2);
     for (int i = 0; i < heart_num; i++) {
-        UI_t *heart = make_heart(HEART_PADDING + 32 * i, MAX_HEIGHT - 32 - HEART_PADDING, FULL_HEART, "PLAYER_HEART");
+        UI_t *heart = make_heart(HEART_PADDING + 32 * i, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
         scene_add_UI_component(scene, heart);
     }
 
@@ -84,10 +79,8 @@ scene_t *scene_reset(game_t *game) {
 scene_t *make_title(game_t *game) {
     scene_t *scene = scene_init();
 
-    SDL_Texture *start = sdl_load_texture(START);
-    SDL_Rect shape = (SDL_Rect) {0, 0, 1024, 512};
     rect_t hitbox = (rect_t) {0, 0, 1024, 512};
-    UI_t *start_screen = UI_init(shape, hitbox, start, "START", 2);
+    UI_t *start_screen = UI_init(game_get_sprite(game, MENU_SPRITE_ID), hitbox, "START", 2);
     scene_add_UI_component(scene, start_screen);
     scene_set_is_menu(scene, true);
     return scene;

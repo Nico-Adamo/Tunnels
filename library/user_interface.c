@@ -1,55 +1,31 @@
 #include "user_interface.h"
+#include "collision.h"
+#include "ui_component.h"
+#include "level.h"
 
-UI_t *UI_init(SDL_Rect shape, rect_t hitbox, SDL_Texture *texture, char *type, double scale) {
-    UI_t *UI = malloc(sizeof(UI_t));
+const int MENU_SPRITE_ID = 48;
+const int PRESS_F_ID = 49;
+const int EMPTY_HEART_ID = 50;
+const int HALF_HEART_ID = 51;
+const int FULL_HEART_ID = 52;
 
-    UI->shape = shape;
-    UI->hitbox = hitbox;
-    UI->texture = texture;
-    UI->type = type;
-    UI->scale = scale;
-
-    UI->centroid.x = hitbox.x + hitbox.w / 2;
-    UI->centroid.y = hitbox.y + hitbox.h / 2;
-    return UI;
-}
-
-// Texture??
-void UI_component_free(UI_t *UI) {
-    free(UI);
-}
-
-SDL_Rect UI_get_shape(UI_t *UI) {
-    return UI->shape;
-}
-
-rect_t UI_get_hitbox(UI_t *UI) {
-    return UI->hitbox;
-}
-
-SDL_Texture *UI_get_texture(UI_t *UI) {
-    return UI->texture;
-}
-
-vector_t UI_get_centroid(UI_t *UI) {
-    return UI->centroid;
-}
-
-double UI_get_scale(UI_t *UI) {
-    return UI->scale;
-}
-
-char *UI_get_type(UI_t *UI) {
-    return UI->type;
-}
-
-void UI_set_centroid(UI_t *UI, vector_t x) {
-    vector_t translation = vec_subtract(x, UI->centroid);
-    UI->centroid = x;
-    UI->hitbox.x += translation.x;
-    UI->hitbox.y += translation.y;
-}
-
-void UI_set_texture(UI_t *UI, SDL_Texture *texture) {
-    UI->texture = texture;
+bool UI_handle_door_interaction(game_t *game, bool entered_area) {
+    bool still_in_area = false;
+    list_t *interactors = game_get_tile_interactors(game);
+    body_t *player_current = game_get_player(game);
+    scene_t *scene = game_get_current_scene(game);
+    for(size_t i = 0; i<list_size(interactors); i++) {
+        tile_interactor_t *interactor = list_get(interactors, i);
+        if (find_collision(interactor->area, body_get_hitbox(player_current)).collided) {
+            if(entered_area == false) {
+                SDL_Rect shape = (SDL_Rect) {0, 0, 600, 230};
+                rect_t player_hitbox = body_get_draw_hitbox(player_current);
+                rect_t hitbox = (rect_t) {MAX_WIDTH - 125, MAX_HEIGHT - 50, 120, 46};
+                UI_t *press_F = UI_init(game_get_sprite(game, PRESS_F_ID), hitbox, "PRESS_F", 0.1);
+                scene_add_UI_component(scene, press_F);
+            }
+            still_in_area = true;
+        }
+    }
+    return still_in_area;
 }

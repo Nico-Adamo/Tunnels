@@ -362,7 +362,42 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 7, 7},
     "assets/wizzard_bullet.png",
     false, 0, 0
-    }
+    },
+    // 48 - START SCREEN
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/game_start_screen.png",
+    false, 0, 0
+    },
+    // 49 - PRESS_F UI
+    {{0, 0, 600, 230},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/press_f_full.png",
+    true, 0.6, 2
+    },
+    // 50 - EMPTY HEART
+    {{0, 0, 16, 16},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/ui_heart_empty.png",
+    false, 0, 0
+    },
+    // 51 - HALF HEART
+    {{0, 0, 16, 16},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/ui_heart_half.png",
+    false, 0, 0
+    },
+    // 52 - HALF HEART
+    {{0, 0, 16, 16},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/ui_heart_full.png",
+    false, 0, 0
+    },
 };
 
 game_t *game_init(double scale) {
@@ -392,10 +427,11 @@ void game_add_tile_info(game_t *game, tile_info_t *tile_info) {
     list_add(game->tile_infos, tile_info);
 }
 
-tile_interactor_t *tile_interactor_init(rect_t area, tile_interaction interaction) {
+tile_interactor_t *tile_interactor_init(rect_t area, tile_interaction interaction, enum tile_interactor_type type) {
     tile_interactor_t *tile_interactor = malloc(sizeof(tile_interactor_t));
     tile_interactor->area = area;
     tile_interactor->interaction = interaction;
+    tile_interactor->type = type;
     return tile_interactor;
 }
 

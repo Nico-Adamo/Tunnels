@@ -214,4 +214,8 @@ void scene_tick(scene_t *scene, double dt) {
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         body_tick(list_get(scene->bodies, i), dt);
     }
+
+    for(size_t i = 0; i< list_size(scene->UI_components); i++) {
+        UI_tick(list_get(scene->UI_components, i), dt);
+    }
 }

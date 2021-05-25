@@ -9,9 +9,12 @@ typedef struct game game_t;
 
 typedef void (*tile_interaction)(game_t *game);
 
+enum tile_interactor_type{PRESS_F};
+
 typedef struct tile_interactor {
     rect_t area;
     tile_interaction interaction;
+    enum tile_interactor_type type;
 } tile_interactor_t;
 
 game_t *game_init(double scale);
@@ -20,7 +23,7 @@ void game_free(void *game);
 
 void game_add_tile_info(game_t *game, tile_info_t *tile_info);
 
-tile_interactor_t *tile_interactor_init(rect_t area, tile_interaction interaction);
+tile_interactor_t *tile_interactor_init(rect_t area, tile_interaction interaction, enum tile_interactor_type type);
 
 void game_add_tile_interactor(game_t *game, tile_interactor_t *interactor);
 
