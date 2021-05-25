@@ -102,13 +102,14 @@ void make_level(game_t *game){
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
-    char *path = list_remove(game_get_dungeon(game), 0);
+    char *path = list_get(game_get_dungeon(game), game_get_room(game));
     printf("%s\n", path);
     map_load(game, path);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 
 void game_end_level(game_t *game) {
-    printf("Next level");
+    printf("Next room");
+    game_next_room(game);
     make_level(game);
 }

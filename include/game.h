@@ -50,4 +50,8 @@ void game_add_room(game_t *game, char *room_path);
 
 list_t *game_get_dungeon(game_t *game);
 
+size_t game_get_room(game_t *game);
+
+void game_next_room(game_t *game);
+
 #endif // #ifndef __GAME_H__

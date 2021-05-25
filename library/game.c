@@ -11,6 +11,8 @@ typedef struct game {
     double scale;
     body_t *player;
     list_t *dungeon;
+    size_t cur_room;
+    size_t cur_level;
 } game_t;
 
 typedef struct sprite_info {
@@ -373,6 +375,8 @@ game_t *game_init(double scale) {
     game->scale = scale;
     game->player = NULL;
     game->dungeon = list_init(5, free); // Todo: magic number
+    game->cur_room = 0;
+    game->cur_level = 0;
 
     return game;
 }
@@ -453,3 +457,12 @@ void game_register_sprites(game_t *game) {
         game_add_sprite(game, sprite_init(sprite_info.path, sprite_info.shape, sprite_info.collision_shape, sprite_info.hitbox_shape, sprite_info.is_animated, sprite_info.animation_speed, sprite_info.animation_frames));
     }
 }
+
+size_t game_get_room(game_t *game) {
+    return game->cur_room;
+}
+
+void game_next_room(game_t *game) {
+    game->cur_room++;
+}
+
