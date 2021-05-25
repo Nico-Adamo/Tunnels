@@ -233,7 +233,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
 
     } else if ((strcmp(body_get_type(body1), "PLAYER") == 0 && (strcmp(body_get_type(body2), "ENEMY_BULLET") == 0) ||
     (strcmp(body_get_type(body1), "ENEMY") == 0 && (strcmp(body_get_type(body2), "PLAYER_BULLET") == 0)))) {
-        if(body_get_invulnerability_timer(body1) <= 0) {
+        if(body_get_invulnerability_timer(body1) <= 0 || strcmp(body_get_type(body1), "PLAYER") != 0) {
             body1_info.health -= body2_info.attack;
             body_set_stats_info(body1, body1_info);
             body_set_invulnerability_timer(body1, 0.6); // TODO: Invulnerability timer magic number
