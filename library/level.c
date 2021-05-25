@@ -97,13 +97,11 @@ void make_level(game_t *game){
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
-    player_info.health = PLAYER_HEALTH;
     body_t *player_new = make_player(game, 0, 0, "PLAYER", player_info);
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
     char *path = list_get(game_get_dungeon(game), game_get_room(game));
-    printf("%s\n", path);
     map_load(game, path);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
