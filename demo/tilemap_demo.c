@@ -31,7 +31,7 @@ int main(int arg_c, char *arg_v[]) {
         .attack = 5,
         .health = PLAYER_HEALTH,
         .cooldown = 0.3,
-        .invulnerability_timer = 1,
+        .invulnerability_timer = .6,
         .level = 1,
         .speed = 300,
         .atk_type = RADIAL_SHOOTER
@@ -84,31 +84,34 @@ int main(int arg_c, char *arg_v[]) {
         body_t *player = game_get_player(game);
 
         // Player health display (heart) adjustment
+        double curr_health = body_get_stats_info(player).health;
         list_t *hearts = get_player_hearts(scene);
         size_t num_hearts = list_size(hearts);
-        int max_health = num_hearts * HALF_HEART_HEALTH * 2;
-        if (body_get_stats_info(player).health > max_health) {
-            UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts), MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
-            scene_add_UI_component(scene, heart);
-            // list_free(hearts);
-            hearts = get_player_hearts(scene);
+        if (num_hearts > 0) {
+            double max_health = max_health = num_hearts * HALF_HEART_HEALTH * 2;
+            if (body_get_stats_info(player).health > max_health) {
+                printf("We here");
+                UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts), MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
+                scene_add_UI_component(scene, heart);
+                list_free(hearts);
+                hearts = get_player_hearts(scene);
+                max_health += HALF_HEART_HEALTH * 2;
+            }
+            double lost_player_halves = (max_health - body_get_stats_info(player).health) / HALF_HEART_HEALTH;
+            int full_hearts_lost = floor(lost_player_halves / 2);
+            bool half_heart_lost = false;
+            if (lost_player_halves - full_hearts_lost * 2 > .5) half_heart_lost = true;
+            for (size_t i = 0; i < list_size(hearts); i++) {
+                UI_set_sprite(list_get(hearts, i), full_heart);
+            }
+            for (size_t i = list_size(hearts) - 1; i > list_size(hearts) - full_hearts_lost - 1; i--) {
+                UI_set_sprite(list_get(hearts, i), empty_heart);
+            }
+            if (half_heart_lost) {
+                size_t idx = list_size(hearts) - 1 - full_hearts_lost;
+                UI_set_sprite(list_get(hearts, idx), half_heart);
+            }
         }
-        double total_hearts = body_get_stats_info(player).health / (2 * HALF_HEART_HEALTH);
-        int curr_full_hearts = floor(total_hearts);
-        bool has_half_heart = false;
-        if (total_hearts > curr_full_hearts) has_half_heart = true;
-
-        for (size_t i = 0; i < curr_full_hearts; i++) {
-            UI_set_sprite(list_get(hearts, i), full_heart);
-        }
-
-        for (size_t i = curr_full_hearts; i < list_size(hearts); i++) {
-            UI_set_sprite(list_get(hearts, i), empty_heart);
-        }
-
-        if (has_half_heart) UI_set_sprite(list_get(hearts, curr_full_hearts), half_heart);
-
-
 
         // Interaction UI display
         bool in_flag = entered_door;
@@ -135,7 +138,6 @@ int main(int arg_c, char *arg_v[]) {
             // TODO: Update to load the correct level/ room
             map_load(game, "assets/levels/b_room_02a_full.txt");
             create_tile_collision(game_get_current_scene(game), game_get_player(game));
-
         }
 
         sdl_render_game(game);

@@ -60,8 +60,6 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
     body->direction.x = 1;
     body->direction.y = 0;
     body->animation_timer = 0;
-    body->info.invulnerability_timer = 0.6;
-    body->info.cooldown = 0.3;
     body->hit_timer = 0;
     body->invulnerability_timer = 0;
     body->shoot_cooldown = rand_from(0.1, info.cooldown);
@@ -247,9 +245,9 @@ void body_tick(body_t *body, double dt) {
         .y = (final_velocity.y + body->velocity.y) / 2
     };
 
-    if(body->info.cooldown > 0) {
-        body->info.cooldown -= dt;
-        if(body->info.cooldown <= 0) body->info.cooldown = 0;
+    if(body->shoot_cooldown > 0) {
+        body->shoot_cooldown -= dt;
+        if(body->shoot_cooldown <= 0) body->shoot_cooldown = 0;
     }
     if(body->hit_timer > 0) {
         body->hit_timer -= dt;
@@ -264,8 +262,8 @@ void body_tick(body_t *body, double dt) {
             body->cur_frame = (body->cur_frame + 1) % sprite_get_animation_frames(body->sprite);
             body->animation_timer = 0;
         }
-        if(body->info.invulnerability_timer > 0 && body->sprite_ids.invulnerable_anim_id != -1) {
-            body->info.invulnerability_timer -= dt;
+        if(body->invulnerability_timer > 0 && body->sprite_ids.invulnerable_anim_id != -1) {
+            body->invulnerability_timer -= dt;
             if(body->cur_sprite_id != body->sprite_ids.invulnerable_anim_id) {
                 body->cur_sprite_id = body->sprite_ids.invulnerable_anim_id;
                 body->cur_frame = 0;

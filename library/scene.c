@@ -7,6 +7,8 @@ const size_t INIT_NUM_BODIES = 10;
 const size_t INIT_NUM_FC = 5;
 const size_t INIT_NUM_TILES = 100;
 const size_t INIT_NUM_UIs = 100;
+const double INIT_LEVEL_EXP = 100;
+const double LEVEL_EXP_FACTOR = 1.5;
 
 double level_up_buffs[5] = {/*HEALTH*/ 10, /*ATTACK*/ 10, /*COOLDOWN*/ .8, /*SPEED*/ 50, /*INVULNERABILITY*/ 1.5};
 
@@ -174,20 +176,25 @@ void scene_tick(scene_t *scene, double dt) {
             break;
         }
     }
+
     stats_info_t player_stats = body_get_stats_info(player);
     for(size_t i = 0; i < list_size(scene->enemies); i++) {
         if (body_is_removed(list_get(scene->enemies, i))) {
             double exp = body_get_stats_info(list_get(scene->enemies, i)).experience;
             player_stats.experience += exp;
-            body_set_stats_info(player, player_stats);
+            //printf("Experience: %f\n", player_stats.experience);
             list_remove(scene->enemies, i);
         }
     }
 
-    int level_up_exp = round(100 * pow(1.5, player_stats.level)); // TODO: Magic Numbers
+    //int level_up_exp = 10; // this one is for quick testing
+    int level_up_exp = round(INIT_LEVEL_EXP * pow(LEVEL_EXP_FACTOR, player_stats.level - 1));
     if (player_stats.experience >= level_up_exp) {
+        printf("LEVEL UP\n");
+        player_stats.experience -= level_up_exp;
         player_stats.level++;
-        int buff = floor(rand_from(0,4.9)); // Potentially magic numbers lol
+        int buff = floor(rand_from(0, 4.9)); // TODO: Magic Numbers?
+        //printf("Before Stats: Health- %f, Attack- %f, Cooldown- %f, Speed- %f\n", player_stats.health, player_stats.attack, player_stats.cooldown, player_stats.speed);
         switch (buff) {
             case 0:
                 player_stats.health += level_up_buffs[0];
@@ -203,7 +210,9 @@ void scene_tick(scene_t *scene, double dt) {
                 break;
             case 4:
                 player_stats.invulnerability_timer *= level_up_buffs[4];
+                break;
         }
+        //printf("Before Stats: Health- %f, Attack- %f, Cooldown- %f, Speed- %f\n", player_stats.health, player_stats.attack, player_stats.cooldown, player_stats.speed);
     }
 
     body_set_stats_info(player, player_stats);
