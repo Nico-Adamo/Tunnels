@@ -14,7 +14,7 @@ extern const double HALF_HEART_HEALTH;
 extern const double PLAYER_HEALTH;
 extern const double HEART_PADDING;
 
-UI_t *make_heart(double x, double y, char *texture_name, char *type);
+UI_t *make_heart(double x, double y, sprite_t *sprite, char *type);
 
 list_t *get_player_hearts(scene_t *scene);
 

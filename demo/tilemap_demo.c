@@ -93,7 +93,7 @@ int main(int arg_c, char *arg_v[]) {
         // Interaction UI display
         bool in_flag = entered_door;
         entered_door = UI_handle_door_interaction(game, entered_door);
-        if(entered_door == false && in_flag == true) { // Leaving
+        if(entered_door == false && in_flag == false) { // Leaving
             list_t *UIs = scene_get_UI_components(scene);
             for (size_t i = 0; i < list_size(UIs); i++) {
                 if (strcmp(UI_get_type(list_get(UIs, i)), "PRESS_F") == 0) {
