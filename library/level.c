@@ -27,8 +27,8 @@ body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
     vector_t bottom_left = {x, y};
     stats_info_t info = enemy_get_stats(type);
     body_sprite_info_t enemy_sprite_info = enemy_get_sprite_info(type);
-    printf("%d %d %f %f\n", enemy_sprite_info.idle_sprite_id, info.bullet_id, bottom_left.x, bottom_left.y);
-    return body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, "ENEMY", info);
+    body_t *enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, "ENEMY", info);
+    return enemy;
 }
 
 UI_t *make_heart(double x, double y, sprite_t *sprite, char *type) {
@@ -49,13 +49,6 @@ list_t *get_player_hearts(scene_t *scene) {
 }
 
 scene_t *scene_reset(game_t *game) {
-
-    stats_info_t enemy_info = {
-        .experience = 0,
-        .attack = 5,
-        .health = 30,
-        .cooldown = rand_from(.5, 2)
-    };
 
     // Initialize Sprite/Player
     scene_t *scene = scene_init();

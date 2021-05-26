@@ -190,8 +190,6 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
-
-
     int idx = 0;
     while (idx < list_size(scene->force_creators)) {
         force_aux_t *force_func = list_get(scene->force_creators, idx);

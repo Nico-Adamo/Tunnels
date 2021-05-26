@@ -30,7 +30,9 @@ int main(int arg_c, char *arg_v[]) {
         .experience = 0,
         .attack = 5,
         .health = PLAYER_HEALTH,
-        .cooldown = 0
+        .cooldown = 0.3,
+        .speed = 300,
+        .atk_type = RADIAL_SHOOTER
     };
 
     game_t *game = game_init(4);

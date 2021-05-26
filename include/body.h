@@ -16,6 +16,8 @@ typedef struct stats_info {
     double attack;
     double cooldown;
     int bullet_id;
+    double speed;
+    enum attack_type atk_type;
 } stats_info_t;
 
 typedef struct body_sprite_info {

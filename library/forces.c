@@ -271,7 +271,7 @@ void tile_collision(void *aux, double dt) {
     if (col_info.collided) {
         if (strcmp(body_get_type(body), "PLAYER_BULLET") == 0 || strcmp(body_get_type(body), "ENEMY_BULLET") == 0) {
             body_remove(body);
-        } else if (strcmp(body_get_type(body), "PLAYER") == 0) {
+        } else if (strcmp(body_get_type(body), "PLAYER") == 0 || strcmp(body_get_type(body), "ENEMY") == 0) {
             vector_t recoil = {
                 .x = col_info.axis.x * RECOIL_DIST,
                 .y = col_info.axis.y * RECOIL_DIST
