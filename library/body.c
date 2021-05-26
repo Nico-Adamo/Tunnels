@@ -28,8 +28,6 @@ typedef struct body {
     free_func_t info_freer;
     vector_t direction;
     double animation_timer;
-    double invulnerability_timer;
-    double shoot_cooldown;
     double hit_timer;
 } body_t;
 
@@ -60,8 +58,8 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
     body->direction.x = 1;
     body->direction.y = 0;
     body->animation_timer = 0;
-    body->invulnerability_timer = 0;
-    body->shoot_cooldown = rand_from(0.1, info.cooldown);
+    body->info.invulnerability_timer = 0;
+    body->info.cooldown = rand_from(0.1, info.cooldown);
     body->hit_timer = 0;
 
 
@@ -156,11 +154,11 @@ void body_set_sprite(body_t *body, sprite_t *sprite) {
 }
 
 double body_get_invulnerability_timer(body_t *body) {
-    return body->invulnerability_timer;
+    return body->info.invulnerability_timer;
 }
 
 void body_set_invulnerability_timer(body_t *body, double invulnerability_timer) {
-    body->invulnerability_timer = invulnerability_timer;
+    body->info.invulnerability_timer = invulnerability_timer;
 }
 
 vector_t body_get_centroid(body_t *body) {
@@ -245,9 +243,9 @@ void body_tick(body_t *body, double dt) {
         .y = (final_velocity.y + body->velocity.y) / 2
     };
 
-    if(body->shoot_cooldown > 0) {
-        body->shoot_cooldown -= dt;
-        if(body->shoot_cooldown <= 0) body->shoot_cooldown = 0;
+    if(body->info.cooldown > 0) {
+        body->info.cooldown -= dt;
+        if(body->info.cooldown <= 0) body->info.cooldown = 0;
     }
     if(body->hit_timer > 0) {
         body->hit_timer -= dt;
@@ -262,8 +260,8 @@ void body_tick(body_t *body, double dt) {
             body->cur_frame = (body->cur_frame + 1) % sprite_get_animation_frames(body->sprite);
             body->animation_timer = 0;
         }
-        if(body->invulnerability_timer > 0 && body->sprite_ids.invulnerable_anim_id != -1) {
-            body->invulnerability_timer -= dt;
+        if(body->info.invulnerability_timer > 0 && body->sprite_ids.invulnerable_anim_id != -1) {
+            body->info.invulnerability_timer -= dt;
             if(body->cur_sprite_id != body->sprite_ids.invulnerable_anim_id) {
                 body->cur_sprite_id = body->sprite_ids.invulnerable_anim_id;
                 body->cur_frame = 0;
@@ -289,12 +287,12 @@ bool body_is_removed(body_t *body) {
     return body->removed;
 }
 
-void body_set_shoot_cooldown(body_t *body, double cooldown) {
-    body->shoot_cooldown = cooldown;
+void body_set_bullet_cooldown(body_t *body, double cooldown) {
+    body->info.cooldown = cooldown;
 }
 
-double body_get_shoot_cooldown(body_t *body) {
-    return body->shoot_cooldown;
+double body_get_bullet_cooldown(body_t *body) {
+    return body->info.cooldown;
 }
 
 void body_set_hit_timer(body_t *body, double hit_timer) {

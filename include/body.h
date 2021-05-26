@@ -9,14 +9,18 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
+#include "enemy.h"
 
+// Go through stats_info (in enemy+) and update to include level + invulnerability_timer
 typedef struct stats_info {
     double experience;
     double health;
     double attack;
     double cooldown;
+    double invulnerability_timer;
     int bullet_id;
     double speed;
+    int level;
     enum attack_type atk_type;
 } stats_info_t;
 

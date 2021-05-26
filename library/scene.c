@@ -8,6 +8,8 @@ const size_t INIT_NUM_FC = 5;
 const size_t INIT_NUM_TILES = 100;
 const size_t INIT_NUM_UIs = 100;
 
+double level_up_buffs[5] = {/*HEALTH*/ 10, /*ATTACK*/ 10, /*COOLDOWN*/ .8, /*SPEED*/ 50, /*INVULNERABILITY*/ 1.5};
+
 typedef struct force_aux {
     force_creator_t forcer;
     void *aux;
@@ -172,15 +174,35 @@ void scene_tick(scene_t *scene, double dt) {
             break;
         }
     }
-
+    stats_info_t player_stats = body_get_stats_info(player);
     for(size_t i = 0; i < list_size(scene->enemies); i++) {
         if (body_is_removed(list_get(scene->enemies, i))) {
             double exp = body_get_stats_info(list_get(scene->enemies, i)).experience;
-            stats_info_t player_stats = body_get_stats_info(player);
             player_stats.experience += exp;
-            //printf("Current Player Exp: %f, Enemy Exp: %f\n", player_stats.experience, exp);
             body_set_stats_info(player, player_stats);
             list_remove(scene->enemies, i);
+        }
+    }
+
+    int level_up_exp = round(100 * pow(1.5, player_stats.level)); // TODO: Magic Numbers
+    if (player_stats.experience >= level_up_exp) {
+        player_stats.level++;
+        int buff = floor(rand_from(0,4.9)); // Potentially magic numbers lol
+        switch (buff) {
+            case 0:
+                player_stats.health += level_up_buffs[0];
+                break;
+            case 1:
+                player_stats.attack += level_up_buffs[1];
+                break;
+            case 2:
+                player_stats.cooldown *= level_up_buffs[2];
+                break;
+            case 3:
+                player_stats.speed += level_up_buffs[3];
+                break;
+            case 4:
+                player_stats.invulnerability_timer *= level_up_buffs[4];
         }
     }
 
