@@ -150,6 +150,7 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                         body_t *enemy = make_enemy(game, game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, enemy_id);
                         scene_add_body(scene, enemy);
                         create_tile_collision(game_get_current_scene(game), enemy);
+                        create_enemy_collision(game_get_current_scene(game), enemy, game_get_player(game));
                     }
                 }
             }

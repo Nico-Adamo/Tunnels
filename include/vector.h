@@ -105,4 +105,6 @@ vector_t vec_unit(vector_t v);
 
 double vec_distance(vector_t v1, vector_t v2);
 
+vector_t vec_find_direction(vector_t vec1, vector_t vec2);
+
 #endif // #ifndef __VECTOR_H__

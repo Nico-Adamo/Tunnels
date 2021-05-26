@@ -200,43 +200,21 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         create_x_collison(player, enemy)
     */
     // types: PLAYER ENEMY ENEMY_BULLET PLAYER_BULLET(?)
-    if ((strcmp(body_get_type(body1), "PLAYER") == 0 && strcmp(body_get_type(body2), "ENEMY") == 0) ||
-    (strcmp(body_get_type(body1), "ENEMY") == 0 && strcmp(body_get_type(body2), "PLAYER") == 0)) {
-        body1_info.health -= body2_info.attack;
-        body2_info.health -= body1_info.attack;
-        body_set_stats_info(body1, body1_info);
-        body_set_stats_info(body2, body2_info);
-        printf("Health: %f\n", body1_info.health);
-        if (body1_info.health <= 0) body_remove(body1);
-        if (body2_info.health <= 0) body_remove(body2);
-        vector_t recoil = {
-            .x = axis.x * RECOIL_ENEMY,
-            .y = axis.y * RECOIL_ENEMY
-        };
-        if (axis.x == 1) {
-            if (body_get_centroid(body1).x > body_get_centroid(body2).x) {
-                body_set_centroid(body1, vec_add(body_get_centroid(body1), recoil));
-                body_set_centroid(body2, vec_add(body_get_centroid(body2), vec_negate(recoil)));
-            } else {
-                body_set_centroid(body1, vec_add(body_get_centroid(body1), vec_negate(recoil)));
-                body_set_centroid(body2, vec_add(body_get_centroid(body2), recoil));
-            }
-        } else if (axis.y == 1) {
-            if (body_get_centroid(body1).y > body_get_centroid(body2).y) {
-                body_set_centroid(body1, vec_add(body_get_centroid(body1), recoil));
-                body_set_centroid(body2, vec_add(body_get_centroid(body2), vec_negate(recoil)));
-            } else {
-                body_set_centroid(body1, vec_add(body_get_centroid(body1), vec_negate(recoil)));
-                body_set_centroid(body2, vec_add(body_get_centroid(body2), recoil));
-            }
-        }
 
+    if (strcmp(body_get_type(body2), "PLAYER") == 0 && strcmp(body_get_type(body1), "ENEMY") == 0) {
+        if(body_get_invulnerability_timer(body2) <= 0) {
+            body2_info.health -= body1_info.attack;
+            body_set_stats_info(body2, body2_info);
+            body_set_invulnerability_timer(body2, 0.3); // TODO: Invulnerability timer magic number
+            printf("Health: %f\n", body2_info.health);
+            if (body2_info.health <= 0) body_remove(body2);
+        }
     } else if ((strcmp(body_get_type(body1), "PLAYER") == 0 && (strcmp(body_get_type(body2), "ENEMY_BULLET") == 0) ||
     (strcmp(body_get_type(body1), "ENEMY") == 0 && (strcmp(body_get_type(body2), "PLAYER_BULLET") == 0)))) {
         if(body_get_invulnerability_timer(body1) <= 0 || strcmp(body_get_type(body1), "PLAYER") != 0) {
             body1_info.health -= body2_info.attack;
             body_set_stats_info(body1, body1_info);
-            body_set_invulnerability_timer(body1, 0.6); // TODO: Invulnerability timer magic number
+            body_set_invulnerability_timer(body1, 0.3); // TODO: Invulnerability timer magic number
             if (body1_info.health <= 0) body_remove(body1);
             body_remove(body2);
         }
@@ -316,3 +294,13 @@ void create_tile_collision(scene_t *scene, body_t *body) {
         scene_add_bodies_force_creator(scene, tile_collision, aux, body_list, free);
     }
 }
+
+void create_enemy_collision(scene_t *scene, body_t *body, body_t *player) {
+    list_t *enemies = scene_get_enemies(scene);
+    for (size_t i = 0; i < list_size(enemies); i++) {
+        body_t *enemy = list_get(enemies, i);
+        create_physics_collision(scene, 0.5, body, enemy);
+        create_semi_destructive_collision(scene, enemy, player);
+    }
+}
+

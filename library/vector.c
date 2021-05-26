@@ -54,3 +54,7 @@ vector_t vec_unit(vector_t v) {
 double vec_distance(vector_t v1, vector_t v2) {
     return sqrt(pow(v1.x - v2.x, 2) + pow(v1.y - v2.y, 2));
 }
+
+vector_t vec_find_direction(vector_t vec1, vector_t vec2) {
+    return vec_unit(vec_subtract(vec1, vec2));
+}

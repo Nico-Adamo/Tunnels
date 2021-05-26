@@ -11,23 +11,62 @@ const double max_cooldown = 2;
 
 const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
 
-bool has_line_of_sight(game_t *game, body_t *enemy, body_t *player, double dx) {
+bool has_line_of_sight(game_t *game, vector_t pos1, vector_t pos2, double dx) {
     scene_t *scene = game_get_current_scene(game);
-    vector_t direction = find_direction(player, enemy);
-    vector_t cur_point = VEC_ZERO;
-    double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
+    vector_t direction = vec_find_direction(pos2, pos1);
+    vector_t cur_point = pos1;
+    double distance = vec_distance(pos1, pos2);
     for(size_t i = 0; i < floor(distance)/dx; i++) {
         cur_point = vec_add(cur_point, vec_multiply(dx, direction));
         list_t *colliders = scene_get_collider_tiles(scene);
         for(size_t i = 0; i<list_size(colliders); i++) {
             tile_t *collider = list_get(colliders, i);
             if((cur_point.x >= collider->hitbox.x && cur_point.x <= collider->hitbox.x+collider->hitbox.w) &&
-               (cur_point.y >= collider->hitbox.h && cur_point.y <= collider->hitbox.y+collider->hitbox.h)) {
+               (cur_point.y >= collider->hitbox.y && cur_point.y <= collider->hitbox.y+collider->hitbox.h)) {
                    return false;
             }
         }
     }
     return true;
+}
+
+void melee_attack(game_t *game, body_t *enemy, body_t *player) {
+    body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
+}
+
+void shooter_attack(game_t *game, body_t *enemy, body_t *player) {
+    scene_t *scene = game_get_current_scene(game);
+    stats_info_t enemy_info = body_get_stats_info(enemy);
+    if (body_get_shoot_cooldown(enemy) == 0) {
+        body_t *bullet = make_bullet(game, enemy, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy)), body_get_stats_info(enemy).bullet_id, 400);
+        scene_add_body(scene, bullet);
+        create_tile_collision(scene, bullet);
+        create_semi_destructive_collision(scene, game_get_player(game), bullet);
+        body_set_shoot_cooldown(enemy, rand_from(enemy_info.cooldown-1, enemy_info.cooldown+1));
+    }
+}
+
+void static_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
+    body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
+    shooter_attack(game, enemy, player);
+}
+
+void radial_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
+    double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
+    if(distance >= 100) {
+        body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
+    } else {
+        body_set_velocity(enemy, VEC_ZERO);
+    }
+    shooter_attack(game, enemy, player);
+}
+
+void melee_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
+    double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
+    body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
+    if(distance >= 100) {
+        shooter_attack(game, enemy, player);
+    }
 }
 
 void handle_enemies(game_t *game, double dt) {
@@ -37,16 +76,20 @@ void handle_enemies(game_t *game, double dt) {
         body_t *enemy = list_get(enemies, i);
         stats_info_t enemy_info = body_get_stats_info(enemy);
         body_t *player = game_get_player(game);
+        vector_t enemy_center = body_get_centroid(enemy);
+        vector_t player_center = body_get_centroid(player);
         double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
-        if(distance <= 200 && has_line_of_sight(game, enemy, player, 10)) {
-            body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, find_direction(player, enemy)));
-            if (body_get_shoot_cooldown(enemy) == 0) {
-                body_t *bullet = make_bullet(game, enemy, find_direction(player, enemy), body_get_stats_info(enemy).bullet_id, 400);
-                scene_add_body(scene, bullet);
-                create_tile_collision(scene, bullet);
-                create_semi_destructive_collision(scene, game_get_player(game), bullet);
-                        //create_newtonian_gravity(scene, 10000, scene_get_body(scene, 0), bullet);
-                body_set_shoot_cooldown(enemy, rand_from(enemy_info.cooldown-1, enemy_info.cooldown+1));
+        if(has_line_of_sight(game, enemy_center, player_center, 16) && sdl_is_onscreen(enemy_center.x, enemy_center.y)) {
+            if(enemy_info.atk_type == MELEE) {
+                melee_attack(game, enemy, player);
+            } else if(enemy_info.atk_type == RADIAL_SHOOTER) {
+                radial_shooter_attack(game, enemy, player);
+            } else if(enemy_info.atk_type == STATIC_SHOOTER) {
+                static_shooter_attack(game, enemy, player);
+            } else if(enemy_info.atk_type == MELEE_SHOOTER) {
+                melee_shooter_attack(game, enemy, player);
+            } else {
+                printf("Enemy with no valid atk type %d", enemy_info.atk_type);
             }
         } else {
             body_set_velocity(enemy, VEC_ZERO);
@@ -54,6 +97,7 @@ void handle_enemies(game_t *game, double dt) {
 
     }
 }
+
 
 // SPRITE INFO ARRAY
 body_sprite_info_t ENEMY_SPRITE_INFOS[19] = {
@@ -161,7 +205,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .cooldown = 0,
      .bullet_id = 46,
      .experience = 5,
-     .speed = 175,
+     .speed = 200,
      .atk_type = MELEE
     },
     // GOBLIN
@@ -170,7 +214,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .cooldown = 0,
      .bullet_id = 42,
      .experience = 5,
-     .speed = 200,
+     .speed = 210,
      .atk_type = MELEE
     },
      // IMP
@@ -179,7 +223,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .cooldown = 0,
      .bullet_id = 37,
      .experience = 5,
-     .speed = 200,
+     .speed = 215,
      .atk_type = MELEE
     },
      // SKELET

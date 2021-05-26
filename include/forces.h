@@ -119,6 +119,6 @@ void create_physics_collision (
 
 void create_tile_collision(scene_t *scene, body_t *body1);
 
-
+void create_enemy_collision(scene_t *scene, body_t *body);
 
 #endif // #ifndef __FORCES_H__

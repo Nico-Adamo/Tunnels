@@ -74,7 +74,11 @@ int main(int arg_c, char *arg_v[]) {
 
         scene_t *scene = game_get_current_scene(game);
         double dt = time_since_last_tick();
-        handle_enemies(game, dt);
+        seconds += dt;
+        if(seconds > 0.5) {
+            handle_enemies(game, dt);
+            seconds = 0;
+        }
         scene_tick(scene, dt);
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
         body_t *player = game_get_player(game);

@@ -40,10 +40,3 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
     return bullet;
 
 }
-
-vector_t find_direction(body_t *player, body_t *enemy) {
-    vector_t player_center = body_get_centroid(player);
-    vector_t enemy_center = body_get_centroid(enemy);
-    return vec_unit(vec_subtract(player_center, enemy_center));
-
-}
