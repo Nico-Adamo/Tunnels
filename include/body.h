@@ -9,7 +9,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
-#include "enemy.h"
+
+enum attack_type{MELEE, RADIAL_SHOOTER, STATIC_SHOOTER, MELEE_SHOOTER};
 
 // Go through stats_info (in enemy+) and update to include level + invulnerability_timer
 typedef struct stats_info {
@@ -91,8 +92,10 @@ void body_set_sprite(body_t *body, sprite_t *sprite);
 double body_get_invulnerability_timer(body_t *body);
 
 void body_set_invulnerability_timer(body_t *body, double invulnerability_timer);
+
 void body_set_shoot_cooldown(body_t *body, double cooldown);
 double body_get_shoot_cooldown(body_t *body);
+
 double body_get_hit_timer(body_t *body);
 void body_set_hit_timer(body_t *body, double timer);
 

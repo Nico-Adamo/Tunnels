@@ -206,6 +206,8 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
+    body_set_stats_info(player, player_stats);
+
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         if (body_is_removed(list_get(scene->bodies, i))) {
             body_free(list_remove(scene->bodies, i));

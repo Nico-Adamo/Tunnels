@@ -198,6 +198,16 @@ body_sprite_info_t ENEMY_SPRITE_INFOS[19] = {
      .invulnerable_anim_id = -1}
 };
 
+    double experience;
+    double health;
+    double attack;
+    double cooldown;
+    double invulnerability_timer;
+    int bullet_id;
+    double speed;
+    int level;
+    enum attack_type atk_type;
+
 stats_info_t ENEMY_STAT_INFO[19] = {
     // TINY_ZOMBIE
     {.health = 10,
@@ -206,7 +216,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 46,
      .experience = 5,
      .speed = 200,
-     .atk_type = MELEE
+     .atk_type = MELEE,
+     .invulnerability_timer = 0
     },
     // GOBLIN
     {.health = 10,
@@ -215,7 +226,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 42,
      .experience = 5,
      .speed = 210,
-     .atk_type = MELEE
+     .atk_type = MELEE,
+     .invulnerability_timer = 0
     },
      // IMP
     {.health = 10,
@@ -224,7 +236,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 37,
      .experience = 5,
      .speed = 215,
-     .atk_type = MELEE
+     .atk_type = MELEE,
+     .invulnerability_timer = 0
     },
      // SKELET
     {.health = 15,
@@ -233,7 +246,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 44,
      .experience = 5,
      .speed = 130,
-     .atk_type = RADIAL_SHOOTER
+     .atk_type = RADIAL_SHOOTER,
+     .invulnerability_timer = 0
     },
      // MUDDY
     {.health = 20,
@@ -242,7 +256,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 39,
      .experience = 10,
      .speed = 10,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // SWAMPY
     {.health = 20,
@@ -251,7 +266,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 45,
      .experience = 10,
      .speed = 15,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // ZOMBIE
     {.health = 15,
@@ -260,7 +276,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 46,
      .experience = 5,
      .speed = 90,
-     .atk_type = MELEE_SHOOTER
+     .atk_type = MELEE_SHOOTER,
+     .invulnerability_timer = 0
     },
      // ICE_ZOMBIE
     {.health = 15,
@@ -269,7 +286,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 38,
      .experience = 5,
      .speed = 110,
-     .atk_type = MELEE_SHOOTER
+     .atk_type = MELEE_SHOOTER,
+     .invulnerability_timer = 0
     },
      // MASKED_ORC
     {.health = 20,
@@ -278,7 +296,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 42,
      .experience = 10,
      .speed = 150,
-     .atk_type = MELEE_SHOOTER
+     .atk_type = MELEE_SHOOTER,
+     .invulnerability_timer = 0
     },
      // ORC_WARRIOR
     {.health = 20,
@@ -287,7 +306,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 42,
      .experience = 10,
      .speed = 150,
-     .atk_type = RADIAL_SHOOTER
+     .atk_type = RADIAL_SHOOTER,
+     .invulnerability_timer = 0
     },
      // ORC_SHAMAN
     {.health = 20,
@@ -296,7 +316,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 42,
      .experience = 10,
      .speed = 10,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // NECROMANCER
     {.health = 30,
@@ -305,7 +326,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 42,
      .experience = 15,
      .speed = 10,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // WOGUL
     {.health = 30,
@@ -314,7 +336,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 37,
      .experience = 15,
      .speed = 150,
-     .atk_type = RADIAL_SHOOTER
+     .atk_type = RADIAL_SHOOTER,
+     .invulnerability_timer = 0
     },
      // CHORT
     {.health = 30,
@@ -323,7 +346,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 37,
      .experience = 15,
      .speed = 150,
-     .atk_type = MELEE_SHOOTER
+     .atk_type = MELEE_SHOOTER,
+     .invulnerability_timer = 0
     },
      // WIZARD
     {.health = 30,
@@ -332,7 +356,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 47,
      .experience = 15,
      .speed = 15,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // NECROMANCER_WIZARD
     {.health = 40,
@@ -341,7 +366,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 41,
      .experience = 20,
      .speed = 150,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // BIG_ZOMBIE
     {.health = 40,
@@ -350,7 +376,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 46,
      .experience = 20,
      .speed = 100,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // OGRE
     {.health = 40,
@@ -359,7 +386,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 42,
      .experience = 20,
      .speed = 120,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     },
      // BIG_DEMON
     {.health = 60,
@@ -368,7 +396,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .bullet_id = 37,
      .experience = 30,
      .speed = 130,
-     .atk_type = STATIC_SHOOTER
+     .atk_type = STATIC_SHOOTER,
+     .invulnerability_timer = 0
     }
 };
 

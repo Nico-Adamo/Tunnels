@@ -29,6 +29,8 @@ typedef struct body {
     vector_t direction;
     double animation_timer;
     double hit_timer;
+    double shoot_cooldown;
+    double invulnerability_timer;
 } body_t;
 
 body_t *body_init(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
@@ -58,9 +60,11 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
     body->direction.x = 1;
     body->direction.y = 0;
     body->animation_timer = 0;
-    body->info.invulnerability_timer = 0;
-    body->info.cooldown = rand_from(0.1, info.cooldown);
+    body->info.invulnerability_timer = 0.6;
+    body->info.cooldown = 0.3;
     body->hit_timer = 0;
+    body->invulnerability_timer = 0;
+    body->shoot_cooldown = rand_from(0.1, info.cooldown);
 
 
     body->centroid.x = body->bottom_left.x + body->scale * (sprite_get_hitbox_shape(sprite).x + sprite_get_hitbox_shape(sprite).w / 2);
@@ -154,11 +158,11 @@ void body_set_sprite(body_t *body, sprite_t *sprite) {
 }
 
 double body_get_invulnerability_timer(body_t *body) {
-    return body->info.invulnerability_timer;
+    return body->invulnerability_timer;
 }
 
 void body_set_invulnerability_timer(body_t *body, double invulnerability_timer) {
-    body->info.invulnerability_timer = invulnerability_timer;
+    body->invulnerability_timer = invulnerability_timer;
 }
 
 vector_t body_get_centroid(body_t *body) {
@@ -287,12 +291,12 @@ bool body_is_removed(body_t *body) {
     return body->removed;
 }
 
-void body_set_bullet_cooldown(body_t *body, double cooldown) {
-    body->info.cooldown = cooldown;
+void body_set_shoot_cooldown(body_t *body, double cooldown) {
+    body->shoot_cooldown = cooldown;
 }
 
-double body_get_bullet_cooldown(body_t *body) {
-    return body->info.cooldown;
+double body_get_shoot_cooldown(body_t *body) {
+    return body->shoot_cooldown;
 }
 
 void body_set_hit_timer(body_t *body, double hit_timer) {
