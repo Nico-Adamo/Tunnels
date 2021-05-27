@@ -15,6 +15,8 @@
  */
 typedef struct scene scene_t;
 
+enum {KILL, SURVIVE, NAVIGATE} room_type;
+
 /**
  * A function which adds some forces or impulses to bodies,
  * e.g. from collisions, gravity, or spring forces.

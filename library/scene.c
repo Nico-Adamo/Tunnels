@@ -22,8 +22,6 @@ typedef struct force_aux {
     bool removed;
 } force_aux_t;
 
-typedef enum {KILL, SURVIVE, NAVIGATE} room_type;
-
 typedef struct scene {
     list_t *bodies;
     list_t *enemies;
@@ -222,13 +220,12 @@ void scene_tick(scene_t *scene, double dt) {
     }
     if (scene->last_second - scene->unlock_time >= 1 && scene->unlock_time > 0) {
         scene->last_second -= 1;
-        
+
         int length = snprintf( NULL, 0, "%d", scene->last_second); //TODO: understand
         char* timer_string = malloc( length + 1 );
         snprintf(timer_string, length + 1, "%d", scene->last_second);
         printf(timer_string);
 
-        _itoa(scene->last_second, timer_string, 10);
         scene_add_UI_text(scene, ui_text_init(timer_string, (vector_t) {256, 0}, 1));
     }
 
@@ -255,7 +252,7 @@ void scene_tick(scene_t *scene, double dt) {
         if (body_is_removed(list_get(scene->enemies, i))) {
             double exp = body_get_stats_info(list_get(scene->enemies, i)).experience;
             player_stats.experience += exp;
-            
+
             //printf("Experience: %f\n", player_stats.experience);
             list_remove(scene->enemies, i);
 
@@ -266,7 +263,6 @@ void scene_tick(scene_t *scene, double dt) {
                 snprintf(enem_string, length + 1, "%d", list_size(scene->enemies));
                 printf(enem_string);
 
-                _itoa(list_size(scene->enemies), enem_string, 10);
                 scene_add_UI_text(scene, ui_text_init(enem_string, (vector_t) {400, 0}, 1.25));
             }
         }
