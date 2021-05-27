@@ -49,7 +49,7 @@ void game_register_sprites(game_t *game);
 
 void game_reset_dungeon(game_t *game);
 
-void game_add_room(game_t *game, char *room_path);
+void game_add_room(game_t *game, const char *path);
 
 list_t *game_get_dungeon(game_t *game);
 
