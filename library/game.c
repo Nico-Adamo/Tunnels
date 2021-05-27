@@ -368,7 +368,7 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 0, 0},
     {0, 0, 0, 0},
     "assets/ui/game_start_screen_full.png",
-    true, 0.125, 4
+    true, 0.1, 4
     },
     // 49 - PRESS_F UI
     {{0, 0, 600, 230},
