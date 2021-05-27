@@ -174,11 +174,11 @@ void map_load(game_t *game, const char *path) {
 
     fscanf(file, "x: %d\n", x_tiles);
     fscanf(file, "y: %d\n", y_tiles);
-    
+
     fscanf(file, "room type: %d\n", room_type);
     fscanf(file, "unlock time: %lf\n", unlock_time);
 
-    scene_set_room_type(scene, (enum room_type) *room_type);
+    scene_set_room_type(scene, (room_type_t) *room_type);
     scene_set_unlock_time(scene, *unlock_time);
 
     map_load_file(game, file, *x_tiles, *y_tiles, 0);
