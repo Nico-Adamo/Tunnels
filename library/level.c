@@ -66,6 +66,8 @@ scene_t *scene_reset(game_t *game) {
         scene_add_UI_component(scene, heart);
     }
 
+    scene_add_UI_text(scene, ui_text_init("Test",  (rect_t) {0, 0, 100, 100}, 5));
+
     return scene;
 }
 

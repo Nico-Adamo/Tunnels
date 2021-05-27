@@ -45,6 +45,9 @@ uint32_t key_start_timestamp;
  */
 clock_t last_clock = 0;
 
+TTF_Font* pixeled_font;
+SDL_Color font_color = {255, 255, 225};
+
 /** Computes the center of the window in pixel coordinates */
 vector_t get_window_center(void) {
     int *width = malloc(sizeof(*width)),
@@ -111,6 +114,8 @@ void sdl_init(vector_t min, vector_t max) {
     center = vec_multiply(0.5, vec_add(min, max));
     max_diff = vec_subtract(max, center);
     SDL_Init(SDL_INIT_EVERYTHING);
+    TTF_Init();
+    pixeled_font = TTF_OpenFont("assets/ui/pixeled.ttf", 24);
     window = SDL_CreateWindow(
         WINDOW_TITLE,
         SDL_WINDOWPOS_CENTERED,
@@ -196,7 +201,6 @@ void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination,
     } else {
         flip = SDL_FLIP_NONE;
     }
-
     SDL_RenderCopyEx(renderer, texture, &source, &dest_window, 0, NULL, flip);
 }
 
@@ -258,11 +262,29 @@ void sdl_render_game(game_t *game) {
     size_t UI_count = list_size(UIs);
     for (size_t i = 0; i < UI_count; i++) {
         UI_t *UI = list_get(UIs, i);
-        SDL_Rect shape = UI_get_shape(UI);
         rect_t hitbox = UI_get_hitbox(UI);
+        SDL_Rect shape = UI_get_shape(UI);
         hitbox.x += camera.x;
         hitbox.y += camera.y;
         SDL_Texture *texture = UI_get_texture(UI);
+        sdl_draw_texture(texture, shape, hitbox, false);
+    }
+
+    // Text rendering
+    list_t *texts = scene_get_UI_texts(scene);
+    for (size_t i = 0; i < list_size(texts); i++) {
+        ui_text_t *text = list_get(texts, i);
+        rect_t hitbox = ui_text_get_hitbox(text);
+        char *message = ui_text_get_message(text);
+        int *w = malloc(sizeof(int));
+        int *h = malloc(sizeof(int));
+        TTF_SizeText(pixeled_font, message, w, h);
+        SDL_Rect shape = (SDL_Rect) {0, 0, *w, *h};
+        hitbox.x += camera.x;
+        hitbox.y += camera.y;
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));
+        double lifetime = ui_text_get_timer(text);
+        if(lifetime <= 0.5) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/0.5)); // TODO: magic numbers
         sdl_draw_texture(texture, shape, hitbox, false);
     }
 

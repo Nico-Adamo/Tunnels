@@ -221,7 +221,6 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         if(strcmp(body_get_type(body1), "ENEMY") == 0) {
             body_set_hit_timer(body1, 0.3);
         }
-
     }
 
 }

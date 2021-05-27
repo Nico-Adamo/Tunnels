@@ -7,9 +7,11 @@
 #include "game.h"
 #include "vector.h"
 #include "user_interface.h"
+#include "text.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 // Values passed to a key handler when the given arrow key is pressed
 typedef enum {

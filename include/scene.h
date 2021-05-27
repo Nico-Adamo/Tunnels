@@ -5,6 +5,7 @@
 #include "list.h"
 #include "tile.h"
 #include "ui_component.h"
+#include "text.h"
 #include <stdbool.h>
 
 /**
@@ -115,11 +116,13 @@ void scene_add_floor_tile(scene_t *scene, tile_t *tile);
 void scene_add_wall_tile(scene_t *scene, tile_t *tile);
 void scene_add_collider_tile(scene_t *scene, tile_t *tile);
 void scene_add_UI_component(scene_t *scene, UI_t *UI);
+void scene_add_UI_text(scene_t *scene, ui_text_t *text);
 
 list_t *scene_get_floor_tiles(scene_t *scene);
 list_t *scene_get_wall_tiles(scene_t *scene);
 list_t *scene_get_collider_tiles(scene_t *scene);
 list_t *scene_get_UI_components(scene_t *scene);
+list_t *scene_get_UI_texts(scene_t *scene);
 
 void scene_sort_by_depth(scene_t *scene);
 

@@ -28,6 +28,7 @@ typedef struct scene {
     list_t *wall_tiles;
     list_t *collider_tiles;
     list_t *UI_components;
+    list_t *UI_texts;
     bool is_menu;
 } scene_t;
 
@@ -47,6 +48,7 @@ void scene_free(scene_t *scene) {
     list_free(scene->collider_tiles);
     list_free(scene->force_creators);
     list_free(scene->UI_components);
+    list_free(scene->UI_texts);
     free(scene);
 }
 
@@ -63,6 +65,7 @@ scene_t *scene_init(void) {
     scene->wall_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->collider_tiles = list_init(INIT_NUM_TILES, tile_free);
     scene->UI_components = list_init(INIT_NUM_UIs, UI_component_free);
+    scene->UI_texts = list_init(INIT_NUM_UIs, ui_text_free);
     scene->is_menu = false;
     return scene;
 }
@@ -137,6 +140,10 @@ void scene_add_UI_component(scene_t *scene, UI_t *UI) {
     list_add(scene->UI_components, UI);
 }
 
+void scene_add_UI_text(scene_t *scene, ui_text_t *text) {
+    list_add(scene->UI_texts, text);
+}
+
 list_t *scene_get_floor_tiles(scene_t *scene) {
     return scene->floor_tiles;
 }
@@ -157,6 +164,9 @@ list_t *scene_get_UI_components(scene_t *scene) {
     return scene->UI_components;
 }
 
+list_t *scene_get_UI_texts(scene_t *scene) {
+    return scene->UI_texts;
+}
 
 void scene_tick(scene_t *scene, double dt) {
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
@@ -234,13 +244,10 @@ void scene_tick(scene_t *scene, double dt) {
         idx++;
     }
 
-    //printf("Initial vel x: %f\n", body_get_velocity(scene_get_body(scene,0)).x);
-
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
         force_aux_t *force_func = list_get(scene->force_creators, i);
         force_func->forcer(force_func->aux, dt);
     }
-    //printf("after vel x: %f\n", body_get_velocity(scene_get_body(scene,0)).x);
 
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         body_tick(list_get(scene->bodies, i), dt);
@@ -248,5 +255,24 @@ void scene_tick(scene_t *scene, double dt) {
 
     for(size_t i = 0; i< list_size(scene->UI_components); i++) {
         UI_tick(list_get(scene->UI_components, i), dt);
+    }
+
+    for(size_t i = 0; i< list_size(scene->UI_texts); i++) {
+        ui_text_t *text = list_get(scene->UI_texts, i);
+        ui_text_tick(text, dt);
+        if(ui_text_get_timer(text) <= 0) {
+            ui_text_set_removed(text, true);
+        }
+    }
+
+    idx = 0;
+    while (idx < list_size(scene->UI_texts)) {
+        ui_text_t *text = list_get(scene->UI_texts, idx);
+        if (ui_text_is_removed(text)) {
+            ui_text_t *remove = list_remove(scene->UI_texts, idx);
+            ui_text_free(remove);
+            idx--;
+        }
+        idx++;
     }
 }
