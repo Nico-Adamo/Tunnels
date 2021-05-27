@@ -32,7 +32,7 @@ typedef struct scene {
     list_t *UI_components;
     list_t *UI_texts;
     bool is_menu;
-    enum room_type room_type;
+    room_type room_type;
     double unlock_time;
     int last_second;
 } scene_t;
@@ -149,7 +149,7 @@ void scene_add_UI_text(scene_t *scene, ui_text_t *text) {
     list_add(scene->UI_texts, text);
 }
 
-void scene_set_room_type(scene_t *scene, enum room_type room_type) {
+void scene_set_room_type(scene_t *scene, room_type room_type) {
     scene->room_type = room_type;
     if (room_type == KILL) {
         scene_add_UI_text(scene, ui_text_init(" Objective: Kill all enemies", (vector_t) {0, 0}, TEXT_COOLDOWN));
