@@ -66,7 +66,7 @@ scene_t *scene_reset(game_t *game) {
         scene_add_UI_component(scene, heart);
     }
 
-    scene_add_UI_text(scene, ui_text_init("Test",  (rect_t) {0, 0, 100, 100}, 5));
+    //scene_add_UI_text(scene, ui_text_init("Test",  (rect_t) {0, 0, 100, 100}, 5));
 
     return scene;
 }
@@ -91,6 +91,7 @@ void make_level(game_t *game){
     scene_add_body(scene_new, player_new);
     char *path = list_get(game_get_dungeon(game), game_get_room(game));
     map_load(game, path);
+    printf("rt:%d, ut:%f\n", scene_get_room_type(scene_new), scene_get_unlock_time(scene_new));
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 

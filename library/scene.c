@@ -10,6 +10,8 @@ const size_t INIT_NUM_UIs = 100;
 const double INIT_LEVEL_EXP = 100;
 const double LEVEL_EXP_FACTOR = 1.5;
 
+const double TEXT_COOLDOWN = 5;
+
 double level_up_buffs[5] = {/*HEALTH*/ 10, /*ATTACK*/ 10, /*COOLDOWN*/ .8, /*SPEED*/ 50, /*INVULNERABILITY*/ 1.5};
 
 typedef struct force_aux {
@@ -19,6 +21,8 @@ typedef struct force_aux {
     list_t *bodies;
     bool removed;
 } force_aux_t;
+
+typedef enum {KILL, SURVIVE, NAVIGATE} room_type;
 
 typedef struct scene {
     list_t *bodies;
@@ -30,6 +34,9 @@ typedef struct scene {
     list_t *UI_components;
     list_t *UI_texts;
     bool is_menu;
+    enum room_type room_type;
+    double unlock_time;
+    int last_second;
 } scene_t;
 
 void force_aux_free(force_aux_t *force_aux) {
@@ -144,6 +151,37 @@ void scene_add_UI_text(scene_t *scene, ui_text_t *text) {
     list_add(scene->UI_texts, text);
 }
 
+void scene_set_room_type(scene_t *scene, enum room_type room_type) {
+    scene->room_type = room_type;
+    if (room_type == KILL) {
+        scene_add_UI_text(scene, ui_text_init(" Objective: Kill all enemies", (vector_t) {0, 0}, TEXT_COOLDOWN));
+    } else if (room_type == NAVIGATE) {
+        scene_add_UI_text(scene, ui_text_init(" Objective: Get to the door", (vector_t) {0, 0}, TEXT_COOLDOWN));
+    }
+}
+
+void scene_set_unlock_time(scene_t *scene, double unlock_time) {
+    scene->unlock_time = unlock_time;
+    scene->last_second = (int) unlock_time + 1;
+    if (unlock_time > 0) {
+        scene_add_UI_text(scene, ui_text_init(" Unlock time:", (vector_t) {0, 0}, unlock_time));
+    }
+}
+
+
+bool scene_check_objective(scene_t *scene) {
+    if (scene->room_type == NAVIGATE) {
+        return true;
+    } if (scene->room_type == KILL) {
+        return (list_size(scene->enemies) == 0);
+    } if (scene->room_type == SURVIVE) {
+        return scene->unlock_time <= 0;
+    }
+    printf("Room with no type"); //TODO changeto assert/throw somewhere
+    return false;
+}
+
+
 list_t *scene_get_floor_tiles(scene_t *scene) {
     return scene->floor_tiles;
 }
@@ -168,7 +206,32 @@ list_t *scene_get_UI_texts(scene_t *scene) {
     return scene->UI_texts;
 }
 
+enum room_type scene_get_room_type(scene_t *scene) {
+    return scene->room_type;
+}
+
+double scene_get_unlock_time(scene_t *scene) {
+    return scene->unlock_time;
+}
+
 void scene_tick(scene_t *scene, double dt) {
+    // TODO reorganize pls
+
+    if (scene->unlock_time > 0) {
+        scene->unlock_time -= dt;
+    }
+    if (scene->last_second - scene->unlock_time >= 1 && scene->unlock_time > 0) {
+        scene->last_second -= 1;
+        
+        int length = snprintf( NULL, 0, "%d", scene->last_second); //TODO: understand
+        char* timer_string = malloc( length + 1 );
+        snprintf(timer_string, length + 1, "%d", scene->last_second);
+        printf(timer_string);
+
+        _itoa(scene->last_second, timer_string, 10);
+        scene_add_UI_text(scene, ui_text_init(timer_string, (vector_t) {256, 0}, 1));
+    }
+
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
         force_aux_t *force_func = list_get(scene->force_creators, i);
         bool removed = false;
@@ -192,8 +255,20 @@ void scene_tick(scene_t *scene, double dt) {
         if (body_is_removed(list_get(scene->enemies, i))) {
             double exp = body_get_stats_info(list_get(scene->enemies, i)).experience;
             player_stats.experience += exp;
+            
             //printf("Experience: %f\n", player_stats.experience);
             list_remove(scene->enemies, i);
+
+            if (scene->room_type == KILL) {
+                scene_add_UI_text(scene, ui_text_init(" Enemies remaining:", (vector_t) {0, 0}, 1.25));
+                int length = snprintf( NULL, 0, "%d", list_size(scene->enemies)); //TODO: understand
+                char* enem_string = malloc( length + 1 );
+                snprintf(enem_string, length + 1, "%d", list_size(scene->enemies));
+                printf(enem_string);
+
+                _itoa(list_size(scene->enemies), enem_string, 10);
+                scene_add_UI_text(scene, ui_text_init(enem_string, (vector_t) {400, 0}, 1.25));
+            }
         }
     }
 

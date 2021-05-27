@@ -117,12 +117,18 @@ void scene_add_wall_tile(scene_t *scene, tile_t *tile);
 void scene_add_collider_tile(scene_t *scene, tile_t *tile);
 void scene_add_UI_component(scene_t *scene, UI_t *UI);
 void scene_add_UI_text(scene_t *scene, ui_text_t *text);
+void scene_set_room_type(scene_t *scene, enum room_type room_type);
+void scene_set_unlock_time(scene_t *scene, double unlock_time);
 
 list_t *scene_get_floor_tiles(scene_t *scene);
 list_t *scene_get_wall_tiles(scene_t *scene);
 list_t *scene_get_collider_tiles(scene_t *scene);
 list_t *scene_get_UI_components(scene_t *scene);
 list_t *scene_get_UI_texts(scene_t *scene);
+enum room_type scene_get_room_type(scene_t *scene);
+double scene_get_unlock_time(scene_t *scene);
+
+bool scene_check_objective(scene_t *scene);
 
 void scene_sort_by_depth(scene_t *scene);
 

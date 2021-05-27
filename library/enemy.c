@@ -30,7 +30,7 @@ bool has_line_of_sight(game_t *game, vector_t pos1, vector_t pos2, double dx) {
     return true;
 }
 
-void melee_attack(game_t *game, body_t *enemy, body_t *player) {
+void pathfind(game_t *game, body_t *enemy, body_t *player) {
     body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
 }
 
@@ -47,7 +47,6 @@ void shooter_attack(game_t *game, body_t *enemy, body_t *player) {
 }
 
 void static_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
-    body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
     shooter_attack(game, enemy, player);
 }
 
@@ -63,7 +62,6 @@ void radial_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
 
 void melee_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
     double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
-    body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
     if(distance >= 100) {
         shooter_attack(game, enemy, player);
     }
@@ -78,18 +76,27 @@ void handle_enemies(game_t *game, double dt) {
         body_t *player = game_get_player(game);
         vector_t enemy_center = body_get_centroid(enemy);
         vector_t player_center = body_get_centroid(player);
+        rect_t player_collision_hitbox = body_get_collision_hitbox(player);
+        vector_t pch_center = (vector_t) {player_collision_hitbox.x + player_collision_hitbox.w/2, player_collision_hitbox.y + player_collision_hitbox.h/2};
+
         double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
-        if(has_line_of_sight(game, enemy_center, player_center, 16) && sdl_is_onscreen(enemy_center.x, enemy_center.y)) {
-            if(enemy_info.atk_type == MELEE) {
-                melee_attack(game, enemy, player);
-            } else if(enemy_info.atk_type == RADIAL_SHOOTER) {
-                radial_shooter_attack(game, enemy, player);
-            } else if(enemy_info.atk_type == STATIC_SHOOTER) {
-                static_shooter_attack(game, enemy, player);
-            } else if(enemy_info.atk_type == MELEE_SHOOTER) {
-                melee_shooter_attack(game, enemy, player);
-            } else {
-                printf("Enemy with no valid atk type %d", enemy_info.atk_type);
+
+        if(has_line_of_sight(game, enemy_center, pch_center, 16)) {
+            if (!(enemy_info.atk_type == RADIAL_SHOOTER && vec_distance(body_get_centroid(enemy), body_get_centroid(player)) <= 100)) {
+                pathfind(game, enemy, player);
+            }
+            if (sdl_is_onscreen(body_get_centroid(enemy).x, body_get_centroid(enemy).y)) {
+                if(enemy_info.atk_type == MELEE) {
+                    //do nothing
+                } else if(enemy_info.atk_type == RADIAL_SHOOTER) {
+                    radial_shooter_attack(game, enemy, player);
+                } else if(enemy_info.atk_type == STATIC_SHOOTER) {
+                    static_shooter_attack(game, enemy, player);
+                } else if(enemy_info.atk_type == MELEE_SHOOTER) {
+                    melee_shooter_attack(game, enemy, player);
+                } else {
+                    printf("Enemy with no valid atk type %d", enemy_info.atk_type);
+                }
             }
         } else {
             body_set_velocity(enemy, VEC_ZERO);

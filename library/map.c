@@ -162,11 +162,25 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
 }
 
 void map_load(game_t *game, const char *path) {
+    scene_t *scene = game_get_current_scene(game);
+
     int *x_tiles = malloc(sizeof(int));
     int *y_tiles = malloc(sizeof(int));
+
+    int *room_type = malloc(sizeof(int));
+    double *unlock_time = malloc(sizeof(double));
+
     FILE *file = fopen(path, "r");
-    fscanf(file, "%d\n", x_tiles);
-    fscanf(file, "%d\n", y_tiles);
+
+    fscanf(file, "x: %d\n", x_tiles);
+    fscanf(file, "y: %d\n", y_tiles);
+    
+    fscanf(file, "room type: %d\n", room_type);
+    fscanf(file, "unlock time: %lf\n", unlock_time);
+
+    scene_set_room_type(scene, (enum room_type) *room_type);
+    scene_set_unlock_time(scene, *unlock_time);
+
     map_load_file(game, file, *x_tiles, *y_tiles, 0);
     fscanf(file,"\n");
     map_load_file(game, file, *x_tiles, *y_tiles, 1);

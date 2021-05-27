@@ -76,7 +76,8 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 list_t *interactors = game_get_tile_interactors(game);
                 for(size_t i = 0; i<list_size(interactors); i++) {
                     tile_interactor_t *interactor = list_get(interactors, i);
-                    if(find_collision(interactor->area, body_get_hitbox(player)).collided) {
+                    if(find_collision(interactor->area, body_get_hitbox(player)).collided && scene_check_objective(scene)) {
+
                         interactor->interaction(game);
                         break;
                     }

@@ -451,8 +451,8 @@ void game_reset_dungeon(game_t *game) {
     game->dungeon = list_init(5, free); // Todo: magic number
 }
 
-void game_add_room(game_t *game, char *room_path) {
-    list_add(game->dungeon, room_path);
+void game_add_room(game_t *game, const char *path) {
+    list_add(game->dungeon, path);
 }
 
 void game_add_sprite(game_t *game, sprite_t *sprite) {

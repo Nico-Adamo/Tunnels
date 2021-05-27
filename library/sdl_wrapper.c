@@ -274,12 +274,13 @@ void sdl_render_game(game_t *game) {
     list_t *texts = scene_get_UI_texts(scene);
     for (size_t i = 0; i < list_size(texts); i++) {
         ui_text_t *text = list_get(texts, i);
-        rect_t hitbox = ui_text_get_hitbox(text);
+        vector_t bottom_left = ui_text_get_bottom_left(text);
         char *message = ui_text_get_message(text);
         int *w = malloc(sizeof(int));
         int *h = malloc(sizeof(int));
         TTF_SizeText(pixeled_font, message, w, h);
         SDL_Rect shape = (SDL_Rect) {0, 0, *w, *h};
+        rect_t hitbox = (rect_t) {bottom_left.x, bottom_left.y, *w, *h};
         hitbox.x += camera.x;
         hitbox.y += camera.y;
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));
