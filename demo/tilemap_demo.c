@@ -68,6 +68,8 @@ int main(int arg_c, char *arg_v[]) {
     bool entered_door = false;
     double powerup_timer = 5;
 
+    size_t cur_room;
+
     sdl_on_key(on_key);
 
     while(!sdl_is_done(game)) {
@@ -78,6 +80,7 @@ int main(int arg_c, char *arg_v[]) {
             scene_free(scene);
             level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 80}, INFINITY);
             scene_add_UI_text(game_get_current_scene(game), level_text);
+            cur_room = game_get_room(game);
         }
 
         scene_t *scene = game_get_current_scene(game);
@@ -134,17 +137,30 @@ int main(int arg_c, char *arg_v[]) {
             }
         }
 
-        // Player Levelling
+
+
+        
         stats_info_t player_stats = body_get_stats_info(player);
+        char level[100];
+        sprintf(level, "Level %d", player_stats.level);
+
+        if (cur_room != game_get_room(game) && spacebar_pressed) {
+            ui_text_t *level_text = ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 80}, INFINITY);
+            scene_add_UI_text(scene, level_text);
+            cur_room = game_get_room(game);
+        }
+
+
+        // Player Levelling
         //int level_up_exp = 10; // this one is for quick testing
         int level_up_exp = round(INIT_LEVEL_EXP * pow(LEVEL_EXP_FACTOR, player_stats.level - 1));
         if (player_stats.experience >= level_up_exp) {
             printf("LEVEL UP\n");
             player_stats.experience -= level_up_exp;
             player_stats.level++;
-            char level[100];
-            sprintf(level, "Level %d", player_stats.level);
-            ui_text_set_message(level_text, level);
+            char level_cur[100];
+            sprintf(level_cur, "Level %d", player_stats.level);
+            ui_text_set_message(level_text, level_cur);
             int buff = floor(rand_from(0, 4.9)); // TODO: Magic Numbers?
             sprite_t *powerup_sprite;
             switch (buff) {
