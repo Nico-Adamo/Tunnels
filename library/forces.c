@@ -205,7 +205,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         if(body_get_invulnerability_timer(body2) <= 0) {
             body2_info.health -= body1_info.attack;
             body_set_stats_info(body2, body2_info);
-            body_set_invulnerability_timer(body2, 0.3); // TODO: Invulnerability timer magic number
+            body_set_invulnerability_timer(body2, body_get_stats_info(body2).invulnerability_timer); // TODO: Invulnerability timer magic number
             printf("Health: %f\n", body2_info.health);
             if (body2_info.health <= 0) body_remove(body2);
         }
@@ -214,7 +214,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         if(body_get_invulnerability_timer(body1) <= 0 || strcmp(body_get_type(body1), "PLAYER") != 0) {
             body1_info.health -= body2_info.attack;
             body_set_stats_info(body1, body1_info);
-            body_set_invulnerability_timer(body1, 0.3); // TODO: Invulnerability timer magic number
+            body_set_invulnerability_timer(body1, body_get_stats_info(body1).invulnerability_timer); // TODO: Invulnerability timer magic number
             if (body1_info.health <= 0) body_remove(body1);
             body_remove(body2);
         }

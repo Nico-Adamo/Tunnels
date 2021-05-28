@@ -20,7 +20,8 @@ bool UI_handle_door_interaction(game_t *game, bool entered_area) {
             if(entered_area == false) {
                 SDL_Rect shape = (SDL_Rect) {0, 0, 600, 230};
                 rect_t player_hitbox = body_get_draw_hitbox(player_current);
-                rect_t hitbox = (rect_t) {MAX_WIDTH - 125, MAX_HEIGHT - 50, 120, 46};
+                double buffer_dist = 40;
+                rect_t hitbox = (rect_t) {512 - 125/2, 256 + player_hitbox.h/2 + buffer_dist, 120, 46};
                 UI_t *press_F = UI_init(game_get_sprite(game, PRESS_F_ID), hitbox, "PRESS_F", 0.1);
                 scene_add_UI_component(scene, press_F);
             }

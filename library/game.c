@@ -374,7 +374,7 @@ const sprite_info_t SPRITE_INFOS[] = {
     {{0, 0, 600, 230},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/press_f_full.png",
+    "assets/ui/press_f_full2.png",
     true, 0.6, 2
     },
     // 50 - EMPTY HEART
@@ -396,6 +396,41 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 0, 0},
     {0, 0, 0, 0},
     "assets/ui/ui_heart_full.png",
+    false, 0, 0
+    },
+    // 53 – HEALTH POWERUP
+    {{0, 0, 259, 181},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/health_powerup.png",
+    false, 0, 0
+    },
+    // 54 – ATTACK POWERUP
+    {{0, 0, 259, 181},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/attack_powerup.png",
+    false, 0, 0
+    },
+    // 55 – BULLET COOLDOWN POWERUP
+    {{0, 0, 423, 181},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/cooldown_powerup.png",
+    false, 0, 0
+    },
+    // 56 – SPEED POWERUP
+    {{0, 0, 259, 181},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/speed_powerup.png",
+    false, 0, 0
+    },
+    // 57 – INVULNERABILITY POWERUP
+    {{0, 0, 391, 181},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/invulnerability_powerup.png",
     false, 0, 0
     },
 };

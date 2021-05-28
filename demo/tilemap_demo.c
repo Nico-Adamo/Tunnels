@@ -20,6 +20,9 @@
 #include "level.h"
 
 const char *PRESS_F_PATH = "assets/ui/pressF.png";
+const double level_up_buffs[5] = {/*HEALTH*/ 10, /*ATTACK*/ 10, /*COOLDOWN*/ .8, /*SPEED*/ 50, /*INVULNERABILITY*/ 1.5};
+const double INIT_LEVEL_EXP = 100;
+const double LEVEL_EXP_FACTOR = 1.5;
 
 int main(int arg_c, char *arg_v[]) {
     vector_t bottom_left = {.x = 0, .y = 0};
@@ -63,6 +66,8 @@ int main(int arg_c, char *arg_v[]) {
 
     bool spacebar_pressed = false;
     bool entered_door = false;
+    double powerup_timer = 5;
+
 
     sdl_on_key(on_key);
     while(!sdl_is_done(game)) {
@@ -90,7 +95,6 @@ int main(int arg_c, char *arg_v[]) {
         if (num_hearts > 0) {
             double max_health = max_health = num_hearts * HALF_HEART_HEALTH * 2;
             if (body_get_stats_info(player).health > max_health) {
-                printf("We here");
                 UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts), MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
                 scene_add_UI_component(scene, heart);
                 list_free(hearts);
@@ -123,6 +127,61 @@ int main(int arg_c, char *arg_v[]) {
                     list_remove(UIs, i);
                 }
             }
+        }
+
+        // Player Levelling
+        stats_info_t player_stats = body_get_stats_info(player);
+        //int level_up_exp = 10; // this one is for quick testing
+        int level_up_exp = round(INIT_LEVEL_EXP * pow(LEVEL_EXP_FACTOR, player_stats.level - 1));
+        if (player_stats.experience >= level_up_exp) {
+            printf("LEVEL UP\n");
+            player_stats.experience -= level_up_exp;
+            player_stats.level++;
+            int buff = floor(rand_from(0, 4.9)); // TODO: Magic Numbers?
+            sprite_t *powerup_sprite;
+            switch (buff) {
+                case 0:
+                    player_stats.health += level_up_buffs[0];
+                    powerup_sprite = game_get_sprite(game, 53);
+                    break;
+                case 1:
+                    player_stats.attack += level_up_buffs[1];
+                    powerup_sprite = game_get_sprite(game, 54);
+                    break;
+                case 2:
+                    player_stats.cooldown *= level_up_buffs[2];
+                    powerup_sprite = game_get_sprite(game, 55);
+                    break;
+                case 3:
+                    player_stats.speed += level_up_buffs[3];
+                    powerup_sprite = game_get_sprite(game, 56);
+                    break;
+                case 4:
+                    player_stats.invulnerability_timer *= level_up_buffs[4];
+                    powerup_sprite = game_get_sprite(game, 57);
+                    break;
+            }
+            rect_t player_hitbox = body_get_hitbox(player);
+            double buffer_dist = 40;
+            SDL_Rect sprite_size = sprite_get_shape(powerup_sprite, 1);
+            UI_t *component = UI_init(powerup_sprite, (rect_t) {512 - sprite_size.w/4, 256 + player_hitbox.h / 2 + buffer_dist, sprite_size.w/2, sprite_size.h/2}, "LEVEL_UP", .5);
+            scene_add_UI_component(scene, component);
+            body_set_stats_info(player, player_stats);
+        }
+
+        // Interaction with Level Stuff
+        list_t *UI_comps = scene_get_UI_components(scene);
+        if (list_size(UI_comps) != 0) {
+            for (size_t i = 0; i < list_size(UI_comps); i++) {
+                if (strcmp(UI_get_type(list_get(UI_comps, i)), "LEVEL_UP") == 0) {
+                    if (powerup_timer > 0) powerup_timer -= dt;
+                    else {
+                        list_remove (UI_comps, i);
+                        powerup_timer = 5;
+                    }
+                    break;
+                }
+        }
         }
 
         if (body_get_stats_info(player).health <= 0) {
