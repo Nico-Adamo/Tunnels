@@ -20,6 +20,10 @@ char *ui_text_get_message(ui_text_t *text) {
     return text->message;
 }
 
+void ui_text_set_message(ui_text_t *text, char *message) {
+    text->message = message;
+}
+
 vector_t ui_text_get_bottom_left(ui_text_t *text) {
     return text->bottom_left;
 }

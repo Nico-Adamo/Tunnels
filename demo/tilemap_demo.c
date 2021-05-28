@@ -68,13 +68,16 @@ int main(int arg_c, char *arg_v[]) {
     bool entered_door = false;
     double powerup_timer = 5;
 
-
     sdl_on_key(on_key);
+
     while(!sdl_is_done(game)) {
+        ui_text_t *level_text;
         if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
             make_level(game);
             scene_free(scene);
+            level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 80}, INFINITY);
+            scene_add_UI_text(game_get_current_scene(game), level_text);
         }
 
         scene_t *scene = game_get_current_scene(game);
@@ -87,6 +90,8 @@ int main(int arg_c, char *arg_v[]) {
         scene_tick(scene, dt);
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
         body_t *player = game_get_player(game);
+
+
 
         // Player health display (heart) adjustment
         double curr_health = body_get_stats_info(player).health;
@@ -137,6 +142,9 @@ int main(int arg_c, char *arg_v[]) {
             printf("LEVEL UP\n");
             player_stats.experience -= level_up_exp;
             player_stats.level++;
+            char level[100];
+            sprintf(level, "Level %d", player_stats.level);
+            ui_text_set_message(level_text, level);
             int buff = floor(rand_from(0, 4.9)); // TODO: Magic Numbers?
             sprite_t *powerup_sprite;
             switch (buff) {
