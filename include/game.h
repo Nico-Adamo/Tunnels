@@ -61,4 +61,8 @@ void game_next_room(game_t *game);
 
 void game_set_room(game_t *game, int room);
 
+bool game_is_paused(game_t *game);
+
+void game_set_paused(game_t *game, bool paused);
+
 #endif // #ifndef __GAME_H__

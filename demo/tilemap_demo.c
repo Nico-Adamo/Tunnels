@@ -84,6 +84,7 @@ int main(int arg_c, char *arg_v[]) {
 
         scene_t *scene = game_get_current_scene(game);
         double dt = time_since_last_tick();
+        if(game_is_paused(game)) continue;
         seconds += dt;
         if(seconds > 0.5) {
             handle_enemies(game, dt);

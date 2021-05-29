@@ -13,6 +13,7 @@ typedef struct game {
     list_t *dungeon;
     size_t cur_room;
     size_t cur_level;
+    bool paused;
 } game_t;
 
 typedef struct sprite_info {
@@ -447,6 +448,7 @@ game_t *game_init(double scale) {
     game->dungeon = list_init(5, free); // Todo: magic number
     game->cur_room = 0;
     game->cur_level = 0;
+    game->paused = false;
 
     return game;
 }
@@ -544,4 +546,12 @@ void game_next_room(game_t *game) {
 
 void game_set_room(game_t *game, int room) {
     game->cur_room = room;
+}
+
+bool game_is_paused(game_t *game) {
+    return game->paused;
+}
+
+void game_set_paused(game_t *game, bool paused) {
+    game->paused = paused;
 }
