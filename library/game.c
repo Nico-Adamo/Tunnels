@@ -478,6 +478,10 @@ list_t *game_get_tile_interactors(game_t *game) {
     return game->tile_interactors;
 }
 
+void game_reset_tile_interactors(game_t *game) {
+    game->tile_interactors = list_init(2, free); // Todo: magic number
+}
+
 list_t *game_get_dungeon(game_t *game) {
     return game->dungeon;
 }
@@ -518,6 +522,7 @@ tile_info_t *game_get_tile_info(game_t *game, size_t tile_id) {
     return list_get(game->tile_infos, tile_id);
 }
 
+
 sprite_t *game_get_sprite(game_t *game, size_t sprite_id) {
     return list_get(game->sprites, sprite_id);
 }
@@ -537,3 +542,6 @@ void game_next_room(game_t *game) {
     game->cur_room++;
 }
 
+void game_set_room(game_t *game, int room) {
+    game->cur_room = room;
+}

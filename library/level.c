@@ -86,12 +86,12 @@ void make_level(game_t *game){
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
     body_t *player_new = make_player(game, 0, 0, "PLAYER", player_info);
+    game_reset_tile_interactors(game);
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
     char *path = list_get(game_get_dungeon(game), game_get_room(game));
     map_load(game, path);
-    printf("rt:%d, ut:%f\n", scene_get_room_type(scene_new), scene_get_unlock_time(scene_new));
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 

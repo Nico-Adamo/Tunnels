@@ -29,6 +29,8 @@ void game_add_tile_interactor(game_t *game, tile_interactor_t *interactor);
 
 list_t *game_get_tile_interactors(game_t *game);
 
+void game_reset_tile_interactors(game_t *game);
+
 void game_add_sprite(game_t *game, sprite_t *sprite);
 
 scene_t *game_get_current_scene(game_t *game);
@@ -56,5 +58,7 @@ list_t *game_get_dungeon(game_t *game);
 size_t game_get_room(game_t *game);
 
 void game_next_room(game_t *game);
+
+void game_set_room(game_t *game, int room);
 
 #endif // #ifndef __GAME_H__

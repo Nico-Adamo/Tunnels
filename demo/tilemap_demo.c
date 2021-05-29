@@ -93,8 +93,6 @@ int main(int arg_c, char *arg_v[]) {
         sdl_set_camera(vec_subtract(body_get_centroid(game_get_player(game)), (vector_t) {1024 / 2, 512 / 2}));
         body_t *player = game_get_player(game);
 
-
-
         // Player health display (heart) adjustment
         double curr_health = body_get_stats_info(player).health;
         list_t *hearts = get_player_hearts(scene);
@@ -120,7 +118,9 @@ int main(int arg_c, char *arg_v[]) {
             }
             if (half_heart_lost) {
                 size_t idx = list_size(hearts) - 1 - full_hearts_lost;
-                UI_set_sprite(list_get(hearts, idx), half_heart);
+                if(idx < list_size(hearts)) {
+                    UI_set_sprite(list_get(hearts, idx), half_heart);
+                }
             }
         }
 
@@ -137,8 +137,6 @@ int main(int arg_c, char *arg_v[]) {
         }
 
 
-
-        
         stats_info_t player_stats = body_get_stats_info(player);
         char level[100];
         sprintf(level, "Level %d", player_stats.level);
@@ -212,25 +210,14 @@ int main(int arg_c, char *arg_v[]) {
         }
 
         if (body_get_stats_info(player).health <= 0) {
-            scene_t *scene_new = scene_reset(game);
-            player_info = body_get_stats_info(player);
-            player_info.health = PLAYER_HEALTH;
-            body_t *player_new = make_player(game, 100, 100, "PLAYER", player_info);
-            game_set_player(game, player_new);
-            game_set_current_scene(game, scene_new);
-            scene_add_body(scene_new, player_new);
+            game_set_room(game, 0);
+            make_level(game);
             list_free(hearts);
             scene_free(scene);
-            char level[100];
-            sprintf(level, "Level %d", player_stats.level);
-            ui_text_t *level_text = ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT);
-            scene_add_UI_text(game_get_current_scene(game), level_text);
-            cur_room = game_get_room(game);
-            // TODO: Update to load the correct level/ room
-            map_load(game, "assets/levels/b_room_02a_full.txt");
-            create_tile_collision(game_get_current_scene(game), game_get_player(game));
+            stats_info_t player_info = body_get_stats_info(game_get_player(game));
+            player_info.health = PLAYER_HEALTH;
+            body_set_stats_info(game_get_player(game), player_info);
         }
-
         sdl_render_game(game);
     }
     game_free(game);
