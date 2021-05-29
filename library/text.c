@@ -1,23 +1,28 @@
 #include "text.h"
-
 typedef struct ui_text {
     char *message;
     vector_t bottom_left;
     double timer;
     bool removed;
+    enum text_type type;
 } ui_text_t;
 
-ui_text_t *ui_text_init(char *message, vector_t bottom_left, double lifetime) {
+ui_text_t *ui_text_init(char *message, vector_t bottom_left, double lifetime, enum text_type type) {
     ui_text_t *text = malloc(sizeof(ui_text_t));
     text->message = message;
     text->bottom_left = bottom_left;
     text->timer = lifetime;
     text->removed = false;
+    text->type = type;
     return text;
 }
 
 char *ui_text_get_message(ui_text_t *text) {
     return text->message;
+}
+
+enum text_type ui_text_get_type(ui_text_t *text) {
+    return text->type;
 }
 
 void ui_text_set_message(ui_text_t *text, char *message) {

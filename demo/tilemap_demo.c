@@ -73,12 +73,11 @@ int main(int arg_c, char *arg_v[]) {
     sdl_on_key(on_key);
 
     while(!sdl_is_done(game)) {
-        ui_text_t *level_text;
         if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
             make_level(game);
             scene_free(scene);
-            level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 80}, INFINITY);
+            ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT);
             scene_add_UI_text(game_get_current_scene(game), level_text);
             cur_room = game_get_room(game);
         }
@@ -145,17 +144,21 @@ int main(int arg_c, char *arg_v[]) {
         sprintf(level, "Level %d", player_stats.level);
 
         if (cur_room != game_get_room(game) && spacebar_pressed) {
-            ui_text_t *level_text = ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 80}, INFINITY);
-            scene_add_UI_text(scene, level_text);
+            scene_add_UI_text(scene, ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT));
             cur_room = game_get_room(game);
         }
 
 
-        // Player Levelling
-        //int level_up_exp = 10; // this one is for quick testing
         int level_up_exp = round(INIT_LEVEL_EXP * pow(LEVEL_EXP_FACTOR, player_stats.level - 1));
         if (player_stats.experience >= level_up_exp) {
-            printf("LEVEL UP\n");
+            ui_text_t *level_text;
+            list_t *texts = scene_get_UI_texts(scene);
+            for (size_t i = 0; i < list_size(texts); i++) {
+                if (ui_text_get_type(list_get(texts, i)) == EXP_TEXT) {
+                    level_text = list_get(texts, i);
+                    break;
+                }
+            }
             player_stats.experience -= level_up_exp;
             player_stats.level++;
             char level_cur[100];
@@ -205,7 +208,7 @@ int main(int arg_c, char *arg_v[]) {
                     }
                     break;
                 }
-        }
+            }
         }
 
         if (body_get_stats_info(player).health <= 0) {
@@ -218,6 +221,11 @@ int main(int arg_c, char *arg_v[]) {
             scene_add_body(scene_new, player_new);
             list_free(hearts);
             scene_free(scene);
+            char level[100];
+            sprintf(level, "Level %d", player_stats.level);
+            ui_text_t *level_text = ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT);
+            scene_add_UI_text(game_get_current_scene(game), level_text);
+            cur_room = game_get_room(game);
             // TODO: Update to load the correct level/ room
             map_load(game, "assets/levels/b_room_02a_full.txt");
             create_tile_collision(game_get_current_scene(game), game_get_player(game));

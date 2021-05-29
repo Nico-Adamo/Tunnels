@@ -149,9 +149,9 @@ void scene_add_UI_text(scene_t *scene, ui_text_t *text) {
 void scene_set_room_type(scene_t *scene, room_type_t room_type) {
     scene->room_type = room_type;
     if (room_type == KILL) {
-        scene_add_UI_text(scene, ui_text_init(" Objective: Kill all enemies", (vector_t) {0, 0}, TEXT_COOLDOWN));
+        scene_add_UI_text(scene, ui_text_init(" Objective: Kill all enemies", (vector_t) {0, 0}, TEXT_COOLDOWN, OBJECTIVE_TEXT));
     } else if (room_type == NAVIGATE) {
-        scene_add_UI_text(scene, ui_text_init(" Objective: Get to the door", (vector_t) {0, 0}, TEXT_COOLDOWN));
+        scene_add_UI_text(scene, ui_text_init(" Objective: Get to the door", (vector_t) {0, 0}, TEXT_COOLDOWN, OBJECTIVE_TEXT));
     }
 }
 
@@ -159,7 +159,7 @@ void scene_set_unlock_time(scene_t *scene, double unlock_time) {
     scene->unlock_time = unlock_time;
     scene->last_second = (int) unlock_time + 1;
     if (unlock_time > 0) {
-        scene_add_UI_text(scene, ui_text_init(" Unlock time:", (vector_t) {0, 0}, unlock_time));
+        scene_add_UI_text(scene, ui_text_init(" Unlock time:", (vector_t) {0, 0}, unlock_time, OBJECTIVE_TEXT));
     }
 }
 
@@ -223,7 +223,7 @@ void scene_tick(scene_t *scene, double dt) {
         snprintf(timer_string, length + 1, "%d", scene->last_second);
         printf(timer_string);
 
-        scene_add_UI_text(scene, ui_text_init(timer_string, (vector_t) {256, 0}, 1));
+        scene_add_UI_text(scene, ui_text_init(timer_string, (vector_t) {256, 0}, 1, OBJECTIVE_TEXT));
     }
 
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
@@ -253,13 +253,13 @@ void scene_tick(scene_t *scene, double dt) {
             list_remove(scene->enemies, i);
 
             if (scene->room_type == KILL) {
-                scene_add_UI_text(scene, ui_text_init(" Enemies remaining:", (vector_t) {0, 0}, 1.25));
+                scene_add_UI_text(scene, ui_text_init(" Enemies remaining:", (vector_t) {0, 0}, 1.25, OBJECTIVE_TEXT));
                 int length = snprintf( NULL, 0, "%d", list_size(scene->enemies)); //TODO: understand
                 char* enem_string = malloc( length + 1 );
                 snprintf(enem_string, length + 1, "%d", list_size(scene->enemies));
                 printf(enem_string);
 
-                scene_add_UI_text(scene, ui_text_init(enem_string, (vector_t) {400, 0}, 1.25));
+                scene_add_UI_text(scene, ui_text_init(enem_string, (vector_t) {400, 0}, 1.25, OBJECTIVE_TEXT));
             }
         }
     }
