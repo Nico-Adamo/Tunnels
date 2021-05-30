@@ -9,7 +9,7 @@ typedef struct game game_t;
 
 typedef void (*tile_interaction)(game_t *game);
 
-enum tile_interactor_type{PRESS_F};
+enum tile_interactor_type{PRESS_F, MURAL};
 
 typedef struct tile_interactor {
     rect_t area;

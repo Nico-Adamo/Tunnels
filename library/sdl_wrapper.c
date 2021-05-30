@@ -258,19 +258,6 @@ void sdl_render_game(game_t *game) {
     sdl_render_tilemap(scene_get_wall_tiles(scene));
     //sdl_render_tilemap(scene_get_collider_tiles(scene));
 
-    // UI rendering
-    list_t *UIs = scene_get_UI_components(scene);
-    size_t UI_count = list_size(UIs);
-    for (size_t i = 0; i < UI_count; i++) {
-        UI_t *UI = list_get(UIs, i);
-        rect_t hitbox = UI_get_hitbox(UI);
-        SDL_Rect shape = UI_get_shape(UI);
-        hitbox.x += camera.x;
-        hitbox.y += camera.y;
-        SDL_Texture *texture = UI_get_texture(UI);
-        sdl_draw_texture(texture, shape, hitbox, false);
-    }
-
     // Text rendering
     list_t *texts = scene_get_UI_texts(scene);
     for (size_t i = 0; i < list_size(texts); i++) {
@@ -287,6 +274,19 @@ void sdl_render_game(game_t *game) {
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));
         double lifetime = ui_text_get_timer(text);
         if(lifetime <= 0.5) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/0.5)); // TODO: magic numbers
+        sdl_draw_texture(texture, shape, hitbox, false);
+    }
+
+    // UI rendering
+    list_t *UIs = scene_get_UI_components(scene);
+    size_t UI_count = list_size(UIs);
+    for (size_t i = 0; i < UI_count; i++) {
+        UI_t *UI = list_get(UIs, i);
+        rect_t hitbox = UI_get_hitbox(UI);
+        SDL_Rect shape = UI_get_shape(UI);
+        hitbox.x += camera.x;
+        hitbox.y += camera.y;
+        SDL_Texture *texture = UI_get_texture(UI);
         sdl_draw_texture(texture, shape, hitbox, false);
     }
 

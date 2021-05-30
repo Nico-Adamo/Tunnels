@@ -1,8 +1,5 @@
 #include "level.h"
 
-const char *SPRITE = "knight";
-// const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
-
 const double MAX_WIDTH = 1024;
 const double MAX_HEIGHT = 512;
 
@@ -96,7 +93,14 @@ void make_level(game_t *game){
 }
 
 void game_end_level(game_t *game) {
-    printf("Next room");
-    game_next_room(game);
-    make_level(game);
+    if(scene_check_objective(game_get_current_scene(game))) {
+        game_next_room(game);
+        make_level(game);
+    }
+}
+
+void game_random_mural(game_t *game) {
+    game_set_paused(game, true);
+    UI_t *mural = UI_init(game_get_sprite(game, MURAL_ID), (rect_t) {0,0, 1024, 512}, "MURAL", 1);
+    scene_add_UI_component(game_get_current_scene(game), mural);
 }

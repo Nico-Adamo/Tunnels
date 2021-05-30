@@ -434,6 +434,13 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/ui/invulnerability_powerup.png",
     false, 0, 0
     },
+    // 58 – BLACKER MURAL
+    {{0, 0, 1976, 988},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/blacker_mural.png",
+    false, 0, 0
+    },
 };
 
 game_t *game_init(double scale) {

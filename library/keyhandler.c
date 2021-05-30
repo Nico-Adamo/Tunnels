@@ -76,7 +76,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 list_t *interactors = game_get_tile_interactors(game);
                 for(size_t i = 0; i<list_size(interactors); i++) {
                     tile_interactor_t *interactor = list_get(interactors, i);
-                    if(find_collision(interactor->area, body_get_hitbox(player)).collided && scene_check_objective(scene)) {
+                    if(find_collision(interactor->area, body_get_hitbox(player)).collided) {
                         interactor->interaction(game);
                         break;
                     }
@@ -84,6 +84,12 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             }
             case ESCAPE: {
+                list_t *ui_components = scene_get_UI_components(scene);
+                for(size_t i = 0; i<list_size(ui_components); i++) {
+                    if(strcmp(UI_get_type(list_get(ui_components, i)), "MURAL") == 0) {
+                        list_remove(ui_components, i);
+                    }
+                }
                 game_set_paused(game, !game_is_paused(game));
                 break;
             }

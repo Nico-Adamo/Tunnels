@@ -29,3 +29,5 @@ scene_t *make_title(game_t *game);
 void make_level(game_t *game);
 
 void game_end_level(game_t *game);
+
+void game_random_mural(game_t *game);
