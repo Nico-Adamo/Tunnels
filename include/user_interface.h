@@ -9,6 +9,10 @@ extern const int MURAL_ID;
 extern const int EMPTY_HEART_ID;
 extern const int HALF_HEART_ID;
 extern const int FULL_HEART_ID;
+extern const int COIN_FILLED_ID;
+extern const int COIN_EMPTY_ID;
+extern const int EXPERIENCE;
+extern const int HEALTH;
 
 bool UI_handle_door_interaction(game_t *game, bool entered_area);
 

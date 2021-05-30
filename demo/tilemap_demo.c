@@ -102,6 +102,9 @@ int main(int arg_c, char *arg_v[]) {
     sprite_t *empty_heart = game_get_sprite(game, EMPTY_HEART_ID);
     sprite_t *full_heart = game_get_sprite(game, FULL_HEART_ID);
 
+    sprite_t *coin_filled = game_get_sprite(game, COIN_FILLED_ID);
+    sprite_t *coin_empty = game_get_sprite(game, COIN_EMPTY_ID);
+
     bool spacebar_pressed = false;
     bool entered_door = false;
     double powerup_timer = 5;
@@ -115,7 +118,7 @@ int main(int arg_c, char *arg_v[]) {
             spacebar_pressed = true;
             make_room(game);
             scene_free(scene);
-            ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT);
+            ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT);
             scene_add_UI_text(game_get_current_scene(game), level_text);
             cur_room = game_get_room(game);
         }
@@ -133,13 +136,14 @@ int main(int arg_c, char *arg_v[]) {
             body_t *player = game_get_player(game);
 
             // Player health display (heart) adjustment
+            double length = 83;
             double curr_health = body_get_stats_info(player).health;
             list_t *hearts = get_player_hearts(scene);
             size_t num_hearts = list_size(hearts);
             if (num_hearts > 0) {
-                double max_health = max_health = num_hearts * HALF_HEART_HEALTH * 2;
+                double max_health = num_hearts * HALF_HEART_HEALTH * 2;
                 if (body_get_stats_info(player).health > max_health) {
-                    UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts), MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
+                    UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts) + length, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
                     scene_add_UI_component(scene, heart);
                     list_free(hearts);
                     hearts = get_player_hearts(scene);
@@ -163,6 +167,24 @@ int main(int arg_c, char *arg_v[]) {
                 }
             }
 
+            // Player experience display adjustment
+            stats_info_t player_stats = body_get_stats_info(player);
+            int level_up_exp = round(INIT_LEVEL_EXP * pow(LEVEL_EXP_FACTOR, player_stats.level - 1));
+            double curr_exp = body_get_stats_info(player).experience;
+            list_t *coins = get_player_coins(scene);
+            size_t num_coins = list_size(coins);
+            if (num_coins > 0) {
+                double coin_exp = level_up_exp / 10;
+                size_t filled_coin_num = floor(curr_exp / coin_exp);
+                for (size_t i = 0; i < filled_coin_num; i++) {
+                    UI_set_sprite(list_get(coins, i), coin_filled);
+                }
+                for (size_t i = filled_coin_num; i < num_coins; i++) {
+                    UI_set_sprite(list_get(coins, i), coin_empty);
+                }
+                
+            }
+
             // Interaction UI display
             bool in_flag = entered_door;
             entered_door = UI_handle_door_interaction(game, entered_door);
@@ -176,17 +198,17 @@ int main(int arg_c, char *arg_v[]) {
             }
 
 
-            stats_info_t player_stats = body_get_stats_info(player);
+            
             char level[100];
             sprintf(level, "Level %d", player_stats.level);
 
             if (cur_room != game_get_room(game) && spacebar_pressed) {
-                scene_add_UI_text(scene, ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT));
+                scene_add_UI_text(scene, ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT));
                 cur_room = game_get_room(game);
             }
 
 
-            int level_up_exp = round(INIT_LEVEL_EXP * pow(LEVEL_EXP_FACTOR, player_stats.level - 1));
+            
             if (player_stats.experience >= level_up_exp) {
                 ui_text_t *level_text;
                 list_t *texts = scene_get_UI_texts(scene);
@@ -256,6 +278,10 @@ int main(int arg_c, char *arg_v[]) {
                 stats_info_t player_info = body_get_stats_info(game_get_player(game));
                 player_info.health = PLAYER_HEALTH;
                 body_set_stats_info(game_get_player(game), player_info);
+                char level[100];
+                sprintf(level, "Level %d", player_info.level);
+                scene_add_UI_text(game_get_current_scene(game), ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT));
+                cur_room = game_get_room(game);
             }
         }
         sdl_render_game(game);
