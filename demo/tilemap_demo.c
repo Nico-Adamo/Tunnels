@@ -80,7 +80,7 @@ int main(int arg_c, char *arg_v[]) {
             spacebar_pressed = true;
             make_level(game);
             scene_free(scene);
-            ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 125}, INFINITY, EXP_TEXT);
+            ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT);
             scene_add_UI_text(game_get_current_scene(game), level_text);
             cur_room = game_get_room(game);
         }
@@ -98,7 +98,7 @@ int main(int arg_c, char *arg_v[]) {
             body_t *player = game_get_player(game);
 
             // Player health display (heart) adjustment
-            double length = 0.32 * 606;
+            double length = 83;
             double curr_health = body_get_stats_info(player).health;
             list_t *hearts = get_player_hearts(scene);
             size_t num_hearts = list_size(hearts);
@@ -165,7 +165,7 @@ int main(int arg_c, char *arg_v[]) {
             sprintf(level, "Level %d", player_stats.level);
 
             if (cur_room != game_get_room(game) && spacebar_pressed) {
-                scene_add_UI_text(scene, ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 125}, INFINITY, EXP_TEXT));
+                scene_add_UI_text(scene, ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT));
                 cur_room = game_get_room(game);
             }
 
@@ -242,7 +242,7 @@ int main(int arg_c, char *arg_v[]) {
                 body_set_stats_info(game_get_player(game), player_info);
                 char level[100];
                 sprintf(level, "Level %d", player_info.level);
-                scene_add_UI_text(game_get_current_scene(game), ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 125}, INFINITY, EXP_TEXT));
+                scene_add_UI_text(game_get_current_scene(game), ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT));
                 cur_room = game_get_room(game);
             }
         }

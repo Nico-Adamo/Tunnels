@@ -456,14 +456,14 @@ const sprite_info_t SPRITE_INFOS[] = {
     false, 0, 0
     },
     // 61 - EXPERIENCE
-    {{0, 0, 606, 100},
+    {{0, 0, 83, 32},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
     "assets/ui/experience.png",
     false, 0, 0
     },
     // 62 - HEALTH
-    {{0, 0, 606, 100},
+    {{0, 0, 56, 32},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
     "assets/ui/health.png",
