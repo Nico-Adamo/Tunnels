@@ -26,8 +26,10 @@ scene_t *scene_reset(game_t *game);
 
 scene_t *make_title(game_t *game);
 
-void make_level(game_t *game);
+void make_room(game_t *game);
 
-void game_end_level(game_t *game);
+void make_level(game_t *game, int level, char** levels_shuffled, char **boss_levels_shuffled, char **post_boss_levels);
+
+void game_end_room(game_t *game);
 
 void game_random_mural(game_t *game);

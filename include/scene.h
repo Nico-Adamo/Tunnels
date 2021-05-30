@@ -15,7 +15,7 @@
  */
 typedef struct scene scene_t;
 
-typedef enum {KILL, SURVIVE, NAVIGATE} room_type_t;
+typedef enum {KILL, SURVIVE, NAVIGATE, BOSS, POST_BOSS} room_type_t;
 
 /**
  * A function which adds some forces or impulses to bodies,

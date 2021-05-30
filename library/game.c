@@ -562,3 +562,7 @@ bool game_is_paused(game_t *game) {
 void game_set_paused(game_t *game, bool paused) {
     game->paused = paused;
 }
+
+size_t game_get_dungeon_size(game_t *game) {
+    return list_size(game->dungeon);
+}

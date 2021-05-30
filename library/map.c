@@ -63,6 +63,10 @@ const char *TILE_PATHS[] = {
     "assets/skull_floor_8.png", // 58
     "assets/eyes_wall_hole_1.png", // 59
     "assets/eyes_wall_hole_2.png", // 60
+    "assets/door_top_m_left_boss.png", // 61
+    "assets/door_top_m_right_boss.png", // 62
+    "assets/door_bottom_m_left_boss.png", // 63
+    "assets/door_bottom_m_right_boss.png" // 64
 };
 
 SDL_Rect COLLIDER_TILES[]= {
@@ -110,13 +114,22 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
             fscanf(file, "%d,", tile_id_buffer);
             if(*tile_id_buffer >= 0) {
                 if(tile_type == 0) {
-                    tile_info_t *tile_info = game_get_tile_info(game, *tile_id_buffer);
+                    int tile_id = *tile_id_buffer;
+                    if(game_get_room(game) == game_get_dungeon_size(game) - 3) {
+                        if(tile_id == 28) tile_id = 61;
+                        if(tile_id == 29) tile_id = 62;
+                        if(tile_id == 32) tile_id = 63;
+                        if(tile_id == 33) tile_id = 64;
+                    }
+                    tile_info_t *tile_info = game_get_tile_info(game, tile_id);
                     tile_t *tile = tile_init(tile_info, (rect_t) {game_scale*x*TILE_SIZE, game_scale*y*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE});
                     scene_add_floor_tile(scene, tile);
+
                     if(*tile_id_buffer == 32 || *tile_id_buffer == 33) { // Door tile IDS
-                        tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y-1)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_end_level, PRESS_F);
+                        tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y-1)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_end_room, PRESS_F);
                         game_add_tile_interactor(game, interactor);
-                    } else if(*tile_id_buffer == 37) {
+
+                    } else if(*tile_id_buffer == 37) { // Mural
                         tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y-1)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_random_mural, MURAL);
                         game_add_tile_interactor(game, interactor);
                     }
@@ -179,7 +192,7 @@ void map_load(game_t *game, const char *path) {
     fscanf(file, "y: %d\n", y_tiles);
 
     fscanf(file, "room type: %d\n", room_type);
-    fscanf(file, "unlock time: %lf\n", unlock_time);
+    fscanf(file, "unlock time: %lf\n\n", unlock_time);
 
     scene_set_room_type(scene, (room_type_t) *room_type);
     scene_set_unlock_time(scene, *unlock_time);

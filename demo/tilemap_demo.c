@@ -12,6 +12,7 @@
 #include "forces.h"
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "collision.h"
 #include "keyhandler.h"
 #include "user_interface.h"
@@ -24,7 +25,41 @@ const double level_up_buffs[5] = {/*HEALTH*/ 10, /*ATTACK*/ 10, /*COOLDOWN*/ .8,
 const double INIT_LEVEL_EXP = 100;
 const double LEVEL_EXP_FACTOR = 1.5;
 
+const char* levels[] = {
+    "assets/levels/b_room_02",
+    "assets/levels/b_room_03",
+    "assets/levels/b_room_04",
+    "assets/levels/b_room_05",
+    "assets/levels/b_room_06",
+    "assets/levels/b_room_07",
+};
+
+const char* boss_levels[] = {
+    "assets/levels/boss_room_01_orc_full.txt"
+};
+
+const char* post_boss_levels[] = {
+    "assets/levels/post_boss_room_level_1_full.txt"
+};
+
+char **shuffle_str_array(const char *arr[], int arr_size) {
+    char **arr_shuffled = malloc(arr_size * sizeof(char *));
+    for (int i = 0; i < arr_size; i++) {
+        arr_shuffled[i] = malloc((strlen(arr[i]) + 1) * sizeof(char));
+        arr_shuffled[i] = arr[i];
+    }
+
+    for (int i = 0; i < arr_size; i++) {
+        char *temp = arr_shuffled[i];
+        int randomIndex = rand() % arr_size;
+        arr_shuffled[i] = arr_shuffled[randomIndex];
+        arr_shuffled[randomIndex] = temp;
+    }
+    return arr_shuffled;
+}
+
 int main(int arg_c, char *arg_v[]) {
+    srand(time(0));
     vector_t bottom_left = {.x = 0, .y = 0};
     vector_t top_right = {.x = MAX_WIDTH, .y = MAX_HEIGHT};
     sdl_init(bottom_left, top_right);
@@ -54,10 +89,13 @@ int main(int arg_c, char *arg_v[]) {
     game_set_player(game, player);
     game_set_current_scene(game, scene);
 
-    game_add_room(game, "assets/levels/b_room_02a_full.txt");
-    game_add_room(game, "assets/levels/b_room_03a_full.txt");
-    game_add_room(game, "assets/levels/b_room_04a_full.txt");
-    game_add_room(game, "assets/levels/b_room_05a_full.txt");
+    char **levels_shuffled = shuffle_str_array(levels, sizeof(levels) / sizeof(char*));
+    // for(size_t i = 0; i<6; i++) {
+    //     printf("Level: %s\n", levels_shuffled[i]);
+    // }
+    char **boss_levels_shuffled = shuffle_str_array(boss_levels, sizeof(boss_levels) / sizeof(char*));
+
+    make_level(game, 0, levels_shuffled, boss_levels_shuffled, post_boss_levels);
 
     double seconds = 0;
     sprite_t *half_heart = game_get_sprite(game, HALF_HEART_ID);
@@ -75,7 +113,7 @@ int main(int arg_c, char *arg_v[]) {
     while(!sdl_is_done(game)) {
         if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
-            make_level(game);
+            make_room(game);
             scene_free(scene);
             ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 80}, INFINITY, EXP_TEXT);
             scene_add_UI_text(game_get_current_scene(game), level_text);
@@ -212,7 +250,7 @@ int main(int arg_c, char *arg_v[]) {
 
             if (body_get_stats_info(player).health <= 0) {
                 game_set_room(game, 0);
-                make_level(game);
+                make_room(game);
                 list_free(hearts);
                 scene_free(scene);
                 stats_info_t player_info = body_get_stats_info(game_get_player(game));

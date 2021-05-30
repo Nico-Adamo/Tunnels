@@ -65,4 +65,6 @@ bool game_is_paused(game_t *game);
 
 void game_set_paused(game_t *game, bool paused);
 
+size_t game_get_dungeon_size(game_t *game);
+
 #endif // #ifndef __GAME_H__

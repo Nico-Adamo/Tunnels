@@ -7,6 +7,12 @@ const double HALF_HEART_HEALTH = 5;
 const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
 
+char *level_variants[] = {
+    "a_full.txt",
+    "b_full.txt",
+    "c_full.txt"
+};
+
 body_t *make_player(game_t *game, double x, double y, char *type, stats_info_t info) {
     vector_t bottom_left = {x, y};
     body_sprite_info_t player_sprite_info = {
@@ -78,7 +84,7 @@ scene_t *make_title(game_t *game) {
     return scene;
 
 }
-void make_level(game_t *game){
+void make_room(game_t *game){
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
@@ -92,10 +98,25 @@ void make_level(game_t *game){
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 
-void game_end_level(game_t *game) {
+void make_level(game_t *game, int level, char** levels_shuffled, char **boss_levels_shuffled, char **post_boss_levels) {
+    game_set_room(game, 0);
+    game_reset_dungeon(game);
+    for(int i=level*2; i < level*2+2; i++) { // TODO: magic number
+        char *level = levels_shuffled[i];
+        char *level_full_path = malloc(sizeof(level) + 15 * sizeof(char *));
+        strcpy(level_full_path, level);
+        strcat(level_full_path, level_variants[rand() % 3]);
+        printf("Level: %s\n", level_full_path);
+        game_add_room(game, level_full_path);
+    }
+    game_add_room(game, boss_levels_shuffled[level]);
+    game_add_room(game, post_boss_levels[level]);
+}
+
+void game_end_room(game_t *game) {
     if(scene_check_objective(game_get_current_scene(game))) {
         game_next_room(game);
-        make_level(game);
+        make_room(game);
     }
 }
 
