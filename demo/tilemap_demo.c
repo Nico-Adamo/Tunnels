@@ -114,6 +114,7 @@ int main(int arg_c, char *arg_v[]) {
     sdl_on_key(on_key);
 
     while(!sdl_is_done(game)) {
+        handle_movement_shooting(game);
         if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
             make_room(game);

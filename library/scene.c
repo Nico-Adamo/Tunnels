@@ -251,13 +251,15 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
+    int idx = 0;
     stats_info_t player_stats = body_get_stats_info(player);
-    for(size_t i = 0; i < list_size(scene->enemies); i++) {
-        if (body_is_removed(list_get(scene->enemies, i))) {
-            double exp = body_get_stats_info(list_get(scene->enemies, i)).experience;
+    while (idx < list_size(scene->enemies)) {
+        if (body_is_removed(list_get(scene->enemies, idx))) {
+            double exp = body_get_stats_info(list_get(scene->enemies, idx)).experience;
             player_stats.experience += exp;
             body_set_stats_info(player, player_stats);
-            list_remove(scene->enemies, i);
+            list_remove(scene->enemies, idx);
+            idx--;
 
             if (scene->room_type == KILL) {
                 scene_add_UI_text(scene, ui_text_init(" Enemies remaining:", (vector_t) {0, 0}, 1.25, OBJECTIVE_TEXT));
@@ -269,6 +271,7 @@ void scene_tick(scene_t *scene, double dt) {
                 scene_add_UI_text(scene, ui_text_init(enem_string, (vector_t) {400, 0}, 1.25, OBJECTIVE_TEXT));
             }
         }
+        idx++;
     }
 
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
@@ -277,7 +280,7 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
-    int idx = 0;
+    idx = 0;
     while (idx < list_size(scene->force_creators)) {
         force_aux_t *force_func = list_get(scene->force_creators, idx);
         if (force_func->removed) {

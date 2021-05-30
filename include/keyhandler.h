@@ -14,4 +14,5 @@
 
 void on_key(char key, key_event_type_t type, double held_time, game_t *game);
 
+void handle_movement_shooting(game_t *game);
 #endif // #ifndef __KEYHANDLER_H__

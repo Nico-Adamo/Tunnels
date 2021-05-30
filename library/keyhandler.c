@@ -3,6 +3,8 @@
 
 const double player_velocity = 300;
 
+bool key_pressed[8] = {false, false, false, false, false, false, false, false};
+
 void body_set_velocity_and_direction(body_t *player, vector_t velocity) {
     body_set_velocity(player, velocity); //pass player first
     body_set_direction(player, vec_unit(body_get_velocity(player)));
@@ -27,6 +29,38 @@ void set_zero_velocity_direction(body_t *player) {
     }
 }
 
+void handle_movement_shooting(game_t *game) {
+    scene_t *scene = game_get_current_scene(game);
+    body_t *player = game_get_player(game);
+    vector_t velocity = body_get_velocity(player);
+    vector_t bullet_dir = VEC_ZERO;
+    if(key_pressed[0] == true) { // "W" held
+        velocity.y = player_velocity;
+        body_set_velocity_and_direction(player, velocity);
+    } if(key_pressed[1] == true) { // "A"
+        velocity.x = -player_velocity;
+        body_set_velocity_and_direction(player, velocity);
+    } if(key_pressed[2] == true) { // "S"
+        velocity.y = -player_velocity;
+        body_set_velocity_and_direction(player, velocity);
+    } if(key_pressed[3] == true) { // "D"
+        velocity.x = player_velocity;
+        body_set_velocity_and_direction(player, velocity);
+    } if(key_pressed[4] == true) { // "I"
+        bullet_dir.y = 1;
+        player_make_bullet(game, player, scene, bullet_dir);
+    } if(key_pressed[5] == true) { // "J"
+        bullet_dir.x = -1;
+        player_make_bullet(game, player, scene, bullet_dir);
+    } if(key_pressed[6] == true) { // "K"
+        bullet_dir.y = -1;
+        player_make_bullet(game, player, scene, bullet_dir);
+    } if(key_pressed[7] == true) { // "L"
+        bullet_dir.x = 1;
+        player_make_bullet(game, player, scene, bullet_dir);
+    }
+}
+
 void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
     scene_t *scene = game_get_current_scene(game);
     body_t *player = game_get_player(game);
@@ -41,36 +75,28 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 }
                 break;
             case 'a':
-                velocity.x = -player_velocity;
-                body_set_velocity_and_direction(player, velocity);
+                key_pressed[1] = true;
                 break;
             case 'd':
-                velocity.x = player_velocity;
-                body_set_velocity_and_direction(player, velocity);
+                key_pressed[3] = true;
                 break;
             case 's':
-                velocity.y = -player_velocity;
-                body_set_velocity_and_direction(player, velocity);
+                key_pressed[2] = true;
                 break;
             case 'w':
-                velocity.y = player_velocity;
-                body_set_velocity_and_direction(player, velocity);
+                key_pressed[0] = true;
                 break;
             case 'i':
-                bullet_dir.y = 1;
-                player_make_bullet(game, player, scene, bullet_dir);
+                key_pressed[4] = true;
                 break;
             case 'j':
-                bullet_dir.x = -1;
-                player_make_bullet(game, player, scene, bullet_dir);
+                key_pressed[5] = true;
                 break;
             case 'k':
-                bullet_dir.y = -1;
-                player_make_bullet(game, player, scene, bullet_dir);
+                key_pressed[6] = true;
                 break;
             case 'l':
-                bullet_dir.x = 1;
-                player_make_bullet(game, player, scene, bullet_dir);
+                key_pressed[7] = true;
                 break;
             case 'f': {
                 list_t *interactors = game_get_tile_interactors(game);
@@ -98,6 +124,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
     else if (type == KEY_RELEASED) {
         switch (key) {
             case 'a':
+                key_pressed[1] = false;
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 if (body_get_velocity(player).x == -player_velocity) {
                     velocity.x = 0;
@@ -107,6 +134,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
             case 'd':
+                key_pressed[3] = false;
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 if(body_get_velocity(player).x == player_velocity) {
                     velocity.x = 0;
@@ -116,6 +144,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
             case 's':
+                key_pressed[2] = false;
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 if(body_get_velocity(player).y == -player_velocity) {
                     velocity.y = 0;
@@ -125,6 +154,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
                 break;
             case 'w':
+                key_pressed[0] = false;
                 body_set_direction(player, vec_unit(body_get_velocity(player)));
                 if(body_get_velocity(player).y == player_velocity) {
                     velocity.y = 0;
@@ -132,6 +162,18 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 }
                 set_zero_velocity_direction(player);
                 if (body_get_velocity(player).x == 0 && body_get_velocity(player).y == 0) body_set_sprite(player, game_get_sprite(game, 0));
+                break;
+            case 'i':
+                key_pressed[4] = false;
+                break;
+            case 'j':
+                key_pressed[5] = false;
+                break;
+            case 'k':
+                key_pressed[6] = false;
+                break;
+            case 'l':
+                key_pressed[7] = false;
                 break;
         }
     }
