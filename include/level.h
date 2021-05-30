@@ -20,6 +20,10 @@ list_t *get_player_hearts(scene_t *scene);
 
 body_t *make_player(game_t *game, double x, double y, char *type, stats_info_t info);
 
+UI_t *make_coin(double x, double y, sprite_t *sprite, char *type);
+
+list_t *get_player_coins(scene_t *scene);
+
 body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type);
 
 scene_t *scene_reset(game_t *game);

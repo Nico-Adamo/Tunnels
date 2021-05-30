@@ -441,6 +441,20 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/ui/blacker_mural.png",
     false, 0, 0
     },
+    // 59 - FILLED COIN
+    {{0, 0, 8, 8},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/coin.png",
+    false, 0, 0
+    },
+    // 60 - EMPTY COIN
+    {{0, 0, 8, 8},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/coin_desaturated.png",
+    false, 0, 0
+    }
 };
 
 game_t *game_init(double scale) {

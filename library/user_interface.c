@@ -9,6 +9,8 @@ const int EMPTY_HEART_ID = 50;
 const int HALF_HEART_ID = 51;
 const int FULL_HEART_ID = 52;
 const int MURAL_ID = 58;
+const int COIN_FILLED_ID = 59;
+const int COIN_EMPTY_ID = 60;
 
 bool UI_handle_door_interaction(game_t *game, bool entered_area) {
     bool still_in_area = false;

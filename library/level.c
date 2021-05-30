@@ -29,7 +29,6 @@ body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
 }
 
 UI_t *make_heart(double x, double y, sprite_t *sprite, char *type) {
-    SDL_Rect shape = (SDL_Rect) {0, 0, 16, 16};
     rect_t hitbox = (rect_t) {x, y, 32, 32};
     return UI_init(sprite, hitbox, type, 2);
 }
@@ -45,6 +44,22 @@ list_t *get_player_hearts(scene_t *scene) {
     return hearts;
 }
 
+UI_t *make_coin(double x, double y, sprite_t *sprite, char *type) {
+    rect_t hitbox = (rect_t) {x, y, 32, 32};
+    return UI_init(sprite, hitbox, type, 4);
+}
+
+list_t *get_player_coins(scene_t *scene) {
+    list_t *UIs = scene_get_UI_components(scene);
+    list_t *coins = list_init(list_size(UIs), NULL);
+    for (size_t i = 0; i < list_size(UIs); i++) {
+        if (strcmp(UI_get_type(list_get(UIs, i)), "PLAYER_COIN") == 0) {
+            list_add(coins, list_get(UIs, i));
+        }
+    }
+    return coins;
+}
+
 scene_t *scene_reset(game_t *game) {
 
     // Initialize Sprite/Player
@@ -56,11 +71,38 @@ scene_t *scene_reset(game_t *game) {
     //     scene_add_body(scene, temp_enemy);
     // }
 
+    double exp;
+    int max_exp;
+
+    if (game_get_player(game) != NULL) {
+        body_t *player = game_get_player(game);
+        exp = body_get_stats_info(player).experience;
+        max_exp = round(100 * pow(1.5, body_get_stats_info(player).level - 1)); // Magic numbers (fix)
+    }
+    else {
+        exp = 0; // Magic numbers (fix)
+        max_exp = 100;
+    }
+
+
     // Initialize Demo Heart
     int heart_num = PLAYER_HEALTH / (HALF_HEART_HEALTH * 2);
     for (int i = 0; i < heart_num; i++) {
         UI_t *heart = make_heart(HEART_PADDING + 32 * i, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
         scene_add_UI_component(scene, heart);
+    }
+
+    // Initialize Demo Coins
+    int coin_exp = max_exp / 10;
+    int coin_filled = floor(exp / coin_exp);
+    for (int i = 0; i < coin_filled; i++) {
+        UI_t *coin = make_coin(HEART_PADDING + 32 * i, MAX_HEIGHT - 64 - HEART_PADDING * 2, game_get_sprite(game, COIN_FILLED_ID), "PLAYER_COIN");
+        scene_add_UI_component(scene, coin);
+    }
+
+    for (int i = coin_filled; i < 10; i++) {
+        UI_t *coin = make_coin(HEART_PADDING + 32 * i, MAX_HEIGHT - 64 - HEART_PADDING * 2, game_get_sprite(game, COIN_EMPTY_ID), "PLAYER_COIN");
+        scene_add_UI_component(scene, coin);
     }
 
     //scene_add_UI_text(scene, ui_text_init("Test",  (rect_t) {0, 0, 100, 100}, 5));
