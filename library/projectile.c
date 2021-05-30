@@ -17,10 +17,10 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
         .cooldown = 0
     };
 
-    if (strcmp(body_get_type(body), "PLAYER")==0) {
-        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, "PLAYER_BULLET", info);
+    if (body_get_type(body) == PLAYER) {
+        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, PLAYER_BULLET, info);
     } else {
-        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, "ENEMY_BULLET", info);
+        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, ENEMY_BULLET, info);
     }
     //vector_t player_dir = body_get_direction(body);
 

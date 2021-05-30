@@ -13,7 +13,7 @@ char *level_variants[] = {
     "c_full.txt"
 };
 
-body_t *make_player(game_t *game, double x, double y, char *type, stats_info_t info) {
+body_t *make_player(game_t *game, double x, double y, enum body_type type, stats_info_t info) {
     vector_t bottom_left = {x, y};
     body_sprite_info_t player_sprite_info = {
         .idle_sprite_id = 0,
@@ -30,7 +30,17 @@ body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
     vector_t bottom_left = {x, y};
     stats_info_t info = enemy_get_stats(type);
     body_sprite_info_t enemy_sprite_info = enemy_get_sprite_info(type);
-    body_t *enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, "ENEMY", info);
+    body_t *enemy;
+    if(type >= NECROMANCER_WIZARD) { // Boss IDs
+        enum body_type id;
+        if(type == NECROMANCER_WIZARD) id = BOSS_NECROMANCER_WIZARD;
+        if(type == BIG_ZOMBIE) id = BOSS_BIG_ZOMBIE;
+        if(type == OGRE) id = BOSS_OGRE;
+        if(type == BIG_DEMON) id = BOSS_BIG_DEMON;
+        enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, id, info);
+    } else {
+        enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, ENEMY, info);
+    }
     return enemy;
 }
 
@@ -140,7 +150,7 @@ void make_room(game_t *game){
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
-    body_t *player_new = make_player(game, 0, 0, "PLAYER", player_info);
+    body_t *player_new = make_player(game, 0, 0, PLAYER, player_info);
     game_reset_tile_interactors(game);
     game_set_player(game, player_new);
     game_set_current_scene(game, scene_new);

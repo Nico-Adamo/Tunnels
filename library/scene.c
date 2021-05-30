@@ -92,7 +92,7 @@ body_t *scene_get_body(scene_t *scene, size_t index) {
 
 void scene_add_body(scene_t *scene, body_t *body) {
     list_add(scene->bodies, body);
-    if(strcmp(body_get_type(body), "ENEMY") == 0) list_add(scene->enemies, body);
+    if(body_get_type(body) >= ENEMY) list_add(scene->enemies, body);
 }
 
 int depth_comparator(void *body1, void *body2) {
@@ -167,12 +167,19 @@ void scene_set_unlock_time(scene_t *scene, double unlock_time) {
 bool scene_check_objective(scene_t *scene) {
     if (scene->room_type == NAVIGATE) {
         return true;
-    } if (scene->room_type == KILL) {
+    } else if (scene->room_type == KILL) {
         return (list_size(scene->enemies) == 0);
-    } if (scene->room_type == SURVIVE) {
+    } else if (scene->room_type == SURVIVE) {
         return scene->unlock_time <= 0;
+    } else if(scene->room_type == BOSS) {
+        for(int i = 0; i < list_size(scene->enemies); i++) {
+            if(body_get_type(list_get(scene->enemies, i)) != ENEMY) {
+                return false;
+            }
+        }
+        return true; // All enemies are type ENEMY, so no bosses
     }
-    printf("Room with no type"); //TODO changeto assert/throw somewhere
+    printf("Room with no type\n"); //TODO changeto assert/throw somewhere
     return false;
 }
 
@@ -238,7 +245,7 @@ void scene_tick(scene_t *scene, double dt) {
 
     body_t *player;
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
-        if (strcmp(body_get_type(list_get(scene->bodies, i)), "PLAYER") == 0) {
+        if (body_get_type(list_get(scene->bodies, i)) == PLAYER) {
             player = list_get(scene->bodies, i);
             break;
         }

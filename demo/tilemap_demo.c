@@ -82,7 +82,7 @@ int main(int arg_c, char *arg_v[]) {
 
     game_register_sprites(game);
 
-    body_t *player = make_player(game, 100, 100, "PLAYER", player_info);
+    body_t *player = make_player(game, 100, 100, PLAYER, player_info);
     scene_t *scene = make_title(game);
     scene_add_body(scene, player);
 
@@ -182,7 +182,7 @@ int main(int arg_c, char *arg_v[]) {
                 for (size_t i = filled_coin_num; i < num_coins; i++) {
                     UI_set_sprite(list_get(coins, i), coin_empty);
                 }
-                
+
             }
 
             // Interaction UI display
@@ -198,7 +198,7 @@ int main(int arg_c, char *arg_v[]) {
             }
 
 
-            
+
             char level[100];
             sprintf(level, "Level %d", player_stats.level);
 
@@ -208,7 +208,7 @@ int main(int arg_c, char *arg_v[]) {
             }
 
 
-            
+
             if (player_stats.experience >= level_up_exp) {
                 ui_text_t *level_text;
                 list_t *texts = scene_get_UI_texts(scene);

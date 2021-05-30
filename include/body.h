@@ -11,6 +11,7 @@
 #include <SDL2/SDL_image.h>
 
 enum attack_type{MELEE, RADIAL_SHOOTER, STATIC_SHOOTER, MELEE_SHOOTER};
+enum body_type{PLAYER, PLAYER_BULLET, ENEMY_BULLET, ENEMY, BOSS_NECROMANCER_WIZARD, BOSS_BIG_ZOMBIE, BOSS_OGRE, BOSS_BIG_DEMON};
 
 // Go through stats_info (in enemy+) and update to include level + invulnerability_timer
 typedef struct stats_info {
@@ -46,8 +47,6 @@ typedef struct body_sprite_info body_sprite_info_t;
  * Initializes a body without any info.
  * Acts like body_init_with_info() where info and info_freer are NULL.
  */
-body_t *body_init(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale);
-
 stats_info_t body_get_stats_info(body_t *body);
 
 void body_set_stats_info(body_t *body, stats_info_t info);
@@ -65,7 +64,7 @@ void body_set_stats_info(body_t *body, stats_info_t info);
  * @param info_freer if non-NULL, a function call on the info to free it
  * @return a pointer to the newly allocated body
  */
-body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info);
+body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, enum body_type type, stats_info_t info);
 /**
  * Releases the memory allocated for a body.
  *
@@ -146,7 +145,7 @@ double body_get_scale(body_t *body);
  * @param type a pointer to a type returned from body_init()
  * @return the info passed to body_init()
  */
-char *body_get_type(body_t *body);
+enum body_type body_get_type(body_t *body);
 
 bool body_get_flipped(body_t *body);
 

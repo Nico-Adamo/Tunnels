@@ -23,7 +23,7 @@ typedef struct body {
     vector_t net_impulse;
     bool removed;
     bool flipped;
-    char *type;
+    enum body_type type;
     stats_info_t info;
     free_func_t info_freer;
     vector_t direction;
@@ -33,11 +33,8 @@ typedef struct body {
     double invulnerability_timer;
 } body_t;
 
-body_t *body_init(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale) {
-    return body_init_with_info(sprite_ids, sprite, bottom_left, mass, scale, NULL, (stats_info_t) {0.0, 0.0, 0.0, 0.0});
-}
 
-body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, char *type, stats_info_t info) {
+body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, enum body_type type, stats_info_t info) {
     body_t *body = malloc(sizeof(body_t));
     assert(body != NULL);
 
@@ -185,7 +182,7 @@ rgb_color_t body_get_color(body_t *body) {
 }
 */
 
-char *body_get_type(body_t *body) {
+enum body_type body_get_type(body_t *body) {
     return body->type;
 }
 

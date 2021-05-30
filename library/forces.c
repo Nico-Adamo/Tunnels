@@ -201,7 +201,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
     */
     // types: PLAYER ENEMY ENEMY_BULLET PLAYER_BULLET(?)
 
-    if (strcmp(body_get_type(body2), "PLAYER") == 0 && strcmp(body_get_type(body1), "ENEMY") == 0) {
+    if (body_get_type(body2) == PLAYER && body_get_type(body1) == ENEMY) { // TODO need to change if melee bosses
         if(body_get_invulnerability_timer(body2) <= 0) {
             body2_info.health -= body1_info.attack;
             body_set_stats_info(body2, body2_info);
@@ -209,16 +209,16 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
             printf("Health: %f\n", body2_info.health);
             if (body2_info.health <= 0) body_remove(body2);
         }
-    } else if ((strcmp(body_get_type(body1), "PLAYER") == 0 && (strcmp(body_get_type(body2), "ENEMY_BULLET") == 0) ||
-    (strcmp(body_get_type(body1), "ENEMY") == 0 && (strcmp(body_get_type(body2), "PLAYER_BULLET") == 0)))) {
-        if(body_get_invulnerability_timer(body1) <= 0 || strcmp(body_get_type(body1), "PLAYER") != 0) {
+    } else if ((body_get_type(body1) == PLAYER && body_get_type(body2) == ENEMY_BULLET) ||
+    (body_get_type(body1) >= ENEMY && body_get_type(body2) == PLAYER_BULLET)) {
+        if(body_get_invulnerability_timer(body1) <= 0 || body_get_type(body1) != PLAYER) {
             body1_info.health -= body2_info.attack;
             body_set_stats_info(body1, body1_info);
             body_set_invulnerability_timer(body1, body_get_stats_info(body1).invulnerability_timer); // TODO: Invulnerability timer magic number
             if (body1_info.health <= 0) body_remove(body1);
             body_remove(body2);
         }
-        if(strcmp(body_get_type(body1), "ENEMY") == 0) {
+        if(body_get_type(body1) == ENEMY) {
             body_set_hit_timer(body1, 0.3);
         }
     }
@@ -246,9 +246,9 @@ void tile_collision(void *aux, double dt) {
     vector_t displacement = vec_multiply(dt, average_velocity);
     collision_info_t col_info = find_collision((rect_t) {hitbox.x + displacement.x, hitbox.y + displacement.y, hitbox.w, hitbox.h}, tile_get_hitbox(tile));
     if (col_info.collided) {
-        if (strcmp(body_get_type(body), "PLAYER_BULLET") == 0 || strcmp(body_get_type(body), "ENEMY_BULLET") == 0) {
+        if (body_get_type(body) == PLAYER_BULLET || body_get_type(body) == ENEMY_BULLET) {
             body_remove(body);
-        } else if (strcmp(body_get_type(body), "PLAYER") == 0 || strcmp(body_get_type(body), "ENEMY") == 0) {
+        } else if (body_get_type(body) == PLAYER || body_get_type(body) >= ENEMY) {
             vector_t recoil = {
                 .x = col_info.axis.x * RECOIL_DIST,
                 .y = col_info.axis.y * RECOIL_DIST

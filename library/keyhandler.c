@@ -14,7 +14,7 @@ void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t b
     scene_add_body(scene, bullet);
     create_tile_collision(scene, bullet);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
-        if (strcmp(body_get_type(scene_get_body(scene, i)), "ENEMY") == 0) {
+        if (body_get_type(scene_get_body(scene, i)) >= ENEMY) {
             create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
         }
     }
