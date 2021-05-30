@@ -454,6 +454,20 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 0, 0},
     "assets/ui/coin_desaturated.png",
     false, 0, 0
+    },
+    // 61 - EXPERIENCE
+    {{0, 0, 606, 100},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/experience.png",
+    false, 0, 0
+    },
+    // 62 - HEALTH
+    {{0, 0, 606, 100},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/health.png",
+    false, 0, 0
     }
 };
 

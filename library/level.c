@@ -87,23 +87,32 @@ scene_t *scene_reset(game_t *game) {
 
     // Initialize Demo Heart
     int heart_num = PLAYER_HEALTH / (HALF_HEART_HEALTH * 2);
+    double length = 0.32 * 606;
     for (int i = 0; i < heart_num; i++) {
-        UI_t *heart = make_heart(HEART_PADDING + 32 * i, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
+        UI_t *heart = make_heart(HEART_PADDING + length + 32 * i, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
         scene_add_UI_component(scene, heart);
     }
+    sprite_t *health = game_get_sprite(game, HEALTH);
+    UI_t *health_text = UI_init(health, (rect_t) {HEART_PADDING, MAX_HEIGHT - 32 - HEART_PADDING, length, 32}, "HEALTH", 0.32);
+    scene_add_UI_component(scene, health_text);
+
 
     // Initialize Demo Coins
     int coin_exp = max_exp / 10;
     int coin_filled = floor(exp / coin_exp);
     for (int i = 0; i < coin_filled; i++) {
-        UI_t *coin = make_coin(HEART_PADDING + 32 * i, MAX_HEIGHT - 64 - HEART_PADDING * 2, game_get_sprite(game, COIN_FILLED_ID), "PLAYER_COIN");
+        UI_t *coin = make_coin(HEART_PADDING + length + 32 * i, MAX_HEIGHT - 64 - HEART_PADDING * 2, game_get_sprite(game, COIN_FILLED_ID), "PLAYER_COIN");
         scene_add_UI_component(scene, coin);
     }
 
     for (int i = coin_filled; i < 10; i++) {
-        UI_t *coin = make_coin(HEART_PADDING + 32 * i, MAX_HEIGHT - 64 - HEART_PADDING * 2, game_get_sprite(game, COIN_EMPTY_ID), "PLAYER_COIN");
+        UI_t *coin = make_coin(HEART_PADDING + length + 32 * i, MAX_HEIGHT - 64 - HEART_PADDING * 2, game_get_sprite(game, COIN_EMPTY_ID), "PLAYER_COIN");
         scene_add_UI_component(scene, coin);
     }
+
+    sprite_t *experience = game_get_sprite(game, EXPERIENCE);
+    UI_t *experience_text = UI_init(experience, (rect_t) {HEART_PADDING, MAX_HEIGHT - 64 - HEART_PADDING * 2, length, 32}, "EXPERIENCE", 0.32);
+    scene_add_UI_component(scene, experience_text);
 
     //scene_add_UI_text(scene, ui_text_init("Test",  (rect_t) {0, 0, 100, 100}, 5));
 
