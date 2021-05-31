@@ -24,12 +24,15 @@ const char* LEVELS[] = {
 
 const char* BOSS_LEVELS[] = {
     "assets/levels/boss_room_01_orc_full.txt",
-    "assets/levels/boss_room_01_orc_full.txt"
+    "assets/levels/boss_room_01_zombie_full.txt",
+    "assets/levels/boss_room_02_demon_full.txt",
+    "assets/levels/boss_room_02_necromancer_full.txt"
 };
 
 const char* POST_BOSS_LEVELS[] = {
     "assets/levels/post_boss_room_level_1_full.txt",
-    "assets/levels/post_boss_room_level_1_full.txt"
+    "assets/levels/post_boss_room_level_2_full.txt",
+    "assets/levels/post_boss_room_level_3_full.txt"
 };
 
 char ** levels_shuffled;
@@ -217,6 +220,7 @@ void make_level(game_t *game, int level) {
         printf("Level: %s\n", level_full_path);
         game_add_room(game, level_full_path);
     }
+    printf("%s\n", boss_levels_shuffled[level]);
     game_add_room(game, boss_levels_shuffled[level]);
     game_add_room(game, POST_BOSS_LEVELS[level]);
 }

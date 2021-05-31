@@ -36,6 +36,10 @@ void pathfind(game_t *game, body_t *enemy, body_t *player) {
     body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
 }
 
+void pathfind_tile(game_t *game, body_t *body, vector_t pos) {
+    body_set_velocity(body, vec_multiply(body_get_stats_info(body).speed, vec_find_direction(pos, body_get_centroid(body))));
+}
+
 void shooter_attack(game_t *game, body_t *enemy, body_t *player) {
     scene_t *scene = game_get_current_scene(game);
     stats_info_t enemy_info = body_get_stats_info(enemy);
@@ -102,7 +106,7 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
 }
 
 void handle_necromancer_wizard(game_t *game, body_t *enemy) {
-    
+
     double max_spawn_radius = 350;
     BOSS_ATTACK_TIMER -= 0.5;
 
@@ -127,7 +131,7 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
         BOSS_ATTACK_TIMER = rand_from(5, 6.5);
 
     }
-    
+
 }
 
 void handle_big_zombie(game_t *game, body_t *enemy) {
@@ -144,10 +148,91 @@ void handle_ogre(game_t *game, body_t *enemy) {
     // rare shooting attack
 }
 
+void demon_pathfind(game_t *game, body_t *demon) {
+    vector_t centroid = body_get_centroid(demon);
+    vector_t pathfind_dir = VEC_ZERO;
+
+    if(centroid.x < 800) {
+        pathfind_dir = vec_add(pathfind_dir, (vector_t) {1, 0});
+    } else if(centroid.x > 1000) {
+        pathfind_dir = vec_add(pathfind_dir, (vector_t) {-1, 0});
+    }
+    if(centroid.y < 800) {
+        pathfind_dir = vec_add(pathfind_dir, (vector_t) {0, 1});
+    } else if(centroid.y > 1000) {
+        pathfind_dir = vec_add(pathfind_dir, (vector_t) {0, -1});
+    }
+    if(pathfind_dir.x != 0 || pathfind_dir.y != 0) {
+        if(pathfind_dir.x == 0) pathfind_dir.x = rand_from(-1,1);
+        if(pathfind_dir.y == 0) pathfind_dir.y = rand_from(-1,1);
+        pathfind_tile(game, demon, vec_add(centroid, pathfind_dir));
+    }
+    if(body_get_velocity(demon).x == 0 && body_get_velocity(demon).y == 0) {
+        pathfind_tile(game, demon, vec_add(centroid, (vector_t) {1, -1}));
+    }
+}
+
 void handle_big_demon(game_t *game, body_t *enemy) {
-    // mainly bullet hell
-    // summon demons
-    // walks in an area around the center / predefined lines
+
+    scene_t *scene = game_get_current_scene(game);
+    int bullet_num = 20;
+    double max_spawn_radius = 250;
+    BOSS_ATTACK_TIMER -= 0.5;
+
+    demon_pathfind(game, enemy);
+
+    if (BOSS_ATTACK_TIMER <= 0) {
+        int atk_type = rand() % 4;
+        if(atk_type == 0) {
+            int bullet_speed = rand() % 300 + 300;
+            for (size_t i = 0; i < bullet_num; i++) { // Circle
+                double angle = 2*M_PI / bullet_num * i;
+                body_t *bullet = make_bullet(game, enemy, (vector_t) {cos(angle), sin(angle)}, body_get_stats_info(enemy).bullet_id, bullet_speed);
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            }
+        } else if(atk_type == 1) { // Spiral
+            double angle_offset = rand_from(0, 2 * M_PI);
+            for (size_t i = 0; i < bullet_num; i++) {
+                double angle = 2*M_PI / bullet_num * i + angle_offset;
+                body_t *bullet = make_bullet(game, enemy, (vector_t) {cos(angle), sin(angle)}, body_get_stats_info(enemy).bullet_id, 200.0 / bullet_num * i + 200);
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            }
+        } else if(atk_type == 2) { // Bullet wall
+            body_t *player = game_get_player(game);
+            vector_t direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+            vector_t normal_dir = (vector_t) {direction.y, -direction.x};
+            int num_bullets = rand() % bullet_num/2 + bullet_num/2;
+            for (size_t i = 0; i < num_bullets; i++) {
+                vector_t offset = vec_multiply(20 * (bullet_num / 2.0 - i), normal_dir);
+                vector_t spawn_pos = vec_add(body_get_centroid(enemy), offset);
+                body_t *bullet = make_bullet_pos(game, spawn_pos, direction, body_get_stats_info(enemy).bullet_id, body_get_stats_info(enemy).attack, 400);
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            }
+        } else if(atk_type == 3) { // Spawn demon
+            double angle = rand_from(0, 2*M_PI);
+            double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
+            double x = body_get_centroid(enemy).x + (radius * cos(angle));
+            double y = body_get_centroid(enemy).y + (radius * sin(angle));
+            enum enemy_type ID;
+            int ID_gen = rand() % 3;
+            if (ID_gen == 0) ID = IMP;
+            if (ID_gen == 1) ID = WOGUL;
+            if (ID_gen == 2) ID = CHORT;
+            body_t *new_enemy = make_enemy(game, x, y, ID);
+            scene_add_body(game_get_current_scene(game), new_enemy);
+            create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
+        }
+
+        BOSS_ATTACK_TIMER = rand_from(0.5, 2);
+    }
+
+    // spawn demons
 }
 
 
@@ -165,7 +250,7 @@ void handle_enemies(game_t *game, double dt) {
         } else if (body_get_type(enemy) == BOSS_OGRE) {
 
         } else if (body_get_type(enemy) == BOSS_BIG_DEMON) {
-
+            handle_big_demon(game, enemy);
         }
 
     }

@@ -40,3 +40,31 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
     return bullet;
 
 }
+
+body_t *make_bullet_pos(game_t *game, vector_t spawn_point, vector_t bullet_dir, int sprite_id, int atk, double bullet_speed) {
+    sprite_t *sprite = game_get_sprite(game, sprite_id);
+    body_sprite_info_t bullet_info = {
+        .idle_sprite_id = sprite_id,
+        .walking_anim_id = -1,
+        .hit_anim_id = -1,
+        .invulnerable_anim_id = -1
+    };
+    body_t *bullet;
+    stats_info_t info = {
+        .experience = 0,
+        .attack = atk,
+        .health = 0,
+        .cooldown = 0
+    };
+
+    bullet = body_init_with_info(bullet_info, sprite, spawn_point, 0.1, 4, ENEMY_BULLET, info);
+
+    vector_t bullet_velocity = {
+        .x = bullet_dir.x * bullet_speed,
+        .y = bullet_dir.y * bullet_speed
+    };
+
+    body_set_velocity(bullet, bullet_velocity);
+    return bullet;
+
+}
