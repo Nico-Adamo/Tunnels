@@ -29,6 +29,10 @@ const char* BOSS_LEVELS[] = {
     "assets/levels/boss_room_02_necromancer_full.txt"
 };
 
+// const char* BOSS_LEVELS[] = {
+//     "assets/levels/boss_room_02_demon_full.txt"
+// };
+
 const char* POST_BOSS_LEVELS[] = {
     "assets/levels/post_boss_room_level_1_full.txt",
     "assets/levels/post_boss_room_level_2_full.txt",

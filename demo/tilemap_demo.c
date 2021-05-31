@@ -75,10 +75,10 @@ void display_experience(game_t *game, scene_t *scene, body_t *player) {
         double coin_exp = level_up_exp / 10;
         size_t filled_coin_num = floor(curr_exp / coin_exp);
         for (size_t i = 0; i < filled_coin_num; i++) {
-            UI_set_sprite(list_get(coins, i), coin_filled);
+            if(i < list_size(coins)) UI_set_sprite(list_get(coins, i), coin_filled);
         }
         for (size_t i = filled_coin_num; i < num_coins; i++) {
-            UI_set_sprite(list_get(coins, i), coin_empty);
+            if(i < list_size(coins)) UI_set_sprite(list_get(coins, i), coin_empty);
         }
     }
     list_free(coins);
