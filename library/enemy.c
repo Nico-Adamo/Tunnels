@@ -105,12 +105,36 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
     }
 }
 
+void necromancer_wizard_pathfind(game_t *game, body_t *enemy) {
+    vector_t centroid = body_get_centroid(enemy);
+    vector_t room_center = (vector_t) {830, 845};
+    vector_t pathfind_dir = VEC_ZERO;
+    double radius = 75; // TODO: magic number
+    double dist_from_center = vec_distance(centroid, room_center);
+
+    if(body_get_velocity(enemy).x == 0 && body_get_velocity(enemy).y == 0) {
+        if (dist_from_center >= radius) {
+            pathfind_tile(game, enemy, room_center);
+        } else {
+            double angle = rand_from (0, 2 * M_PI);
+            pathfind_dir = (vector_t) {cos(angle), sin(angle)};
+            printf("%f; %f, %f\n", angle, pathfind_dir.x, pathfind_dir.y);
+
+            pathfind_tile(game, enemy, vec_add(room_center, vec_multiply(radius, pathfind_dir)));
+        } 
+    } else if (dist_from_center >= radius || dist_from_center <= 15) { // TODO: magic number
+        body_set_velocity(enemy, VEC_ZERO);
+    }
+}
+
 void handle_necromancer_wizard(game_t *game, body_t *enemy) {
 
     double max_spawn_radius = 350;
     BOSS_ATTACK_TIMER -= 0.5;
 
-    if (BOSS_ATTACK_TIMER <= 0) { //TODO: magic numbers and bad code
+    if (BOSS_ATTACK_TIMER <= 0) {
+        // SPAWNING ATTACK
+
         for (size_t i = 0; i < (rand() % 5) + 2; i++) {
             double angle = rand_from(0, 2*M_PI);
             double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
@@ -127,11 +151,52 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
             scene_add_body(game_get_current_scene(game), new_enemy);
             create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
         }
-
         BOSS_ATTACK_TIMER = rand_from(5, 6.5);
+    } else {
+        size_t shooting_attack = (rand() % 4); //50% chance to shoot every 0.5 seconds
+        
+        if (shooting_attack == 0) {
+            // CIRCULAR BULLET ATTACK
+            scene_t *scene = game_get_current_scene(game);
+            size_t num_bullets = 4 * ((rand() % 3) + 1);
+            for (size_t i = 0; i < num_bullets; i++) {
+                double angle = i * 2 * M_PI / num_bullets;
+                body_t *bullet = make_bullet(game, enemy, (vector_t) {cos(angle), sin(angle)}, body_get_stats_info(enemy).bullet_id, 400);
+
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            }
+        } else if (shooting_attack == 1) {
+            
+            // TARGETED BULLET ATTACK
+            body_t *player = game_get_player(game);
+            if(has_line_of_sight(game, body_get_centroid(enemy), body_get_centroid(player), 16)) {
+                scene_t *scene = game_get_current_scene(game);
+                vector_t player_direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+                double player_angle = atan2(player_direction.y, player_direction.x);
+
+                // printf("Player Angle: %f\n", player_angle);
+                // printf("Player Position: %f, %f\n\n", body_get_centroid(player).x, body_get_centroid(player).y);
+
+                size_t num_bullets = 2 * (rand() % 3) + 1;
+                double angle = player_angle - ((M_PI / 12) * (num_bullets - 1) / 2);
+                for (size_t i = 0; i < num_bullets; i++) {
+                    body_t *bullet = make_bullet(game, enemy, (vector_t) {cos(angle), sin(angle)}, body_get_stats_info(enemy).bullet_id, 400);
+
+                    scene_add_body(scene, bullet);
+                    create_tile_collision(scene, bullet);
+                    create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            
+                    angle += M_PI / 12; 
+                }
+            }
+        } else {
+            necromancer_wizard_pathfind(game, enemy);
+        }
 
     }
-
+    
 }
 
 void handle_big_zombie(game_t *game, body_t *enemy) {
@@ -523,7 +588,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .cooldown = 5,
      .bullet_id = 41,
      .experience = 20,
-     .speed = 150,
+     .speed = 60,
      .atk_type = STATIC_SHOOTER,
      .invulnerability_timer = 0
     },
