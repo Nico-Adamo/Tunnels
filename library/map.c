@@ -159,11 +159,11 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                     } else {
                         int enemy_id;
                         if(*tile_id_buffer == 19) {
-                            enemy_id = rand() % 5; // Random small enemy
+                            enemy_id = rand() % 4; // Random small enemy
                         } else if(*tile_id_buffer == 20) {
-                            enemy_id = rand() % 19; // Random medium enemy
+                            enemy_id = rand() % 6 + 4; // Random medium enemy
                         } else if(*tile_id_buffer == 21) {
-                            enemy_id = rand() % 19; // Random large enemy
+                            enemy_id = rand() % 5 + 10; // Random large enemy
                         } else {
                             enemy_id = *tile_id_buffer;
                         }
