@@ -18,7 +18,7 @@ UI_t *make_heart(double x, double y, sprite_t *sprite, char *type);
 
 list_t *get_player_hearts(scene_t *scene);
 
-body_t *make_player(game_t *game, double x, double y, char *type, stats_info_t info);
+body_t *make_player(game_t *game, double x, double y, enum body_type type, stats_info_t info);
 
 UI_t *make_coin(double x, double y, sprite_t *sprite, char *type);
 
