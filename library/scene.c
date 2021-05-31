@@ -152,6 +152,8 @@ void scene_set_room_type(scene_t *scene, room_type_t room_type) {
         scene_add_UI_text(scene, ui_text_init(" Objective: Kill all enemies", (vector_t) {0, 0}, TEXT_COOLDOWN, OBJECTIVE_TEXT));
     } else if (room_type == NAVIGATE) {
         scene_add_UI_text(scene, ui_text_init(" Objective: Get to the door", (vector_t) {0, 0}, TEXT_COOLDOWN, OBJECTIVE_TEXT));
+    } else if (room_type == BOSS) {
+        scene_add_UI_text(scene, ui_text_init(" Objective: Kill the boss", (vector_t) {0, 0}, TEXT_COOLDOWN, OBJECTIVE_TEXT));
     }
 }
 

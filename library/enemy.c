@@ -11,6 +11,8 @@ const double max_cooldown = 2;
 
 const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
 
+double BOSS_ATTACK_TIMER = 0;
+
 bool has_line_of_sight(game_t *game, vector_t pos1, vector_t pos2, double dx) {
     scene_t *scene = game_get_current_scene(game);
     vector_t direction = vec_find_direction(pos2, pos1);
@@ -67,39 +69,103 @@ void melee_shooter_attack(game_t *game, body_t *enemy, body_t *player) {
     }
 }
 
+void handle_non_boss_enemy(game_t *game, body_t *enemy) {
+    stats_info_t enemy_info = body_get_stats_info(enemy);
+    body_t *player = game_get_player(game);
+    vector_t enemy_center = body_get_centroid(enemy);
+    vector_t player_center = body_get_centroid(player);
+    rect_t player_collision_hitbox = body_get_collision_hitbox(player);
+    vector_t pch_center = (vector_t) {player_collision_hitbox.x + player_collision_hitbox.w/2, player_collision_hitbox.y + player_collision_hitbox.h/2};
+
+    double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
+
+    if(has_line_of_sight(game, enemy_center, pch_center, 16)) {
+        if (!(enemy_info.atk_type == RADIAL_SHOOTER && vec_distance(body_get_centroid(enemy), body_get_centroid(player)) <= 100)) {
+            pathfind(game, enemy, player);
+        }
+        if (sdl_is_onscreen(body_get_centroid(enemy).x, body_get_centroid(enemy).y)) {
+            if(enemy_info.atk_type == MELEE) {
+                //do nothing
+            } else if(enemy_info.atk_type == RADIAL_SHOOTER) {
+                radial_shooter_attack(game, enemy, player);
+            } else if(enemy_info.atk_type == STATIC_SHOOTER) {
+                static_shooter_attack(game, enemy, player);
+            } else if(enemy_info.atk_type == MELEE_SHOOTER) {
+                melee_shooter_attack(game, enemy, player);
+            } else {
+                printf("Enemy with no valid atk type %d", enemy_info.atk_type); //TODO: this should be an assert or smth
+            }
+        }
+    } else {
+        body_set_velocity(enemy, VEC_ZERO);
+    }
+}
+
+void handle_necromancer_wizard(game_t *game, body_t *enemy) {
+    
+    double max_spawn_radius = 350;
+    BOSS_ATTACK_TIMER -= 0.5;
+
+    if (BOSS_ATTACK_TIMER <= 0) { //TODO: magic numbers and bad code
+        for (size_t i = 0; i < (rand() % 5) + 2; i++) {
+            double angle = rand_from(0, 2*M_PI);
+            double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
+            double x = body_get_centroid(enemy).x + (radius * cos(angle));
+            double y = body_get_centroid(enemy).y + (radius * sin(angle));
+            enum enemy_type ID;
+            int ID_gen = rand() % 5;
+            if (ID_gen == 0) ID = TINY_ZOMBIE;
+            if (ID_gen == 1) ID = SKELET;
+            if (ID_gen == 2) ID = ZOMBIE;
+            if (ID_gen == 3) ID = ICE_ZOMBIE;
+            if (ID_gen == 4) ID = MUDDY;
+            body_t *new_enemy = make_enemy(game, x, y, ID);
+            scene_add_body(game_get_current_scene(game), new_enemy);
+            create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
+        }
+
+        BOSS_ATTACK_TIMER = rand_from(5, 6.5);
+
+    }
+    
+}
+
+void handle_big_zombie(game_t *game, body_t *enemy) {
+    // follow the player
+    // shoots at player
+    // rarely, raise the dead (zombie and tiny zombie only)
+    // regaining health when hitting the player
+}
+
+void handle_ogre(game_t *game, body_t *enemy) {
+    // mainly melee
+    // charge attack
+    // spawn army of orc dudes
+    // rare shooting attack
+}
+
+void handle_big_demon(game_t *game, body_t *enemy) {
+    // mainly bullet hell
+    // summon demons
+    // walks in an area around the center / predefined lines
+}
+
+
 void handle_enemies(game_t *game, double dt) {
     scene_t *scene = game_get_current_scene(game);
     list_t *enemies = scene_get_enemies(scene);
-    for(int i=0; i<list_size(enemies); i++) {
+    for(int i = 0; i < list_size(enemies); i++) {
         body_t *enemy = list_get(enemies, i);
-        stats_info_t enemy_info = body_get_stats_info(enemy);
-        body_t *player = game_get_player(game);
-        vector_t enemy_center = body_get_centroid(enemy);
-        vector_t player_center = body_get_centroid(player);
-        rect_t player_collision_hitbox = body_get_collision_hitbox(player);
-        vector_t pch_center = (vector_t) {player_collision_hitbox.x + player_collision_hitbox.w/2, player_collision_hitbox.y + player_collision_hitbox.h/2};
+        if (body_get_type(enemy) == ENEMY) {
+            handle_non_boss_enemy(game, enemy);
+        } else if (body_get_type(enemy) == BOSS_NECROMANCER_WIZARD) {
+            handle_necromancer_wizard(game, enemy);
+        } else if (body_get_type(enemy) == BOSS_BIG_ZOMBIE) {
 
-        double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
+        } else if (body_get_type(enemy) == BOSS_OGRE) {
 
-        if(has_line_of_sight(game, enemy_center, pch_center, 16)) {
-            if (!(enemy_info.atk_type == RADIAL_SHOOTER && vec_distance(body_get_centroid(enemy), body_get_centroid(player)) <= 100)) {
-                pathfind(game, enemy, player);
-            }
-            if (sdl_is_onscreen(body_get_centroid(enemy).x, body_get_centroid(enemy).y)) {
-                if(enemy_info.atk_type == MELEE) {
-                    //do nothing
-                } else if(enemy_info.atk_type == RADIAL_SHOOTER) {
-                    radial_shooter_attack(game, enemy, player);
-                } else if(enemy_info.atk_type == STATIC_SHOOTER) {
-                    static_shooter_attack(game, enemy, player);
-                } else if(enemy_info.atk_type == MELEE_SHOOTER) {
-                    melee_shooter_attack(game, enemy, player);
-                } else {
-                    printf("Enemy with no valid atk type %d", enemy_info.atk_type);
-                }
-            }
-        } else {
-            body_set_velocity(enemy, VEC_ZERO);
+        } else if (body_get_type(enemy) == BOSS_BIG_DEMON) {
+
         }
 
     }

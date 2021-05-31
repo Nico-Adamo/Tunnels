@@ -25,38 +25,6 @@ const double level_up_buffs[5] = {/*HEALTH*/ 10, /*ATTACK*/ 5, /*COOLDOWN*/ .8, 
 const double INIT_LEVEL_EXP = 100;
 const double LEVEL_EXP_FACTOR = 1.5;
 
-const char* levels[] = {
-    "assets/levels/b_room_02",
-    "assets/levels/b_room_03",
-    "assets/levels/b_room_04",
-    "assets/levels/b_room_05",
-    "assets/levels/b_room_06",
-    "assets/levels/b_room_07",
-};
-
-const char* boss_levels[] = {
-    "assets/levels/boss_room_01_orc_full.txt"
-};
-
-const char* post_boss_levels[] = {
-    "assets/levels/post_boss_room_level_1_full.txt"
-};
-
-char **shuffle_str_array(const char *arr[], int arr_size) {
-    char **arr_shuffled = malloc(arr_size * sizeof(char *));
-    for (int i = 0; i < arr_size; i++) {
-        arr_shuffled[i] = malloc((strlen(arr[i]) + 1) * sizeof(char));
-        arr_shuffled[i] = arr[i];
-    }
-
-    for (int i = 0; i < arr_size; i++) {
-        char *temp = arr_shuffled[i];
-        int randomIndex = rand() % arr_size;
-        arr_shuffled[i] = arr_shuffled[randomIndex];
-        arr_shuffled[randomIndex] = temp;
-    }
-    return arr_shuffled;
-}
 
 void display_hearts(game_t *game, scene_t *scene, body_t *player) {
     double length = 83;
@@ -147,13 +115,8 @@ int main(int arg_c, char *arg_v[]) {
     game_set_player(game, player);
     game_set_current_scene(game, scene);
 
-    char **levels_shuffled = shuffle_str_array(levels, sizeof(levels) / sizeof(char*));
-    // for(size_t i = 0; i<6; i++) {
-    //     printf("Level: %s\n", levels_shuffled[i]);
-    // }
-    char **boss_levels_shuffled = shuffle_str_array(boss_levels, sizeof(boss_levels) / sizeof(char*));
-
-    make_level(game, 0, levels_shuffled, boss_levels_shuffled, post_boss_levels);
+    shuffle_levels();
+    make_level(game, 0);
 
     double seconds = 0;
 

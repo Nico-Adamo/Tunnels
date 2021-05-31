@@ -132,6 +132,10 @@ void map_load_file(game_t *game, FILE *file, size_t x_tiles, size_t y_tiles, uin
                     } else if(*tile_id_buffer == 37) { // Mural
                         tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y-1)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_random_mural, MURAL);
                         game_add_tile_interactor(game, interactor);
+                    } else if (*tile_id_buffer == 26) { // Ladder
+                       tile_interactor_t *interactor = tile_interactor_init((rect_t) {game_scale*x*TILE_SIZE, game_scale*(y)*TILE_SIZE, game_scale*TILE_SIZE, game_scale*TILE_SIZE}, game_end_level, PRESS_F);
+                       game_add_tile_interactor(game, interactor);
+
                     }
                 } else if(tile_type == 1) {
                     tile_info_t *tile_info = game_get_tile_info(game, *tile_id_buffer);

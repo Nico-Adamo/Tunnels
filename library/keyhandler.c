@@ -1,6 +1,8 @@
 #include "keyhandler.h"
 #include "collision.h"
 
+const int PAUSE_ID = 63; 
+
 const double player_velocity = 300;
 
 bool key_pressed[8] = {false, false, false, false, false, false, false, false};
@@ -100,23 +102,38 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 break;
             case 'f': {
                 list_t *interactors = game_get_tile_interactors(game);
-                for(size_t i = 0; i<list_size(interactors); i++) {
+                int i = 0;
+                while(i < list_size(interactors)) {
                     tile_interactor_t *interactor = list_get(interactors, i);
                     if(find_collision(interactor->area, body_get_hitbox(player)).collided) {
                         interactor->interaction(game);
+                        if(interactor->type == MURAL) {
+                            list_remove(interactors, i);
+                            i--;
+                        }
                         break;
                     }
+                    i++;
                 }
                 break;
             }
             case ESCAPE: {
                 list_t *ui_components = scene_get_UI_components(scene);
-                for(size_t i = 0; i<list_size(ui_components); i++) {
+                for(size_t i = 0; i < list_size(ui_components); i++) {
                     if(strcmp(UI_get_type(list_get(ui_components, i)), "MURAL") == 0) {
                         list_remove(ui_components, i);
                     }
                 }
                 game_set_paused(game, !game_is_paused(game));
+                if (game_is_paused(game)) {
+                    scene_add_UI_component(scene, UI_init(game_get_sprite(game, PAUSE_ID), (rect_t) {0, 0, 1024, 512}, "PAUSE", 1));
+                } else {
+                    for(size_t i = 0; i < list_size(ui_components); i++) {
+                        if(strcmp(UI_get_type(list_get(ui_components, i)), "PAUSE") == 0) {
+                            list_remove(ui_components, i);
+                        }
+                    }
+                }
                 break;
             }
         }

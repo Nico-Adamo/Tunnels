@@ -14,6 +14,8 @@ extern const double HALF_HEART_HEALTH;
 extern const double PLAYER_HEALTH;
 extern const double HEART_PADDING;
 
+void shuffle_levels();
+
 UI_t *make_heart(double x, double y, sprite_t *sprite, char *type);
 
 list_t *get_player_hearts(scene_t *scene);
@@ -32,8 +34,10 @@ scene_t *make_title(game_t *game);
 
 void make_room(game_t *game);
 
-void make_level(game_t *game, int level, char** levels_shuffled, char **boss_levels_shuffled, char **post_boss_levels);
+void make_level(game_t *game, int level);
 
 void game_end_room(game_t *game);
+
+void game_end_level(game_t *game);
 
 void game_random_mural(game_t *game);

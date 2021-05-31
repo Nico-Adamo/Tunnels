@@ -13,6 +13,52 @@ char *level_variants[] = {
     "c_full.txt"
 };
 
+const char* LEVELS[] = {
+    "assets/levels/b_room_02",
+    "assets/levels/b_room_03",
+    "assets/levels/b_room_04",
+    "assets/levels/b_room_05",
+    "assets/levels/b_room_06",
+    "assets/levels/b_room_07",
+};
+
+const char* BOSS_LEVELS[] = {
+    "assets/levels/boss_room_01_orc_full.txt",
+    "assets/levels/boss_room_01_orc_full.txt"
+};
+
+const char* POST_BOSS_LEVELS[] = {
+    "assets/levels/post_boss_room_level_1_full.txt",
+    "assets/levels/post_boss_room_level_1_full.txt"
+};
+
+char ** levels_shuffled;
+char ** boss_levels_shuffled;
+
+char **shuffle_str_array(const char *arr[], int arr_size) {
+    char **arr_shuffled = malloc(arr_size * sizeof(char *));
+    for (int i = 0; i < arr_size; i++) {
+        arr_shuffled[i] = malloc((strlen(arr[i]) + 1) * sizeof(char));
+        arr_shuffled[i] = arr[i];
+    }
+
+    for (int i = 0; i < arr_size; i++) {
+        char *temp = arr_shuffled[i];
+        int randomIndex = rand() % arr_size;
+        arr_shuffled[i] = arr_shuffled[randomIndex];
+        arr_shuffled[randomIndex] = temp;
+    }
+    return arr_shuffled;
+}
+
+void shuffle_levels() {
+    levels_shuffled = shuffle_str_array(LEVELS, sizeof(LEVELS) / sizeof(char*));
+    // for(size_t i = 0; i<6; i++) {
+    //     printf("Level: %s\n", levels_shuffled[i]);
+    // }
+    boss_levels_shuffled = shuffle_str_array(BOSS_LEVELS, sizeof(BOSS_LEVELS) / sizeof(char*));
+}
+
 body_t *make_player(game_t *game, double x, double y, enum body_type type, stats_info_t info) {
     vector_t bottom_left = {x, y};
     body_sprite_info_t player_sprite_info = {
@@ -160,7 +206,7 @@ void make_room(game_t *game){
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
 
-void make_level(game_t *game, int level, char** levels_shuffled, char **boss_levels_shuffled, char **post_boss_levels) {
+void make_level(game_t *game, int level) {
     game_set_room(game, 0);
     game_reset_dungeon(game);
     for(int i=level*2; i < level*2+2; i++) { // TODO: magic number
@@ -172,7 +218,7 @@ void make_level(game_t *game, int level, char** levels_shuffled, char **boss_lev
         game_add_room(game, level_full_path);
     }
     game_add_room(game, boss_levels_shuffled[level]);
-    game_add_room(game, post_boss_levels[level]);
+    game_add_room(game, POST_BOSS_LEVELS[level]);
 }
 
 void game_end_room(game_t *game) {
@@ -180,6 +226,12 @@ void game_end_room(game_t *game) {
         game_next_room(game);
         make_room(game);
     }
+}
+
+void game_end_level(game_t *game) {
+    game_set_level(game, game_get_level(game) + 1);
+    make_level(game, game_get_level(game));
+    make_room(game);
 }
 
 void game_random_mural(game_t *game) {

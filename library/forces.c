@@ -298,8 +298,11 @@ void create_enemy_collision(scene_t *scene, body_t *body, body_t *player) {
     list_t *enemies = scene_get_enemies(scene);
     for (size_t i = 0; i < list_size(enemies); i++) {
         body_t *enemy = list_get(enemies, i);
-        create_physics_collision(scene, 0.5, body, enemy);
+        if (body_get_type(enemy) == ENEMY) {
+           create_physics_collision(scene, 0.5, body, enemy);
+        }
         create_semi_destructive_collision(scene, enemy, player);
+
     }
 }
 

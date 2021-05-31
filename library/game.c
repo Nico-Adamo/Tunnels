@@ -392,7 +392,7 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/ui/ui_heart_half.png",
     false, 0, 0
     },
-    // 52 - HALF HEART
+    // 52 - FULL HEART
     {{0, 0, 16, 16},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
@@ -467,6 +467,13 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 0, 0},
     {0, 0, 0, 0},
     "assets/ui/health.png",
+    false, 0, 0
+    },
+    // 63 - PAUSE UI
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/pause.png",
     false, 0, 0
     }
 };
@@ -575,12 +582,20 @@ size_t game_get_room(game_t *game) {
     return game->cur_room;
 }
 
+size_t game_get_level(game_t *game) {
+    return game->cur_level;
+}
+
 void game_next_room(game_t *game) {
     game->cur_room++;
 }
 
 void game_set_room(game_t *game, int room) {
     game->cur_room = room;
+}
+
+void game_set_level(game_t *game, size_t level) {
+    game->cur_level = level;
 }
 
 bool game_is_paused(game_t *game) {
