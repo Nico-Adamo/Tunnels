@@ -176,9 +176,6 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
                 vector_t player_direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
                 double player_angle = atan2(player_direction.y, player_direction.x);
 
-                // printf("Player Angle: %f\n", player_angle);
-                // printf("Player Position: %f, %f\n\n", body_get_centroid(player).x, body_get_centroid(player).y);
-
                 size_t num_bullets = 2 * (rand() % 3) + 1;
                 double angle = player_angle - ((M_PI / 12) * (num_bullets - 1) / 2);
                 for (size_t i = 0; i < num_bullets; i++) {
