@@ -197,6 +197,10 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
 }
 
 void handle_big_zombie(game_t *game, body_t *enemy) {
+
+    // if(has_line_of_sight(game, enemy_center, pch_center, 16)) {
+    //     pathfind(game, enemy, player);
+    // }}
     // follow the player
     // shoots at player
     // rarely, raise the dead (zombie and tiny zombie only)
