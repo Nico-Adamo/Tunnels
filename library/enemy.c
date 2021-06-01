@@ -121,7 +121,7 @@ void necromancer_wizard_pathfind(game_t *game, body_t *enemy) {
             printf("%f; %f, %f\n", angle, pathfind_dir.x, pathfind_dir.y);
 
             pathfind_tile(game, enemy, vec_add(room_center, vec_multiply(radius, pathfind_dir)));
-        } 
+        }
     } else if (dist_from_center >= radius || dist_from_center <= 15) { // TODO: magic number
         body_set_velocity(enemy, VEC_ZERO);
     }
@@ -154,7 +154,7 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
         BOSS_ATTACK_TIMER = rand_from(5, 6.5);
     } else {
         size_t shooting_attack = (rand() % 4); //50% chance to shoot every 0.5 seconds
-        
+
         if (shooting_attack == 0) {
             // CIRCULAR BULLET ATTACK
             scene_t *scene = game_get_current_scene(game);
@@ -168,7 +168,7 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
                 create_semi_destructive_collision(scene, game_get_player(game), bullet);
             }
         } else if (shooting_attack == 1) {
-            
+
             // TARGETED BULLET ATTACK
             body_t *player = game_get_player(game);
             if(has_line_of_sight(game, body_get_centroid(enemy), body_get_centroid(player), 16)) {
@@ -184,8 +184,8 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
                     scene_add_body(scene, bullet);
                     create_tile_collision(scene, bullet);
                     create_semi_destructive_collision(scene, game_get_player(game), bullet);
-            
-                    angle += M_PI / 12; 
+
+                    angle += M_PI / 12;
                 }
             }
         } else {
@@ -193,7 +193,7 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
         }
 
     }
-    
+
 }
 
 void handle_big_zombie(game_t *game, body_t *enemy) {
@@ -258,6 +258,7 @@ void handle_big_demon(game_t *game, body_t *enemy) {
                 create_tile_collision(scene, bullet);
                 create_semi_destructive_collision(scene, game_get_player(game), bullet);
             }
+            BOSS_ATTACK_TIMER = rand_from(0, 1.5);
         } else if(atk_type == 1) { // Spiral
             double angle_offset = rand_from(0, 2 * M_PI);
             for (size_t i = 0; i < bullet_num; i++) {
@@ -267,6 +268,7 @@ void handle_big_demon(game_t *game, body_t *enemy) {
                 create_tile_collision(scene, bullet);
                 create_semi_destructive_collision(scene, game_get_player(game), bullet);
             }
+            BOSS_ATTACK_TIMER = rand_from(0, 1.5);
         } else if(atk_type == 2) { // Bullet wall
             body_t *player = game_get_player(game);
             vector_t direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
@@ -280,22 +282,25 @@ void handle_big_demon(game_t *game, body_t *enemy) {
                 create_tile_collision(scene, bullet);
                 create_semi_destructive_collision(scene, game_get_player(game), bullet);
             }
+            BOSS_ATTACK_TIMER = rand_from(0, 1.5);
         } else if(atk_type == 3) { // Spawn demon
-            double angle = rand_from(0, 2*M_PI);
-            double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
-            double x = body_get_centroid(enemy).x + (radius * cos(angle));
-            double y = body_get_centroid(enemy).y + (radius * sin(angle));
-            enum enemy_type ID;
-            int ID_gen = rand() % 3;
-            if (ID_gen == 0) ID = IMP;
-            if (ID_gen == 1) ID = WOGUL;
-            if (ID_gen == 2) ID = CHORT;
-            body_t *new_enemy = make_enemy(game, x, y, ID);
-            scene_add_body(game_get_current_scene(game), new_enemy);
-            create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
+            if(rand() % 4 == 0) {
+                double angle = rand_from(0, 2*M_PI);
+                double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
+                double x = body_get_centroid(enemy).x + (radius * cos(angle));
+                double y = body_get_centroid(enemy).y + (radius * sin(angle));
+                enum enemy_type ID;
+                int ID_gen = rand() % 3;
+                if (ID_gen == 0) ID = IMP;
+                if (ID_gen == 1) ID = WOGUL;
+                if (ID_gen == 2) ID = CHORT;
+                body_t *new_enemy = make_enemy(game, x, y, ID);
+                scene_add_body(game_get_current_scene(game), new_enemy);
+                create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
+                BOSS_ATTACK_TIMER = rand_from(1, 2);
+            }
         }
 
-        BOSS_ATTACK_TIMER = rand_from(0.5, 2);
     }
 
     // spawn demons
