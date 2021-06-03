@@ -498,7 +498,7 @@ game_t *game_init(double scale) {
 void game_free(void *game) {
     game_t *game_c = (game_t *) game;
     list_free(game_c->tile_infos);
-    list_free(game_c->dungeon);
+    free(game_c->dungeon);
     list_free(game_c->tile_interactors);
     list_free(game_c->sprites);
     scene_free(game_c->current_scene);
