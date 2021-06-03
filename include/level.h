@@ -26,8 +26,6 @@ UI_t *make_coin(double x, double y, sprite_t *sprite, char *type);
 
 list_t *get_player_coins(scene_t *scene);
 
-body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type);
-
 scene_t *scene_reset(game_t *game);
 
 scene_t *make_title(game_t *game);

@@ -4,12 +4,13 @@
 #include "game.h"
 #include "sprite.h"
 #include <stdbool.h>
-#include "level.h"
 
 enum enemy_type{TINY_ZOMBIE, GOBLIN, IMP, SKELET, MUDDY, SWAMPY, ZOMBIE, ICE_ZOMBIE, MASKED_ORC, ORC_WARRIOR, ORC_SHAMAN, NECROMANCER, WOGUL, CHORT, WIZARD, NECROMANCER_WIZARD, BIG_ZOMBIE, OGRE, BIG_DEMON};
 
 const double min_cooldown;
 const double max_cooldown;
+
+body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type);
 
 double rand_from(double min, double max);
 
