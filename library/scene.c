@@ -181,7 +181,7 @@ bool scene_check_objective(scene_t *scene) {
         }
         return true; // All enemies are type ENEMY, so no bosses
     }
-    printf("Room with no type\n"); //TODO changeto assert/throw somewhere
+    printf("Room with no type\n");
     return false;
 }
 
@@ -218,33 +218,22 @@ double scene_get_unlock_time(scene_t *scene) {
     return scene->unlock_time;
 }
 
-void scene_tick(scene_t *scene, double dt) {
-    // TODO reorganize pls
-
+void objective_text_update(scene_t *scene, double dt) {
+    // Adding/updating unlock time text
     if (scene->unlock_time > 0) {
         scene->unlock_time -= dt;
     }
     if (scene->last_second - scene->unlock_time >= 1 && scene->unlock_time > 0) {
         scene->last_second -= 1;
 
-        int length = snprintf( NULL, 0, "%d", scene->last_second); //TODO: understand
-        char* timer_string = malloc( length + 1 );
+        int length = snprintf(NULL, 0, "%d", scene->last_second);
+        char* timer_string = malloc(length + 1);
         snprintf(timer_string, length + 1, "%d", scene->last_second);
-        printf(timer_string);
 
         scene_add_UI_text(scene, ui_text_init(timer_string, (vector_t) {256, 0}, 1, OBJECTIVE_TEXT));
     }
 
-    for(size_t i = 0; i < list_size(scene->force_creators); i++) {
-        force_aux_t *force_func = list_get(scene->force_creators, i);
-        bool removed = false;
-        for (size_t j = 0; j < list_size(force_func->bodies); j++) {
-            if (body_is_removed(list_get(force_func->bodies, j))) {
-                force_func->removed = true;
-            }
-        }
-    }
-
+    // Get player
     body_t *player;
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         if (body_get_type(list_get(scene->bodies, i)) == PLAYER) {
@@ -265,24 +254,40 @@ void scene_tick(scene_t *scene, double dt) {
 
             if (scene->room_type == KILL) {
                 scene_add_UI_text(scene, ui_text_init(" Enemies remaining:", (vector_t) {0, 0}, 1.25, OBJECTIVE_TEXT));
-                int length = snprintf( NULL, 0, "%d", list_size(scene->enemies)); //TODO: understand
-                char* enem_string = malloc( length + 1 );
+                int length = snprintf(NULL, 0, "%d", list_size(scene->enemies));
+                char* enem_string = malloc(length + 1);
                 snprintf(enem_string, length + 1, "%d", list_size(scene->enemies));
-                printf(enem_string);
 
                 scene_add_UI_text(scene, ui_text_init(enem_string, (vector_t) {400, 0}, 1.25, OBJECTIVE_TEXT));
             }
         }
         idx++;
     }
+}
+void scene_tick(scene_t *scene, double dt) {
 
+    objective_text_update(scene, dt);
+
+    // Delete force creators acting on removed bodies
+    for(size_t i = 0; i < list_size(scene->force_creators); i++) {
+        force_aux_t *force_func = list_get(scene->force_creators, i);
+        bool removed = false;
+        for (size_t j = 0; j < list_size(force_func->bodies); j++) {
+            if (body_is_removed(list_get(force_func->bodies, j))) {
+                force_func->removed = true;
+            }
+        }
+    }
+
+    // Delete removed bodies
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         if (body_is_removed(list_get(scene->bodies, i))) {
             body_free(list_remove(scene->bodies, i));
         }
     }
 
-    idx = 0;
+    // Delete removed force creators
+    int idx = 0;
     while (idx < list_size(scene->force_creators)) {
         force_aux_t *force_func = list_get(scene->force_creators, idx);
         if (force_func->removed) {
@@ -293,19 +298,23 @@ void scene_tick(scene_t *scene, double dt) {
         idx++;
     }
 
+    // Execute force creators
     for(size_t i = 0; i < list_size(scene->force_creators); i++) {
         force_aux_t *force_func = list_get(scene->force_creators, i);
         force_func->forcer(force_func->aux, dt);
     }
 
+    // Tick bodies
     for(size_t i = 0; i < list_size(scene->bodies); i++) {
         body_tick(list_get(scene->bodies, i), dt);
     }
 
+    // Tick UI elements
     for(size_t i = 0; i< list_size(scene->UI_components); i++) {
         UI_tick(list_get(scene->UI_components, i), dt);
     }
 
+    // Tick UI text
     for(size_t i = 0; i< list_size(scene->UI_texts); i++) {
         ui_text_t *text = list_get(scene->UI_texts, i);
         ui_text_tick(text, dt);
@@ -314,6 +323,7 @@ void scene_tick(scene_t *scene, double dt) {
         }
     }
 
+    // Delete removed UI text
     idx = 0;
     while (idx < list_size(scene->UI_texts)) {
         ui_text_t *text = list_get(scene->UI_texts, idx);

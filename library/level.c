@@ -6,6 +6,8 @@ const double MAX_HEIGHT = 512;
 const double HALF_HEART_HEALTH = 5;
 const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
+const size_t ROOMS_PER_LEVEL = 5;
+
 
 char *level_variants[] = {
     "a_full.txt",
@@ -14,12 +16,21 @@ char *level_variants[] = {
 };
 
 const char* LEVELS[] = {
-    "assets/levels/b_room_02",
-    "assets/levels/b_room_03",
-    "assets/levels/b_room_04",
-    "assets/levels/b_room_05",
-    "assets/levels/b_room_06",
-    "assets/levels/b_room_07",
+    "assets/levels/room_01",
+    "assets/levels/room_02",
+    "assets/levels/room_03",
+    "assets/levels/room_04",
+    "assets/levels/room_05",
+    "assets/levels/room_06",
+    "assets/levels/room_07",
+    "assets/levels/room_08",
+    "assets/levels/room_09",
+    "assets/levels/room_10",
+    "assets/levels/room_11",
+    "assets/levels/room_12",
+    "assets/levels/room_13",
+    "assets/levels/room_14",
+    "assets/levels/room_17"
 };
 
 const char* BOSS_LEVELS[] = {
@@ -173,6 +184,7 @@ scene_t *scene_reset(game_t *game) {
     return scene;
 }
 
+
 scene_t *make_title(game_t *game) {
     scene_t *scene = scene_init();
 
@@ -201,7 +213,7 @@ void make_room(game_t *game){
 void make_level(game_t *game, int level) {
     game_set_room(game, 0);
     game_reset_dungeon(game);
-    for(int i=level*2; i < level*2+2; i++) { // TODO: magic number
+    for(int i=level*ROOMS_PER_LEVEL; i < level*ROOMS_PER_LEVEL+ROOMS_PER_LEVEL; i++) {
         char *level = levels_shuffled[i];
         char *level_full_path = malloc(sizeof(level) + 15 * sizeof(char *));
         strcpy(level_full_path, level);

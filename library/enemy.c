@@ -9,6 +9,9 @@ const double enemy_cooldown = 5;
 const double min_cooldown = 0.5;
 const double max_cooldown = 2;
 
+const double NECROMANCER_WALK_RADIUS = 75;
+const double NECROMANCER_SPAWN_THICKNESS = 100;
+
 const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
 
 double BOSS_ATTACK_TIMER = 0;
@@ -115,7 +118,7 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
             } else if(enemy_info.atk_type == MELEE_SHOOTER) {
                 melee_shooter_attack(game, enemy, player);
             } else {
-                printf("Enemy with no valid atk type %d", enemy_info.atk_type); //TODO: this should be an assert or smth
+                printf("Enemy with no valid atk type %d", enemy_info.atk_type);
             }
         }
     } else {
@@ -127,20 +130,19 @@ void necromancer_wizard_pathfind(game_t *game, body_t *enemy) {
     vector_t centroid = body_get_centroid(enemy);
     vector_t room_center = (vector_t) {830, 845};
     vector_t pathfind_dir = VEC_ZERO;
-    double radius = 75; // TODO: magic number
     double dist_from_center = vec_distance(centroid, room_center);
 
     if(body_get_velocity(enemy).x == 0 && body_get_velocity(enemy).y == 0) {
-        if (dist_from_center >= radius) {
+        if (dist_from_center >= NECROMANCER_WALK_RADIUS) {
             pathfind_tile(game, enemy, room_center);
         } else {
             double angle = rand_from (0, 2 * M_PI);
             pathfind_dir = (vector_t) {cos(angle), sin(angle)};
             printf("%f; %f, %f\n", angle, pathfind_dir.x, pathfind_dir.y);
 
-            pathfind_tile(game, enemy, vec_add(room_center, vec_multiply(radius, pathfind_dir)));
+            pathfind_tile(game, enemy, vec_add(room_center, vec_multiply(NECROMANCER_WALK_RADIUS, pathfind_dir)));
         }
-    } else if (dist_from_center >= radius || dist_from_center <= 15) { // TODO: magic number
+    } else if (dist_from_center >= NECROMANCER_WALK_RADIUS || dist_from_center <= 15) { // Stopping her near enough to the center
         body_set_velocity(enemy, VEC_ZERO);
     }
 }
@@ -155,7 +157,7 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
 
         for (size_t i = 0; i < (rand() % 5) + 2; i++) {
             double angle = rand_from(0, 2*M_PI);
-            double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
+            double radius = rand_from(max_spawn_radius - NECROMANCER_SPAWN_THICKNESS, max_spawn_radius);
             double x = body_get_centroid(enemy).x + (radius * cos(angle));
             double y = body_get_centroid(enemy).y + (radius * sin(angle));
             enum enemy_type ID;
@@ -300,7 +302,7 @@ void handle_big_demon(game_t *game, body_t *enemy) {
         } else if(atk_type == 3) { // Spawn demon
             if(rand() % 4 == 0) {
                 double angle = rand_from(0, 2*M_PI);
-                double radius = rand_from(max_spawn_radius - 100, max_spawn_radius); //TODO magic number
+                double radius = rand_from(max_spawn_radius - NECROMANCER_SPAWN_THICKNESS, max_spawn_radius);
                 double x = body_get_centroid(enemy).x + (radius * cos(angle));
                 double y = body_get_centroid(enemy).y + (radius * sin(angle));
                 enum enemy_type ID;
