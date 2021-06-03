@@ -101,7 +101,7 @@ int main(int arg_c, char *arg_v[]) {
         .atk_type = RADIAL_SHOOTER
     };
 
-    game_t *game =                                                                                                                                                                                  game_init(4);
+    game_t *game = game_init(4);                                                                                                                                                                               game_init(4);
 
     map_register_tiles(game);
     map_register_collider_tiles();
@@ -244,7 +244,7 @@ int main(int arg_c, char *arg_v[]) {
                 make_room(game);
                 scene_free(scene);
                 stats_info_t player_info = body_get_stats_info(game_get_player(game));
-                player_info.health = PLAYER_HEALTH;
+                player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
                 body_set_stats_info(game_get_player(game), player_info);
                 char level[100];
                 sprintf(level, "Level %d", player_info.level);

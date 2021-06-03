@@ -125,10 +125,13 @@ scene_t *scene_reset(game_t *game) {
     double exp;
     int max_exp;
 
-    if (game_get_player(game) != NULL) {
+    int heart_num = PLAYER_HEALTH / (HALF_HEART_HEALTH * 2);
+
+    if (list_size(get_player_hearts(game_get_current_scene(game))) != 0) {
         body_t *player = game_get_player(game);
         exp = body_get_stats_info(player).experience;
         max_exp = round(100 * pow(1.5, body_get_stats_info(player).level - 1)); // Magic numbers (fix)
+        heart_num = list_size(get_player_hearts(game_get_current_scene(game)));
     }
     else {
         exp = 0; // Magic numbers (fix)
@@ -137,7 +140,6 @@ scene_t *scene_reset(game_t *game) {
 
 
     // Initialize Demo Heart
-    int heart_num = PLAYER_HEALTH / (HALF_HEART_HEALTH * 2);
     double length_heart = 60;
     for (int i = 0; i < heart_num; i++) {
         UI_t *heart = make_heart(HEART_PADDING + length_heart + 32 * i, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
