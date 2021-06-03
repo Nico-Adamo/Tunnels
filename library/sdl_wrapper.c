@@ -10,6 +10,7 @@ const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 512;
 const double MS_PER_S = 1e3;
 const double map_scale = 10;
+const double TEXT_FADEOUT_TIME = 0.5;
 
 /**
  * The coordinate at the center of the screen.
@@ -276,7 +277,7 @@ void sdl_render_game(game_t *game) {
         hitbox.y += camera.y;
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));
         double lifetime = ui_text_get_timer(text);
-        if(lifetime <= 0.5) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/0.5)); // TODO: magic numbers
+        if(lifetime <= TEXT_FADEOUT_TIME) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/TEXT_FADEOUT_TIME));
         sdl_draw_texture(texture, shape, hitbox, false);
     }
 

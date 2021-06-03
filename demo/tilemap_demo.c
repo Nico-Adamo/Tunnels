@@ -168,6 +168,22 @@ int main(int arg_c, char *arg_v[]) {
                 }
             }
 
+            // Interaction with Level Stuff
+            list_t *UI_comps = scene_get_UI_components(scene);
+            if (list_size(UI_comps) != 0) {
+                for (size_t i = 0; i < list_size(UI_comps); i++) {
+                    if (strcmp(UI_get_type(list_get(UI_comps, i)), "LEVEL_UP") == 0) {
+                        if (powerup_timer > 0) powerup_timer -= dt;
+                        else {
+                            list_remove (UI_comps, i);
+                            powerup_timer = 5;
+                        }
+                        break;
+                    }
+                }
+            }
+
+
             // Levelling up + Text Display
             stats_info_t player_stats = body_get_stats_info(player);
             char level[100];
@@ -187,7 +203,7 @@ int main(int arg_c, char *arg_v[]) {
                 char level_cur[100];
                 sprintf(level_cur, "Level %d", player_stats.level);
                 ui_text_set_message(level_text, level_cur);
-                int buff = floor(rand_from(0, 4.9)); // TODO: Magic Numbers?
+                int buff = rand() % 5; // TODO: Magic Numbers?
                 sprite_t *powerup_sprite;
                 switch (buff) {
                     case 0:
@@ -221,22 +237,6 @@ int main(int arg_c, char *arg_v[]) {
             if (cur_room != game_get_room(game) && spacebar_pressed) {
                 scene_add_UI_text(scene, ui_text_init(level, (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT));
                 cur_room = game_get_room(game);
-            }
-
-
-            // Interaction with Level Stuff
-            list_t *UI_comps = scene_get_UI_components(scene);
-            if (list_size(UI_comps) != 0) {
-                for (size_t i = 0; i < list_size(UI_comps); i++) {
-                    if (strcmp(UI_get_type(list_get(UI_comps, i)), "LEVEL_UP") == 0) {
-                        if (powerup_timer > 0) powerup_timer -= dt;
-                        else {
-                            list_remove (UI_comps, i);
-                            powerup_timer = 5;
-                        }
-                        break;
-                    }
-                }
             }
 
             if (body_get_stats_info(player).health <= 0) {

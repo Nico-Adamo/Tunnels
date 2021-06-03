@@ -215,5 +215,3 @@ void map_load(game_t *game, const char *path) {
     free(room_type);
     free(unlock_time);
 }
-
-//TODO: collider layersw

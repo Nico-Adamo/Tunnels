@@ -1,7 +1,9 @@
 #include "game.h"
 
-const size_t NUM_TILES = 40; //TODO: update
+const size_t NUM_TILES = 40;
 const size_t NUM_SPRITES = 40;
+const size_t INITIAL_TILE_INTERACTORS;
+const size_t ROOMS_PER_LEVEL;
 
 typedef struct game {
     list_t *tile_infos;
@@ -483,11 +485,11 @@ game_t *game_init(double scale) {
 
     game->current_scene = NULL;
     game->tile_infos = list_init(NUM_TILES, tile_info_free);
-    game->tile_interactors = list_init(2, free); // TODO: Magic number
+    game->tile_interactors = list_init(INITIAL_TILE_INTERACTORS, free);
     game->sprites = list_init(NUM_SPRITES, free);
     game->scale = scale;
     game->player = NULL;
-    game->dungeon = list_init(5, free); // Todo: magic number
+    game->dungeon = list_init(ROOMS_PER_LEVEL, free);
     game->cur_room = 0;
     game->cur_level = 0;
     game->paused = false;
@@ -526,7 +528,7 @@ list_t *game_get_tile_interactors(game_t *game) {
 }
 
 void game_reset_tile_interactors(game_t *game) {
-    game->tile_interactors = list_init(2, free); // Todo: magic number
+    game->tile_interactors = list_init(INITIAL_TILE_INTERACTORS, free);
 }
 
 list_t *game_get_dungeon(game_t *game) {
@@ -534,8 +536,8 @@ list_t *game_get_dungeon(game_t *game) {
 }
 
 void game_reset_dungeon(game_t *game) {
-    list_free(game->dungeon);
-    game->dungeon = list_init(5, free); // Todo: magic number
+    free(game->dungeon);
+    game->dungeon = list_init(ROOMS_PER_LEVEL, free);
 }
 
 void game_add_room(game_t *game, const char *path) {
