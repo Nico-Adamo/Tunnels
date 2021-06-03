@@ -13,6 +13,24 @@ const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
 
 double BOSS_ATTACK_TIMER = 0;
 
+body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
+    vector_t bottom_left = {x, y};
+    stats_info_t info = enemy_get_stats(type);
+    body_sprite_info_t enemy_sprite_info = enemy_get_sprite_info(type);
+    body_t *enemy;
+    if(type >= NECROMANCER_WIZARD) { // Boss IDs
+        enum body_type id;
+        if(type == NECROMANCER_WIZARD) id = BOSS_NECROMANCER_WIZARD;
+        if(type == BIG_ZOMBIE) id = BOSS_BIG_ZOMBIE;
+        if(type == OGRE) id = BOSS_OGRE;
+        if(type == BIG_DEMON) id = BOSS_BIG_DEMON;
+        enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, id, info);
+    } else {
+        enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, ENEMY, info);
+    }
+    return enemy;
+}
+
 bool has_line_of_sight(game_t *game, vector_t pos1, vector_t pos2, double dx) {
     scene_t *scene = game_get_current_scene(game);
     vector_t direction = vec_find_direction(pos2, pos1);

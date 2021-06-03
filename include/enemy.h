@@ -4,7 +4,6 @@
 #include "game.h"
 #include "sprite.h"
 #include <stdbool.h>
-#include "level.h"
 
 enum enemy_type{TINY_ZOMBIE, GOBLIN, IMP, SKELET, MUDDY, SWAMPY, ZOMBIE, ICE_ZOMBIE, MASKED_ORC, ORC_WARRIOR, ORC_SHAMAN, NECROMANCER, WOGUL, CHORT, WIZARD, NECROMANCER_WIZARD, BIG_ZOMBIE, OGRE, BIG_DEMON};
 

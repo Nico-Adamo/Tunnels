@@ -79,24 +79,6 @@ body_t *make_player(game_t *game, double x, double y, enum body_type type, stats
     return body_init_with_info(player_sprite_info, game_get_sprite(game, player_sprite_info.idle_sprite_id), bottom_left, 100, 4, type, info);
 }
 
-body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
-    vector_t bottom_left = {x, y};
-    stats_info_t info = enemy_get_stats(type);
-    body_sprite_info_t enemy_sprite_info = enemy_get_sprite_info(type);
-    body_t *enemy;
-    if(type >= NECROMANCER_WIZARD) { // Boss IDs
-        enum body_type id;
-        if(type == NECROMANCER_WIZARD) id = BOSS_NECROMANCER_WIZARD;
-        if(type == BIG_ZOMBIE) id = BOSS_BIG_ZOMBIE;
-        if(type == OGRE) id = BOSS_OGRE;
-        if(type == BIG_DEMON) id = BOSS_BIG_DEMON;
-        enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, id, info);
-    } else {
-        enemy = body_init_with_info(enemy_sprite_info, game_get_sprite(game, enemy_sprite_info.idle_sprite_id), bottom_left, 100, 4, ENEMY, info);
-    }
-    return enemy;
-}
-
 UI_t *make_heart(double x, double y, sprite_t *sprite, char *type) {
     rect_t hitbox = (rect_t) {x, y, 32, 32};
     return UI_init(sprite, hitbox, type, 2);
