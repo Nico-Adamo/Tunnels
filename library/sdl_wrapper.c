@@ -116,7 +116,7 @@ void sdl_init(vector_t min, vector_t max) {
     max_diff = vec_subtract(max, center);
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
-    pixeled_font = TTF_OpenFont("/home/nico/Code/CS3/game-voldemort/assets/ui/Pixeled.ttf", 24);
+    pixeled_font = TTF_OpenFont("assets/ui/Pixeled.ttf", 24);
     printf("%s\n", TTF_GetError());
     window = SDL_CreateWindow(
         WINDOW_TITLE,
