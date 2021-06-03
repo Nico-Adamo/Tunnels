@@ -116,7 +116,8 @@ void sdl_init(vector_t min, vector_t max) {
     max_diff = vec_subtract(max, center);
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
-    pixeled_font = TTF_OpenFont("assets/ui/pixeled.ttf", 24);
+    pixeled_font = TTF_OpenFont("/home/nico/Code/CS3/game-voldemort/assets/ui/Pixeled.ttf", 24);
+    printf("%s\n", TTF_GetError());
     window = SDL_CreateWindow(
         WINDOW_TITLE,
         SDL_WINDOWPOS_CENTERED,
@@ -269,6 +270,8 @@ void sdl_render_game(game_t *game) {
         TTF_SizeText(pixeled_font, message, w, h);
         SDL_Rect shape = (SDL_Rect) {0, 0, *w, *h};
         rect_t hitbox = (rect_t) {bottom_left.x, bottom_left.y, *w, *h};
+        free(w);
+        free(h);
         hitbox.x += camera.x;
         hitbox.y += camera.y;
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));

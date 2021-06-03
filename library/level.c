@@ -188,6 +188,7 @@ void make_room(game_t *game){
     body_t *player_new = make_player(game, 0, 0, PLAYER, player_info);
     game_reset_tile_interactors(game);
     game_set_player(game, player_new);
+    scene_free(game_get_current_scene(game));
     game_set_current_scene(game, scene_new);
     scene_add_body(scene_new, player_new);
     char *path = list_get(game_get_dungeon(game), game_get_room(game));

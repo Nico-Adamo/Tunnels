@@ -209,6 +209,11 @@ void map_load(game_t *game, const char *path) {
     fscanf(file,"\n");
     map_load_file(game, file, *x_tiles, *y_tiles, 3);
     fclose(file);
+
+    free(x_tiles);
+    free(y_tiles);
+    free(room_type);
+    free(unlock_time);
 }
 
 //TODO: collider layersw

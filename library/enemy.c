@@ -101,7 +101,7 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
 
     double distance = vec_distance(body_get_centroid(enemy), body_get_centroid(player));
 
-    if(has_line_of_sight(game, enemy_center, pch_center, 16)) {
+    if(has_line_of_sight(game, enemy_center, pch_center, 16) && distance <= 2000) {
         if (!(enemy_info.atk_type == RADIAL_SHOOTER && vec_distance(body_get_centroid(enemy), body_get_centroid(player)) <= 100)) {
             pathfind(game, enemy, player);
         }

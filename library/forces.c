@@ -66,6 +66,13 @@ void create_newtonian_gravity(scene_t *scene, double G, body_t *body1, body_t *b
     scene_add_bodies_force_creator(scene, newtonian_gravity, aux, bodies, free);
 }
 
+
+void collision_aux_free(void *collision_aux) {
+    collision_aux_t *coll = (collision_aux_t *) collision_aux;
+    free(coll->aux);
+    free(coll);
+}
+
 void spring(void *aux) {
     aux_t *values = (aux_t *) aux;
     body_t *body1 = values->body1;
@@ -188,7 +195,7 @@ void create_physics_collision(scene_t *scene, double elasticity, body_t *body1, 
     aux->param = elasticity;
     aux->body1 = body1;
     aux->body2 = body2;
-    create_collision(scene, body1, body2, physics_collision, aux, free);
+    create_collision(scene, body1, body2, physics_collision, aux, collision_aux_free);
 }
 
 // TO DO: update to cause damage and destroy the second body if health drops below zero
@@ -225,12 +232,13 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
 
 }
 
+
 void create_semi_destructive_collision(scene_t *scene, body_t *body1, body_t *body2) {
     aux_t *aux = malloc(sizeof(aux_t));
     aux->param = 1;
     aux->body1 = body1;
     aux->body2 = body2;
-    create_collision(scene, body1, body2, semi_destructive_collision, aux, free);
+    create_collision(scene, body1, body2, semi_destructive_collision, aux, collision_aux_free);
 }
 
 void tile_collision(void *aux, double dt) {
