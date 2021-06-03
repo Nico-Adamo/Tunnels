@@ -226,6 +226,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         }
         if(body_get_type(body1) == ENEMY) {
             body_set_hit_timer(body1, 0.3);
+            body_add_impulse(body1, vec_multiply(body_get_mass(body1) / 2, body_get_velocity(body2)));
         }
     }
 
