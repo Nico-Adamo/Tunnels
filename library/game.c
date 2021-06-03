@@ -484,7 +484,7 @@ game_t *game_init(double scale) {
     game->current_scene = NULL;
     game->tile_infos = list_init(NUM_TILES, tile_info_free);
     game->tile_interactors = list_init(2, free); // TODO: Magic number
-    game->sprites = list_init(NUM_SPRITES, tile_info_free);
+    game->sprites = list_init(NUM_SPRITES, free);
     game->scale = scale;
     game->player = NULL;
     game->dungeon = list_init(5, free); // Todo: magic number
@@ -498,6 +498,9 @@ game_t *game_init(double scale) {
 void game_free(void *game) {
     game_t *game_c = (game_t *) game;
     list_free(game_c->tile_infos);
+    list_free(game_c->dungeon);
+    list_free(game_c->tile_interactors);
+    list_free(game_c->sprites);
     scene_free(game_c->current_scene);
     free(game_c);
 }
@@ -531,6 +534,7 @@ list_t *game_get_dungeon(game_t *game) {
 }
 
 void game_reset_dungeon(game_t *game) {
+    list_free(game->dungeon);
     game->dungeon = list_init(5, free); // Todo: magic number
 }
 

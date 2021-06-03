@@ -101,7 +101,7 @@ int main(int arg_c, char *arg_v[]) {
         .atk_type = RADIAL_SHOOTER
     };
 
-    game_t *game = game_init(4);
+    game_t *game =                                                                                                                                                                                  game_init(4);
 
     map_register_tiles(game);
     map_register_collider_tiles();
@@ -133,7 +133,6 @@ int main(int arg_c, char *arg_v[]) {
         if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
             make_room(game);
-            scene_free(scene);
             ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT);
             scene_add_UI_text(game_get_current_scene(game), level_text);
             cur_room = game_get_room(game);
