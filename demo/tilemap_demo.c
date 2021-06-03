@@ -27,7 +27,7 @@ const double LEVEL_EXP_FACTOR = 1.5;
 
 
 void display_hearts(game_t *game, scene_t *scene, body_t *player) {
-    double length = 83;
+    double length = 60;
     sprite_t *half_heart = game_get_sprite(game, HALF_HEART_ID);
     sprite_t *empty_heart = game_get_sprite(game, EMPTY_HEART_ID);
     sprite_t *full_heart = game_get_sprite(game, FULL_HEART_ID);
