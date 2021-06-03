@@ -30,7 +30,7 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
     };
 
     vector_t bullet_shift = {
-        .x = (1 - abs(bullet_dir.x)) * .5 * body_get_velocity(body).x, //TODO: magic numbers
+        .x = (1 - abs(bullet_dir.x)) * .5 * body_get_velocity(body).x,
         .y = (1 - abs(bullet_dir.y)) * .5 * body_get_velocity(body).y
     };
 

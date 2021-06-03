@@ -10,6 +10,7 @@ const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 512;
 const double MS_PER_S = 1e3;
 const double map_scale = 10;
+const double TEXT_FADEOUT_TIME = 0.5;
 
 /**
  * The coordinate at the center of the screen.
@@ -116,7 +117,8 @@ void sdl_init(vector_t min, vector_t max) {
     max_diff = vec_subtract(max, center);
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
-    pixeled_font = TTF_OpenFont("assets/ui/pixeled.ttf", 24);
+    pixeled_font = TTF_OpenFont("assets/ui/Pixeled.ttf", 24);
+    printf("%s\n", TTF_GetError());
     window = SDL_CreateWindow(
         WINDOW_TITLE,
         SDL_WINDOWPOS_CENTERED,
@@ -269,11 +271,13 @@ void sdl_render_game(game_t *game) {
         TTF_SizeText(pixeled_font, message, w, h);
         SDL_Rect shape = (SDL_Rect) {0, 0, *w, *h};
         rect_t hitbox = (rect_t) {bottom_left.x, bottom_left.y, *w, *h};
+        free(w);
+        free(h);
         hitbox.x += camera.x;
         hitbox.y += camera.y;
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));
         double lifetime = ui_text_get_timer(text);
-        if(lifetime <= 0.5) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/0.5)); // TODO: magic numbers
+        if(lifetime <= TEXT_FADEOUT_TIME) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/TEXT_FADEOUT_TIME));
         sdl_draw_texture(texture, shape, hitbox, false);
     }
 

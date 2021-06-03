@@ -27,7 +27,7 @@ const double LEVEL_EXP_FACTOR = 1.5;
 
 
 void display_hearts(game_t *game, scene_t *scene, body_t *player) {
-    double length = 83;
+    double length = 60;
     sprite_t *half_heart = game_get_sprite(game, HALF_HEART_ID);
     sprite_t *empty_heart = game_get_sprite(game, EMPTY_HEART_ID);
     sprite_t *full_heart = game_get_sprite(game, FULL_HEART_ID);
@@ -101,7 +101,7 @@ int main(int arg_c, char *arg_v[]) {
         .atk_type = RADIAL_SHOOTER
     };
 
-    game_t *game = game_init(4);
+    game_t *game = game_init(4);                                                                                                                                                                               game_init(4);
 
     map_register_tiles(game);
     map_register_collider_tiles();
@@ -133,7 +133,6 @@ int main(int arg_c, char *arg_v[]) {
         if (!scene_is_menu(game_get_current_scene(game)) && !spacebar_pressed) {
             spacebar_pressed = true;
             make_room(game);
-            scene_free(scene);
             ui_text_t *level_text = ui_text_init("Level 1", (vector_t) {5, MAX_HEIGHT - 105}, INFINITY, EXP_TEXT);
             scene_add_UI_text(game_get_current_scene(game), level_text);
             cur_room = game_get_room(game);
@@ -169,6 +168,22 @@ int main(int arg_c, char *arg_v[]) {
                 }
             }
 
+            // Interaction with Level Stuff
+            list_t *UI_comps = scene_get_UI_components(scene);
+            if (list_size(UI_comps) != 0) {
+                for (size_t i = 0; i < list_size(UI_comps); i++) {
+                    if (strcmp(UI_get_type(list_get(UI_comps, i)), "LEVEL_UP") == 0) {
+                        if (powerup_timer > 0) powerup_timer -= dt;
+                        else {
+                            list_remove (UI_comps, i);
+                            powerup_timer = 5;
+                        }
+                        break;
+                    }
+                }
+            }
+
+
             // Levelling up + Text Display
             stats_info_t player_stats = body_get_stats_info(player);
             char level[100];
@@ -188,7 +203,7 @@ int main(int arg_c, char *arg_v[]) {
                 char level_cur[100];
                 sprintf(level_cur, "Level %d", player_stats.level);
                 ui_text_set_message(level_text, level_cur);
-                int buff = floor(rand_from(0, 4.9)); // TODO: Magic Numbers?
+                int buff = rand() % 5; // TODO: Magic Numbers?
                 sprite_t *powerup_sprite;
                 switch (buff) {
                     case 0:
@@ -224,28 +239,12 @@ int main(int arg_c, char *arg_v[]) {
                 cur_room = game_get_room(game);
             }
 
-
-            // Interaction with Level Stuff
-            list_t *UI_comps = scene_get_UI_components(scene);
-            if (list_size(UI_comps) != 0) {
-                for (size_t i = 0; i < list_size(UI_comps); i++) {
-                    if (strcmp(UI_get_type(list_get(UI_comps, i)), "LEVEL_UP") == 0) {
-                        if (powerup_timer > 0) powerup_timer -= dt;
-                        else {
-                            list_remove (UI_comps, i);
-                            powerup_timer = 5;
-                        }
-                        break;
-                    }
-                }
-            }
-
             if (body_get_stats_info(player).health <= 0) {
                 game_set_room(game, 0);
                 make_room(game);
                 scene_free(scene);
                 stats_info_t player_info = body_get_stats_info(game_get_player(game));
-                player_info.health = PLAYER_HEALTH;
+                player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
                 body_set_stats_info(game_get_player(game), player_info);
                 char level[100];
                 sprintf(level, "Level %d", player_info.level);

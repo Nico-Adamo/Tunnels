@@ -1,9 +1,11 @@
 #include "keyhandler.h"
 #include "collision.h"
+#include "level.h"
 
-const int PAUSE_ID = 63; 
+const int PAUSE_ID = 63;
 
 const double player_velocity = 300;
+const double player_bullet_velocity = 400;
 
 bool key_pressed[8] = {false, false, false, false, false, false, false, false};
 
@@ -14,7 +16,7 @@ void body_set_velocity_and_direction(body_t *player, vector_t velocity) {
 
 void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t bullet_dir) {
     if(body_get_shoot_cooldown(player) > 0) return;
-    body_t *bullet = make_bullet(game, player, bullet_dir, 3, 400); //TODO: Magic numbers
+    body_t *bullet = make_bullet(game, player, bullet_dir, 3, player_bullet_velocity);
     scene_add_body(scene, bullet);
     create_tile_collision(scene, bullet);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
@@ -22,7 +24,7 @@ void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t b
             create_semi_destructive_collision(scene, scene_get_body(scene, i), scene_get_body(scene, scene_bodies(scene) - 1));
         }
     }
-    body_set_shoot_cooldown(player, body_get_stats_info(player).cooldown); // TODO: magic number
+    body_set_shoot_cooldown(player, body_get_stats_info(player).cooldown);
 }
 
 void set_zero_velocity_direction(body_t *player) {
@@ -108,6 +110,11 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     if(find_collision(interactor->area, body_get_hitbox(player)).collided) {
                         interactor->interaction(game);
                         if(interactor->type == MURAL) {
+                            stats_info_t player_info = body_get_stats_info(player);
+                            player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
+                            ui_text_t *text = ui_text_init("Health restored", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+                            scene_add_UI_text(game_get_current_scene(game), text);
+                            body_set_stats_info(player, player_info);
                             list_remove(interactors, i);
                             i--;
                         }
