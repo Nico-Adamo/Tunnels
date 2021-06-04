@@ -129,8 +129,10 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 }
                 game_set_paused(game, !game_is_paused(game));
                 if (game_is_paused(game)) {
+                    Mix_PauseMusic();
                     scene_add_UI_component(scene, UI_init(game_get_sprite(game, PAUSE_ID), (rect_t) {0, 0, 1024, 512}, "PAUSE", 1));
                 } else {
+                    Mix_ResumeMusic();
                     for(size_t i = 0; i < list_size(ui_components); i++) {
                         if(strcmp(UI_get_type(list_get(ui_components, i)), "PAUSE") == 0) {
                             list_remove(ui_components, i);
