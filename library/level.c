@@ -273,7 +273,7 @@ void handle_mural_buffs(char *type, game_t *game){
     } else if (strcmp(type, "CD_MURAL") == 0) {
         printf("CD\n");
         player_info.cooldown *= .9;
-        text = ui_text_init(" -10% Bullet Cooldown", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        text = ui_text_init(" .9x Bullet Cooldown", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
     }
     scene_add_UI_text(game_get_current_scene(game), text);
     body_set_stats_info(player, player_info);
