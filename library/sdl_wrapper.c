@@ -279,6 +279,7 @@ void sdl_render_game(game_t *game) {
         double lifetime = ui_text_get_timer(text);
         if(lifetime <= TEXT_FADEOUT_TIME) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/TEXT_FADEOUT_TIME));
         sdl_draw_texture(texture, shape, hitbox, false);
+        SDL_DestroyTexture(texture);
     }
 
     // UI rendering
