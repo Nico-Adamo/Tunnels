@@ -3,6 +3,7 @@
 #include "enemy.h"
 #include "map.h"
 #include "forces.h"
+#include "sound.h"
 
 extern const char *SPRITE;
 // const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "sdl_wrapper.h"
+#include <SDL2/SDL_mixer.h>
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1024;
@@ -127,6 +128,7 @@ void sdl_init(vector_t min, vector_t max) {
         WINDOW_HEIGHT,
         SDL_WINDOW_RESIZABLE
     );
+    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
     camera = (vector_t) {0, 0};
     renderer = SDL_CreateRenderer(window, -1, 0);
 }

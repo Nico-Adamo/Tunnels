@@ -196,6 +196,7 @@ scene_t *make_title(game_t *game) {
 
 }
 void make_room(game_t *game){
+    music_play("assets/sounds/music_1_t.wav");
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
