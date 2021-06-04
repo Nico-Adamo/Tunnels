@@ -195,7 +195,15 @@ scene_t *make_title(game_t *game) {
     return scene;
 
 }
-void make_room(game_t *game){
+
+void random_room_music() {
+    int room_music = rand() % 2;
+    if(room_music == 0) music_play("assets/sounds/music_1.wav");
+    if(room_music == 1) music_play("assets/sounds/music_2.wav");
+}
+
+void make_room(game_t *game) {
+    random_room_music();
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
@@ -209,6 +217,7 @@ void make_room(game_t *game){
     map_load(game, path);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
+
 
 void make_level(game_t *game, int level) {
     game_set_room(game, 0);
@@ -239,8 +248,68 @@ void game_end_level(game_t *game) {
     make_room(game);
 }
 
+void handle_mural_buffs(char *type, game_t *game){
+    scene_t *scene = game_get_current_scene(game);
+    body_t *player = game_get_player(game);
+    stats_info_t player_info = body_get_stats_info(player);
+    ui_text_t *text;
+    printf("Hey, I'm here\n");
+    if (strcmp(type, "HP_MURAL") == 0) {
+        printf("HP\n");
+        player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
+        text = ui_text_init(" Health restored", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+    } else if (strcmp(type, "ATK_MURAL") == 0) {
+        printf("ATK\n");
+        player_info.attack += 5;
+        text = ui_text_init(" +5 Attack", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+    } else if (strcmp(type, "SPD_MURAL") == 0) {
+        printf("SPD\n");
+        player_info.speed += 50;
+        text = ui_text_init(" +50 Speed", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+    } else if (strcmp(type, "INV_MURAL") == 0) {
+        printf("INV\n");
+        player_info.invulnerability_timer *= 1.5;
+        text = ui_text_init(" 1.5x Invulnerabiltiy", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+    } else if (strcmp(type, "CD_MURAL") == 0) {
+        printf("CD\n");
+        player_info.cooldown *= .9;
+        text = ui_text_init(" .9x Bullet Cooldown", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+    }
+    scene_add_UI_text(game_get_current_scene(game), text);
+    body_set_stats_info(player, player_info);
+}
+
+
 void game_random_mural(game_t *game) {
+    int mural_type = rand() % 5;
+    int mural_id;
     game_set_paused(game, true);
-    UI_t *mural = UI_init(game_get_sprite(game, MURAL_ID), (rect_t) {0,0, 1024, 512}, "MURAL", 1);
+    music_play("assets/sounds/music_mural.wav");
+    printf("MURAL TYPE: %d", mural_type);
+    switch (mural_type) {
+        case 0:
+            mural_id = HP_MURAL_ID;
+            handle_mural_buffs("HP_MURAL", game);
+            break;
+        case 1:
+            mural_id = ATK_MURAL_ID;
+            handle_mural_buffs("ATK_MURAL", game);
+            break;
+        case 2:
+            mural_id = SPD_MURAL_ID;
+            handle_mural_buffs("SPD_MURAL", game);
+            break;
+        case 3:
+            mural_id = INV_MURAL_ID;
+            handle_mural_buffs("INV_MURAL", game);
+            break;
+        case 4:
+            mural_id = CD_MURAL_ID;
+            handle_mural_buffs("CD_MURAL", game);
+            break;
+    }
+    UI_t *mural = UI_init(game_get_sprite(game, mural_id), (rect_t) {0,0, 1024, 512}, "MURAL", 1);
     scene_add_UI_component(game_get_current_scene(game), mural);
 }
+
+

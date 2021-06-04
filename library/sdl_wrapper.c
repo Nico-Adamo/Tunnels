@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "sdl_wrapper.h"
+#include <SDL2/SDL_mixer.h>
 
 const char WINDOW_TITLE[] = "CS 3";
 const int WINDOW_WIDTH = 1024;
@@ -127,6 +128,7 @@ void sdl_init(vector_t min, vector_t max) {
         WINDOW_HEIGHT,
         SDL_WINDOW_RESIZABLE
     );
+    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
     camera = (vector_t) {0, 0};
     renderer = SDL_CreateRenderer(window, -1, 0);
 }
@@ -279,6 +281,7 @@ void sdl_render_game(game_t *game) {
         double lifetime = ui_text_get_timer(text);
         if(lifetime <= TEXT_FADEOUT_TIME) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/TEXT_FADEOUT_TIME));
         sdl_draw_texture(texture, shape, hitbox, false);
+        SDL_DestroyTexture(texture);
     }
 
     // UI rendering

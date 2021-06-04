@@ -3,6 +3,7 @@
 #include "enemy.h"
 #include "map.h"
 #include "forces.h"
+#include "sound.h"
 
 extern const char *SPRITE;
 // const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
@@ -29,6 +30,8 @@ list_t *get_player_coins(scene_t *scene);
 scene_t *scene_reset(game_t *game);
 
 scene_t *make_title(game_t *game);
+
+void random_room_music();
 
 void make_room(game_t *game);
 

@@ -3,6 +3,7 @@
 #include "forces.h"
 #include <stdlib.h>
 #include "collision.h"
+#include "sound.h"
 #include <stdio.h>
 
 // can add these as function parameters and set them in the demo
@@ -223,9 +224,21 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
             body_set_invulnerability_timer(body1, body_get_stats_info(body1).invulnerability_timer);
             if (body1_info.health <= 0) body_remove(body1);
             body_remove(body2);
+            if(body_get_type(body1) == PLAYER) {
+                int sound = rand() % 3;
+                if(sound == 0) sound_play("assets/sounds/player_hit_1.wav");
+                if(sound == 1) sound_play("assets/sounds/player_hit_2.wav");
+                if(sound == 2) sound_play("assets/sounds/player_hit_3.wav");
+            }
         }
         if(body_get_type(body1) == ENEMY) {
+            int sound = rand() % 3;
+            if(sound == 0) sound_play("assets/sounds/mob_hit_1.wav");
+            if(sound == 1) sound_play("assets/sounds/mob_hit_2.wav");
+            if(sound == 2) sound_play("assets/sounds/mob_hit_3.wav");
+
             body_set_hit_timer(body1, 0.3);
+            body_add_impulse(body1, vec_multiply(body_get_mass(body1) / 2, body_get_velocity(body2)));
         }
     }
 

@@ -242,7 +242,6 @@ int main(int arg_c, char *arg_v[]) {
             if (body_get_stats_info(player).health <= 0) {
                 game_set_room(game, 0);
                 make_room(game);
-                scene_free(scene);
                 stats_info_t player_info = body_get_stats_info(game_get_player(game));
                 player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
                 body_set_stats_info(game_get_player(game), player_info);
