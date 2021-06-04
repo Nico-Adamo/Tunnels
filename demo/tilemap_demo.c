@@ -1,10 +1,8 @@
 #include "game.h"
 #include "enemy.h"
 #include "scene.h"
-#include "color.h"
 #include "list.h"
 #include "vector.h"
-#include "polygon.h"
 #include "body.h"
 #include "map.h"
 #include <math.h>

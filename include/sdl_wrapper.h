@@ -2,7 +2,6 @@
 #define __SDL_WRAPPER_H__
 
 #include <stdbool.h>
-#include "color.h"
 #include "list.h"
 #include "game.h"
 #include "vector.h"
