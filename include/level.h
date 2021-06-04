@@ -31,6 +31,8 @@ scene_t *scene_reset(game_t *game);
 
 scene_t *make_title(game_t *game);
 
+void random_room_music();
+
 void make_room(game_t *game);
 
 void make_level(game_t *game, int level);

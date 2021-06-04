@@ -7,7 +7,7 @@ void sound_play(const char *path) {
 
 void music_play(const char *path) {
     if(Mix_PlayingMusic()) {
-        Mix_FadeOutMusic(200);
+        Mix_HaltMusic();
     }
     Mix_Music *music = Mix_LoadMUS(path);
     int ret = Mix_FadeInMusic(music, -1, 500); // TODO: magic number

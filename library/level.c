@@ -195,8 +195,15 @@ scene_t *make_title(game_t *game) {
     return scene;
 
 }
-void make_room(game_t *game){
-    music_play("assets/sounds/music_1.wav");
+
+void random_room_music() {
+    int room_music = rand() % 2;
+    if(room_music == 0) music_play("assets/sounds/music_1.wav");
+    if(room_music == 1) music_play("assets/sounds/music_2.wav");
+}
+
+void make_room(game_t *game) {
+    random_room_music();
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
@@ -210,6 +217,7 @@ void make_room(game_t *game){
     map_load(game, path);
     create_tile_collision(game_get_current_scene(game), game_get_player(game));
 }
+
 
 void make_level(game_t *game, int level) {
     game_set_room(game, 0);
@@ -242,6 +250,7 @@ void game_end_level(game_t *game) {
 
 void game_random_mural(game_t *game) {
     game_set_paused(game, true);
+    music_play("assets/sounds/music_mural.wav");
     UI_t *mural = UI_init(game_get_sprite(game, MURAL_ID), (rect_t) {0,0, 1024, 512}, "MURAL", 1);
     scene_add_UI_component(game_get_current_scene(game), mural);
 }

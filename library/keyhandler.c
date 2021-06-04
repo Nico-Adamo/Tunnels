@@ -129,6 +129,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 for(size_t i = 0; i < list_size(ui_components); i++) {
                     if(strcmp(UI_get_type(list_get(ui_components, i)), "MURAL") == 0) {
                         list_remove(ui_components, i);
+                        random_room_music();
                     }
                 }
                 game_set_paused(game, !game_is_paused(game));
