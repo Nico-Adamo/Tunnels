@@ -477,7 +477,42 @@ const sprite_info_t SPRITE_INFOS[] = {
     {0, 0, 0, 0},
     "assets/ui/pause.png",
     false, 0, 0
-    }
+    },
+    // 64 – HP MURAL
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/blacker_mural_test.png",
+    false, 0, 0
+    },
+    // 65 – ATTACK MURAL
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/blacker_mural_test.png",
+    false, 0, 0
+    },
+    // 66 – SPD MURAL
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/blacker_mural_test.png",
+    false, 0, 0
+    },
+    // 67 – CD MURAL
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/blacker_mural_test.png",
+    false, 0, 0
+    },
+    // 68 – INV MURAL
+    {{0, 0, 1024, 512},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/blacker_mural_test.png",
+    false, 0, 0
+    },
 };
 
 game_t *game_init(double scale) {

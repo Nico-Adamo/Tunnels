@@ -5,7 +5,11 @@
 
 extern const int MENU_SPRITE_ID;
 extern const int PRESS_F_ID;
-extern const int MURAL_ID;
+extern const int ATK_MURAL_ID;
+extern const int SPD_MURAL_ID;
+extern const int HP_MURAL_ID;
+extern const int CD_MURAL_ID;
+extern const int INV_MURAL_ID;
 extern const int EMPTY_HEART_ID;
 extern const int HALF_HEART_ID;
 extern const int FULL_HEART_ID;
