@@ -605,7 +605,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     },
      // NECROMANCER_WIZARD
-    {.health = 40,
+    {.health = 140,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 41,
@@ -615,7 +615,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     },
      // BIG_ZOMBIE
-    {.health = 40,
+    {.health = 140,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 46,
@@ -625,7 +625,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     },
      // OGRE
-    {.health = 40,
+    {.health = 140,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 42,
@@ -635,7 +635,7 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     },
      // BIG_DEMON
-    {.health = 60,
+    {.health = 200,
      .attack = 20,
      .cooldown = 5,
      .bullet_id = 37,
