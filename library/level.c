@@ -6,8 +6,10 @@ const double MAX_HEIGHT = 512;
 const double HALF_HEART_HEALTH = 5;
 const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
-const size_t ROOMS_PER_LEVEL = 2;
+const size_t ROOMS_PER_LEVEL = 5;
+const size_t TOTAL_LEVELS = 3;
 
+const size_t VICTORY_ID = 69; // nice
 
 char *level_variants[] = {
     "a_full.txt",
@@ -251,8 +253,15 @@ void game_end_room(game_t *game) {
 
 void game_end_level(game_t *game) {
     game_set_level(game, game_get_level(game) + 1);
-    make_level(game, game_get_level(game));
-    make_room(game);
+
+    if (game_get_level(game) == TOTAL_LEVELS) {
+        UI_t *victory = UI_init(game_get_sprite(game, VICTORY_ID), (rect_t) {0,0, 1024, 512}, "VICTORY_SCREEN", 1);
+        scene_add_UI_component(game_get_current_scene(game), victory);
+    } else {
+        scale_enemies();
+        make_level(game, game_get_level(game));
+        make_room(game);
+    }
 }
 
 void handle_mural_buffs(char *type, game_t *game){

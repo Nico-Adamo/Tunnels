@@ -513,6 +513,13 @@ const sprite_info_t SPRITE_INFOS[] = {
     "assets/ui/minecraft-creeper-mural.png",
     false, 0, 0
     },
+    // 69 - VICTORY SCREEN (nice)
+    {{0, 0, 2000, 1000},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/game_victory_screen_full.png",
+    true, 0.1, 4
+    }
 };
 
 game_t *game_init(double scale) {

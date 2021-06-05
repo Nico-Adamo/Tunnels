@@ -531,7 +531,6 @@ void handle_enemies(game_t *game, double dt) {
     }
 }
 
-
 // SPRITE INFO ARRAY
 body_sprite_info_t ENEMY_SPRITE_INFOS[19] = {
     // TINY_ZOMBIE
@@ -833,6 +832,16 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     }
 };
+
+void scale_enemies() {
+    for(size_t i = 0; i < sizeof(ENEMY_STAT_INFO) / sizeof(stats_info_t); i++) {
+        stats_info_t enemy_stats = ENEMY_STAT_INFO[i];
+        enemy_stats.health *= 1.50;
+        enemy_stats.experience *= 1.50;
+        ENEMY_STAT_INFO[i] = enemy_stats;
+    }
+
+}
 
 body_sprite_info_t enemy_get_sprite_info(enum enemy_type type) {
     return ENEMY_SPRITE_INFOS[type];

@@ -16,6 +16,8 @@ double rand_from(double min, double max);
 
 void handle_enemies(game_t *game, double dt);
 
+void scale_enemies();
+
 body_sprite_info_t enemy_get_sprite_info(enum enemy_type type);
 stats_info_t enemy_get_stats(enum enemy_type type);
 #endif
