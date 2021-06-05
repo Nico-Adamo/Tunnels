@@ -269,28 +269,33 @@ void handle_mural_buffs(char *type, game_t *game){
     body_t *player = game_get_player(game);
     stats_info_t player_info = body_get_stats_info(player);
     ui_text_t *text;
-    printf("Hey, I'm here\n");
-    if (strcmp(type, "HP_MURAL") == 0) {
-        printf("HP\n");
-        player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
-        text = ui_text_init(" Health restored", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
-    } else if (strcmp(type, "ATK_MURAL") == 0) {
+    if (strcmp(type, "ATK_MURAL") == 0) {
         printf("ATK\n");
         player_info.attack += 5;
-        text = ui_text_init(" +5 Attack", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        text = ui_text_init(" Health restored, +5 Attack", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
     } else if (strcmp(type, "SPD_MURAL") == 0) {
         printf("SPD\n");
         player_info.speed += 50;
-        text = ui_text_init(" +50 Speed", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        text = ui_text_init(" Health restored, +50 Speed", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
     } else if (strcmp(type, "INV_MURAL") == 0) {
         printf("INV\n");
         player_info.invulnerability_timer *= 1.5;
-        text = ui_text_init(" 1.5x Invulnerabiltiy", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        text = ui_text_init(" Health restored, 1.5x Invulnerabiltiy", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
     } else if (strcmp(type, "CD_MURAL") == 0) {
         printf("CD\n");
         player_info.cooldown *= .9;
-        text = ui_text_init(" .9x Bullet Cooldown", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        text = ui_text_init(" Health restored, .9x Bullet Cooldown", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+    } else if (strcmp(type, "HP_MURAL") == 0) {
+        printf("CD\n");
+        list_t *hearts = get_player_hearts(scene);
+        size_t num_hearts = list_size(hearts);
+        double length = 60;
+        UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts) + length, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, EMPTY_HEART_ID), "PLAYER_HEART");
+        scene_add_UI_component(scene, heart);
+        list_free(hearts);
+        text = ui_text_init(" Health restored, +1 Heart", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
     }
+    player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
     scene_add_UI_text(game_get_current_scene(game), text);
     body_set_stats_info(player, player_info);
 }
@@ -304,24 +309,24 @@ void game_random_mural(game_t *game) {
     printf("MURAL TYPE: %d", mural_type);
     switch (mural_type) {
         case 0:
-            mural_id = HP_MURAL_ID;
-            handle_mural_buffs("HP_MURAL", game);
-            break;
-        case 1:
             mural_id = ATK_MURAL_ID;
             handle_mural_buffs("ATK_MURAL", game);
             break;
-        case 2:
+        case 1:
             mural_id = SPD_MURAL_ID;
             handle_mural_buffs("SPD_MURAL", game);
             break;
-        case 3:
+        case 2:
             mural_id = INV_MURAL_ID;
             handle_mural_buffs("INV_MURAL", game);
             break;
-        case 4:
+        case 3:
             mural_id = CD_MURAL_ID;
             handle_mural_buffs("CD_MURAL", game);
+            break;
+        case 4:
+            mural_id = HP_MURAL_ID;
+            handle_mural_buffs("HP_MURAL", game);
             break;
     }
     UI_t *mural = UI_init(game_get_sprite(game, mural_id), (rect_t) {0,0, 1024, 512}, "MURAL", 1);

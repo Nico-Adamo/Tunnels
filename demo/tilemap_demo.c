@@ -34,13 +34,6 @@ void display_hearts(game_t *game, scene_t *scene, body_t *player) {
     size_t num_hearts = list_size(hearts);
     if (num_hearts > 0) {
         double max_health = num_hearts * HALF_HEART_HEALTH * 2;
-        if (body_get_stats_info(player).health > max_health) {
-            UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts) + length, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), "PLAYER_HEART");
-            scene_add_UI_component(scene, heart);
-            list_free(hearts);
-            hearts = get_player_hearts(scene);
-            max_health += HALF_HEART_HEALTH * 2;
-        }
         double lost_player_halves = (max_health - body_get_stats_info(player).health) / HALF_HEART_HEALTH;
         int full_hearts_lost = floor(lost_player_halves / 2);
         bool half_heart_lost = false;
@@ -203,11 +196,15 @@ int main(int arg_c, char *arg_v[]) {
                 char level_cur[100];
                 sprintf(level_cur, "Level %d", player_stats.level);
                 ui_text_set_message(level_text, level_cur);
-                int buff = rand() % 5; // TODO: Magic Numbers?
+                int buff = rand() % 5;
                 sprite_t *powerup_sprite;
                 switch (buff) {
                     case 0:
                         player_stats.health += level_up_buffs[0];
+                        size_t num_hearts = list_size(get_player_hearts(scene));
+                        double length = 60;
+                        UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts) + length, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, EMPTY_HEART_ID), "PLAYER_HEART");
+                        scene_add_UI_component(scene, heart);
                         powerup_sprite = game_get_sprite(game, 53);
                         break;
                     case 1:

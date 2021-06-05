@@ -482,35 +482,35 @@ const sprite_info_t SPRITE_INFOS[] = {
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/blacker_mural_test.png",
+    "assets/ui/hp-mural.png",
     false, 0, 0
     },
     // 65 – ATTACK MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/minecraft-wither-mural.png",
+    "assets/ui/blacker_mural_test.png",
     false, 0, 0
     },
     // 66 – SPD MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/great-wave-mural.png",
+    "assets/ui/speed-mural.png",
     false, 0, 0
     },
     // 67 – CD MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/minecraft-sunset-mural.png",
+    "assets/ui/cooldown-mural.png",
     false, 0, 0
     },
     // 68 – INV MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/minecraft-creeper-mural.png",
+    "assets/ui/invulnerability-mural.png",
     false, 0, 0
     },
     // 69 - VICTORY SCREEN (nice)
