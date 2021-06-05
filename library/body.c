@@ -176,12 +176,6 @@ double body_get_scale(body_t *body) {
     return body->scale;
 }
 
-/*
-rgb_color_t body_get_color(body_t *body) {
-    return body->color;
-}
-*/
-
 enum body_type body_get_type(body_t *body) {
     return body->type;
 }
@@ -286,12 +280,12 @@ bool body_is_removed(body_t *body) {
     return body->removed;
 }
 
-void body_set_shoot_cooldown(body_t *body, double cooldown) {
-    body->shoot_cooldown = cooldown;
-}
-
 double body_get_shoot_cooldown(body_t *body) {
     return body->shoot_cooldown;
+}
+
+void body_set_shoot_cooldown(body_t *body, double cooldown) {
+    body->shoot_cooldown = cooldown;
 }
 
 void body_set_hit_timer(body_t *body, double hit_timer) {

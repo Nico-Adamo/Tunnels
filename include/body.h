@@ -10,10 +10,21 @@
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_image.h>
 
+/**
+ * Attack type of a body, if a body is a player or an enemy.
+ */
 enum attack_type{MELEE, RADIAL_SHOOTER, STATIC_SHOOTER, MELEE_SHOOTER};
+
+/**
+ * Type of a body. 
+ */
 enum body_type{PLAYER, PLAYER_BULLET, ENEMY_BULLET, ENEMY, BOSS_NECROMANCER_WIZARD, BOSS_BIG_ZOMBIE, BOSS_OGRE, BOSS_BIG_DEMON};
 
 // Go through stats_info (in enemy+) and update to include level + invulnerability_timer
+
+/**
+ * Stat information for a body.
+ */
 typedef struct stats_info {
     double experience;
     double health;
@@ -26,6 +37,9 @@ typedef struct stats_info {
     enum attack_type atk_type;
 } stats_info_t;
 
+/**
+ * Sprite information for a body.
+ */
 typedef struct body_sprite_info {
     int idle_sprite_id;
     int walking_anim_id;
@@ -35,42 +49,12 @@ typedef struct body_sprite_info {
 
 /**
  * A rigid body constrained to the plane.
- * Implemented as a polygon with uniform density.
+ * Implemented as a sprite with a hitbox.
  * Bodies can accumulate forces and impulses during each tick.
- * Angular physics (i.e. torques) are not currently implemented.
+ * Bodies can be animated.
+ * Bodies have stats that save their properties.
  */
 typedef struct body body_t;
-
-typedef struct body_sprite_info body_sprite_info_t;
-
-/**
- * Initializes a body without any info.
- * Acts like body_init_with_info() where info and info_freer are NULL.
- */
-stats_info_t body_get_stats_info(body_t *body);
-
-void body_set_stats_info(body_t *body, stats_info_t info);
-
-/** EDIT THIS
- * Allocates memory for a body with the given parameters.
- * The body is initially at rest.
- * Asserts that the mass is positive and that the required memory is allocated.
- *
- * @param shape a list of vectors describing the initial shape of the body
- * @param mass the mass of the body (if INFINITY, stops the body from moving)
- * @param color the color of the body, used to draw it on the screen
- * @param info additional information to associate with the body,
- *   e.g. its type if the scene has multiple types of bodies
- * @param info_freer if non-NULL, a function call on the info to free it
- * @return a pointer to the newly allocated body
- */
-body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, enum body_type type, stats_info_t info);
-/**
- * Releases the memory allocated for a body.
- *
- * @param body a pointer to a body returned from body_init()
- */
-void body_free(body_t *body);
 
 /**
  * Gets the current shape of a body.
@@ -81,30 +65,169 @@ void body_free(body_t *body);
  */
 double rand_from(double min, double max);
 
-int body_get_cur_sprite_id(body_t *body);
+/**
+ * Allocates memory for a body with the given parameters.
+ * The body is initially at rest.
+ * Asserts that the mass is positive and that the required memory is allocated.
+ *
+ * @param sprite_ids sprite information for a body
+ * @param sprite sprite of a body
+ * @param bottom_left a vector that gives the bottom left of a body
+ * @param mass the mass of the body (if INFINITY, stops the body from moving)
+ * @param scale the scale of a body to its sprite
+ * @param type type of a body
+ * @param info stats information for a body
+ * @return a pointer to the newly allocated body
+ */
+body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vector_t bottom_left, double mass, double scale, enum body_type type, stats_info_t info);
+
+/**
+ * Releases the memory allocated for a body.
+ * 
+ * @param body a pointer to a body returned from body_init()
+ */
+void body_free(body_t *body);
+
+/**
+ * Gets the stat information of a body
+ * 
+ * @param body a pointer to a body
+ * @return stats information for a body
+ */
+stats_info_t body_get_stats_info(body_t *body);
+
+/**
+ * Sets the stat information of a body
+ * 
+ * @param body a pointer to a body
+ * @param info the new stats information for the body
+ */
+void body_set_stats_info(body_t *body, stats_info_t info);
+
+/**
+ * Gets the current sprite information for a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's sprite information
+ */
 body_sprite_info_t body_get_sprite_ids(body_t *body);
 
+/**
+ * Gets the current sprite ID of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's sprite ID
+ */
+int body_get_cur_sprite_id(body_t *body);
+
+/**
+ * Sets the sprite ID of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param sprite_id the body's new sprite ID
+ */
 void body_set_sprite_id(body_t *body, int sprite_id);
+
+/**
+ * Gets the current hitbox shape of a body
+ * Hitbox is the area in which the body will collide with a bullet
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's hitbox
+ */
+SDL_Rect body_get_hitbox_shape(body_t *body);
+
+/**
+ * Gets the current shape of the sprite image
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's draw shape
+ */
+SDL_Rect body_get_draw_shape(body_t *body);
+
+/**
+ * Gets the current collision shape of a body
+ * Collision is the area at which a body will collide with the tiles
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's collision shape
+ */
+SDL_Rect body_get_collision_shape(body_t *body);
+
+/**
+ * Gets the entire hitbox of a body
+ * Hitbox gives the current location of the sprite shape of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's entire hitbox
+ */
+rect_t body_get_draw_hitbox(body_t *body);
+
+/**
+ * Gets the bullet hitbox of a body
+ * Bullet hitbox gives the current location of the hitbox shape
+ * 
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's hitbox
+ */
+rect_t body_get_hitbox(body_t *body);
+
+/**
+ * Gets the current collision hitbox of a body
+ * Collision hitbox gives the current location of the collision shape
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's collision hitbox
+ */
+rect_t body_get_collision_hitbox(body_t *body);
+
+/**
+ * Returns whether the body is flipped or not
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return whether the body is flipped
+ */
+bool body_get_flipped(body_t *body);
+
+/**
+ * Gets the texture of the body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's shoot cooldown
+ */
+SDL_Texture *body_get_texture(body_t *body);
+
+/**
+ * Gets the current sprite of a body.
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's sprite
+ */
 sprite_t *body_get_sprite(body_t *body);
+
+/**
+ * Sets the sprite of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param sprite the body's new sprite
+ */
 void body_set_sprite(body_t *body, sprite_t *sprite);
 
+/**
+ * Gets the current time on the invulnerability timer of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's invulnerability timer
+ */
 double body_get_invulnerability_timer(body_t *body);
 
+/**
+ * Sets the invulnerability timer of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param invulnerability_timer the body's new invulnerability time
+ */
 void body_set_invulnerability_timer(body_t *body, double invulnerability_timer);
-
-void body_set_shoot_cooldown(body_t *body, double cooldown);
-double body_get_shoot_cooldown(body_t *body);
-
-double body_get_hit_timer(body_t *body);
-void body_set_hit_timer(body_t *body, double timer);
-
-SDL_Rect body_get_hitbox_shape(body_t *body);
-SDL_Rect body_get_draw_shape(body_t *body);
-SDL_Rect body_get_collision_shape(body_t *body);
-rect_t body_get_draw_hitbox(body_t *body);
-rect_t body_get_hitbox(body_t *body);
-rect_t body_get_collision_hitbox(body_t *body);
-SDL_Texture *body_get_texture(body_t *body);
 
 /**
  * Gets the current center of mass of a body.
@@ -125,10 +248,6 @@ vector_t body_get_centroid(body_t *body);
  */
 vector_t body_get_velocity(body_t *body);
 
-vector_t body_get_direction(body_t *body);
-
-void body_set_direction(body_t *body, vector_t dir);
-
 /**
  * Gets the mass of a body.
  *
@@ -137,6 +256,12 @@ void body_set_direction(body_t *body, vector_t dir);
  */
 double body_get_mass(body_t *body);
 
+/**
+ * Gets the scale of a body's hitbox to its shape
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's scale
+ */
 double body_get_scale(body_t *body);
 
 /**
@@ -146,8 +271,6 @@ double body_get_scale(body_t *body);
  * @return the info passed to body_init()
  */
 enum body_type body_get_type(body_t *body);
-
-bool body_get_flipped(body_t *body);
 
 /**
  * Translates a body to a new position.
@@ -165,6 +288,22 @@ void body_set_centroid(body_t *body, vector_t x);
  * @param v the body's new velocity
  */
 void body_set_velocity(body_t *body, vector_t v);
+
+/**
+ * Gets the direction the body is currently facing
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's direction
+ */
+vector_t body_get_direction(body_t *body);
+
+/**
+ * Sets the direction of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param dir the body's new direction
+ */
+void body_set_direction(body_t *body, vector_t dir);
 
 /**
  * Applies a force to a body over the current tick.
@@ -188,6 +327,12 @@ void body_add_force(body_t *body, vector_t force);
  */
 void body_add_impulse(body_t *body, vector_t impulse);
 
+/**
+ * Gets the current velocity of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's velocity
+ */
 vector_t body_calculate_velocity(body_t *body, double dt);
 
 /**
@@ -221,5 +366,37 @@ void body_remove(body_t *body);
  * @return whether body_remove() has been called on the body
  */
 bool body_is_removed(body_t *body);
+
+/**
+ * Gets the current time on the shoot cooldown of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's shoot cooldown
+ */
+double body_get_shoot_cooldown(body_t *body);
+
+/**
+ * Sets the shoot cooldown of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param cooldown the body's new shoot cooldown
+ */
+void body_set_shoot_cooldown(body_t *body, double cooldown);
+
+/**
+ * Gets the current time on the hit timer of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @return the body's hit timer
+ */
+double body_get_hit_timer(body_t *body);
+
+/**
+ * Sets the hit timer of a body
+ *
+ * @param body a pointer to a body returned from body_init()
+ * @param timer the body's new hit time
+ */
+void body_set_hit_timer(body_t *body, double timer);
 
 #endif // #ifndef __BODY_H__
