@@ -249,7 +249,7 @@ void game_end_room(game_t *game) {
 void game_end_level(game_t *game) {
     game_set_level(game, game_get_level(game) + 1);
 
-    if (game_get_level(game) == TOTAL_LEVELS) {
+    if (game_get_level(game) >= TOTAL_LEVELS) {
         UI_t *victory = UI_init(game_get_sprite(game, VICTORY_ID), (rect_t) {0,0, 1024, 512}, "VICTORY_SCREEN", 1);
         scene_add_UI_component(game_get_current_scene(game), victory);
     } else {
