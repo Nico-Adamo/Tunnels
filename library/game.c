@@ -482,37 +482,44 @@ const sprite_info_t SPRITE_INFOS[] = {
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/blacker_mural_test.png",
+    "assets/ui/hp-mural.png",
     false, 0, 0
     },
     // 65 – ATTACK MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/minecraft-wither-mural.png",
+    "assets/ui/blacker_mural_test.png",
     false, 0, 0
     },
     // 66 – SPD MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/great-wave-mural.png",
+    "assets/ui/speed-mural.png",
     false, 0, 0
     },
     // 67 – CD MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/minecraft-sunset-mural.png",
+    "assets/ui/cooldown-mural.png",
     false, 0, 0
     },
     // 68 – INV MURAL
     {{0, 0, 1024, 512},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
-    "assets/ui/minecraft-creeper-mural.png",
+    "assets/ui/invulnerability-mural.png",
     false, 0, 0
     },
+    // 69 - VICTORY SCREEN (nice)
+    {{0, 0, 2000, 1000},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    "assets/ui/game_victory_screen_full.png",
+    true, 0.1, 4
+    }
 };
 
 game_t *game_init(double scale) {
@@ -521,7 +528,7 @@ game_t *game_init(double scale) {
     game->current_scene = NULL;
     game->tile_infos = list_init(NUM_TILES, tile_info_free);
     game->tile_interactors = list_init(INITIAL_TILE_INTERACTORS, free);
-    game->sprites = list_init(NUM_SPRITES, free);
+    game->sprites = list_init(NUM_SPRITES, sprite_free);
     game->scale = scale;
     game->player = NULL;
     game->dungeon = list_init(ROOMS_PER_LEVEL, free);

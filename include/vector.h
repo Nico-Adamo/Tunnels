@@ -13,12 +13,17 @@ typedef struct {
     double y;
 } vector_t;
 
+/**
+ * A rectangle.
+ * Has bottom-left x, y coordinates as well as a width and height.
+ */
 typedef struct rect {
     double x;
     double y;
     double w;
     double h;
 } rect_t;
+
 /**
  * The zero vector, i.e. (0, 0).
  * "extern" declares this global variable without allocating memory for it.
@@ -100,11 +105,30 @@ double vec_cross(vector_t v1, vector_t v2);
  */
 vector_t vec_rotate(vector_t v, double angle);
 
-// Returns the unit vector of a given vector
+/**
+ * Returns the unit vector of a given vector.
+ *
+ * @param v the vector of interest
+ * @return the unit vector of v
+ */
 vector_t vec_unit(vector_t v);
 
+/**
+ * Computes the distance between two vectors.
+ *
+ * @param v1 the first vector
+ * @param v2 the second vector
+ * @return the distance between v1 and v2 (double)
+ */
 double vec_distance(vector_t v1, vector_t v2);
 
+/**
+ * Finds the unit vector direction of the difference between two vectors.
+ *
+ * @param v1 the first vector
+ * @param v2 the second vector
+ * @return the unit vector direction of the difference of v1 and v2
+ */
 vector_t vec_find_direction(vector_t vec1, vector_t vec2);
 
 #endif // #ifndef __VECTOR_H__

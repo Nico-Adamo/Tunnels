@@ -34,8 +34,6 @@ SDL_Rect sprite_get_shape(sprite_t *sprite, size_t cur_frame) {
         sprite->shape.w,
         sprite->shape.h
     };
-    // printf("%d, x: %d, y: %d || ", sprite->current_frame, curr_draw_shape.x, curr_draw_shape.y);
-    // printf("w: %d, h: %d\n", sprite->shape.w, sprite->shape.h);
     return curr_draw_shape;
 }
 
@@ -87,4 +85,12 @@ void sprite_set_animation_speed(sprite_t *sprite, double animation_speed) {
 
 void sprite_set_animation_frames(sprite_t *sprite, size_t animation_frames) {
     sprite->animation_frames = animation_frames;
+}
+
+void sprite_free(void *sprite) {
+    sprite_t *sprite_c = (sprite_t *) sprite;
+    
+    SDL_DestroyTexture(sprite_c->texture);
+    free(sprite_c);
+
 }

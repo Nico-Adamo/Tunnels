@@ -8,7 +8,6 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
         .hit_anim_id = -1,
         .invulnerable_anim_id = -1
     };
-    vector_t spawn_point = body_get_centroid(body);
     body_t *bullet;
     stats_info_t info = {
         .experience = 0,

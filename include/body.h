@@ -15,7 +15,7 @@
 enum attack_type{MELEE, RADIAL_SHOOTER, STATIC_SHOOTER, MELEE_SHOOTER};
 
 /**
- * Type of a body. 
+ * Type of a body.
  */
 enum body_type{PLAYER, PLAYER_BULLET, ENEMY_BULLET, ENEMY, BOSS_NECROMANCER_WIZARD, BOSS_BIG_ZOMBIE, BOSS_OGRE, BOSS_BIG_DEMON};
 
@@ -56,11 +56,11 @@ typedef struct body_sprite_info {
 typedef struct body body_t;
 
 /**
- * Gets the current shape of a body.
- * Returns a newly allocated vector list, which must be list_free()d.
+ * Generates a random number from min to max.
  *
- * @param body a pointer to a body returned from body_init()
- * @return the polygon describing the body's current position
+ * @param min the minimum value
+ * @param max the maximum value
+ * @return a random double between min and max
  */
 double rand_from(double min, double max);
 
@@ -82,14 +82,14 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
 
 /**
  * Releases the memory allocated for a body.
- * 
+ *
  * @param body a pointer to a body returned from body_init()
  */
 void body_free(body_t *body);
 
 /**
  * Gets the stat information of a body
- * 
+ *
  * @param body a pointer to a body
  * @return stats information for a body
  */
@@ -97,7 +97,7 @@ stats_info_t body_get_stats_info(body_t *body);
 
 /**
  * Sets the stat information of a body
- * 
+ *
  * @param body a pointer to a body
  * @param info the new stats information for the body
  */
@@ -130,7 +130,7 @@ void body_set_sprite_id(body_t *body, int sprite_id);
 /**
  * Gets the current hitbox shape of a body
  * Hitbox is the area in which the body will collide with a bullet
- * 
+ *
  * @param body a pointer to a body returned from body_init()
  * @return the body's hitbox
  */

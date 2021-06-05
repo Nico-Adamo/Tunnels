@@ -14,8 +14,6 @@ const double NECROMANCER_SPAWN_THICKNESS = 100;
 
 const double OGRE_CHARGE_COOLDOWN = 1;
 
-const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
-
 double BOSS_ATTACK_TIMER = 0;
 double OGRE_CHARGE_TIMER = 0;
 double OGRE_INVISIBLITY_TIMER = 0;
@@ -106,7 +104,6 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
     stats_info_t enemy_info = body_get_stats_info(enemy);
     body_t *player = game_get_player(game);
     vector_t enemy_center = body_get_centroid(enemy);
-    vector_t player_center = body_get_centroid(player);
     rect_t player_collision_hitbox = body_get_collision_hitbox(player);
     vector_t pch_center = (vector_t) {player_collision_hitbox.x + player_collision_hitbox.w/2, player_collision_hitbox.y + player_collision_hitbox.h/2};
 
@@ -146,7 +143,6 @@ void necromancer_wizard_pathfind(game_t *game, body_t *enemy) {
         } else {
             double angle = rand_from (0, 2 * M_PI);
             pathfind_dir = (vector_t) {cos(angle), sin(angle)};
-            printf("%f; %f, %f\n", angle, pathfind_dir.x, pathfind_dir.y);
 
             pathfind_tile(game, enemy, vec_add(room_center, vec_multiply(NECROMANCER_WALK_RADIUS, pathfind_dir)));
         }
@@ -531,7 +527,6 @@ void handle_enemies(game_t *game, double dt) {
     }
 }
 
-
 // SPRITE INFO ARRAY
 body_sprite_info_t ENEMY_SPRITE_INFOS[19] = {
     // TINY_ZOMBIE
@@ -833,6 +828,16 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     }
 };
+
+void scale_enemies() {
+    for(size_t i = 0; i < sizeof(ENEMY_STAT_INFO) / sizeof(stats_info_t); i++) {
+        stats_info_t enemy_stats = ENEMY_STAT_INFO[i];
+        enemy_stats.health *= 2.0;
+        enemy_stats.experience *= 1.5;
+        ENEMY_STAT_INFO[i] = enemy_stats;
+    }
+
+}
 
 body_sprite_info_t enemy_get_sprite_info(enum enemy_type type) {
     return ENEMY_SPRITE_INFOS[type];

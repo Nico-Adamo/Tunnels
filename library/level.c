@@ -6,8 +6,10 @@ const double MAX_HEIGHT = 512;
 const double HALF_HEART_HEALTH = 5;
 const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
-const size_t ROOMS_PER_LEVEL = 2;
+const size_t ROOMS_PER_LEVEL = 5;
+const size_t TOTAL_LEVELS = 3;
 
+const size_t VICTORY_ID = 69; // nice
 
 char *level_variants[] = {
     "a_full.txt",
@@ -71,9 +73,6 @@ char **shuffle_str_array(const char *arr[], int arr_size) {
 
 void shuffle_levels() {
     levels_shuffled = shuffle_str_array(LEVELS, sizeof(LEVELS) / sizeof(char*));
-    // for(size_t i = 0; i<6; i++) {
-    //     printf("Level: %s\n", levels_shuffled[i]);
-    // }
     boss_levels_shuffled = shuffle_str_array(BOSS_LEVELS, sizeof(BOSS_LEVELS) / sizeof(char*));
 }
 
@@ -229,10 +228,8 @@ void make_level(game_t *game, int level) {
         char *level_full_path = malloc(sizeof(level) + 15 * sizeof(char *));
         strcpy(level_full_path, level);
         strcat(level_full_path, level_variants[rand() % 3]);
-        printf("Level: %s\n", level_full_path);
         game_add_room(game, level_full_path);
     }
-    printf("%s\n", boss_levels_shuffled[level]);
     game_add_room(game, boss_levels_shuffled[level]);
     game_add_room(game, POST_BOSS_LEVELS[level]);
 }
@@ -251,38 +248,53 @@ void game_end_room(game_t *game) {
 
 void game_end_level(game_t *game) {
     game_set_level(game, game_get_level(game) + 1);
-    make_level(game, game_get_level(game));
-    make_room(game);
+
+    if (game_get_level(game) >= TOTAL_LEVELS) {
+        UI_t *victory = UI_init(game_get_sprite(game, VICTORY_ID), (rect_t) {0,0, 1024, 512}, "VICTORY_SCREEN", 1);
+        scene_add_UI_component(game_get_current_scene(game), victory);
+    } else {
+        scale_enemies();
+        make_level(game, game_get_level(game));
+        make_room(game);
+    }
 }
 
 void handle_mural_buffs(char *type, game_t *game){
     scene_t *scene = game_get_current_scene(game);
     body_t *player = game_get_player(game);
     stats_info_t player_info = body_get_stats_info(player);
-    ui_text_t *text;
-    printf("Hey, I'm here\n");
-    if (strcmp(type, "HP_MURAL") == 0) {
-        printf("HP\n");
-        player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
-        text = ui_text_init(" Health restored", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
-    } else if (strcmp(type, "ATK_MURAL") == 0) {
-        printf("ATK\n");
+    sprite_t *powerup_sprite;
+    if (strcmp(type, "ATK_MURAL") == 0) {
         player_info.attack += 5;
-        text = ui_text_init(" +5 Attack", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        powerup_sprite = game_get_sprite(game, 54);
     } else if (strcmp(type, "SPD_MURAL") == 0) {
-        printf("SPD\n");
         player_info.speed += 50;
-        text = ui_text_init(" +50 Speed", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        powerup_sprite = game_get_sprite(game, 56);
     } else if (strcmp(type, "INV_MURAL") == 0) {
-        printf("INV\n");
         player_info.invulnerability_timer *= 1.5;
-        text = ui_text_init(" 1.5x Invulnerabiltiy", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        powerup_sprite = game_get_sprite(game, 57);
     } else if (strcmp(type, "CD_MURAL") == 0) {
-        printf("CD\n");
-        player_info.cooldown *= .9;
-        text = ui_text_init(" .9x Bullet Cooldown", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+        player_info.cooldown *= .8;
+        powerup_sprite = game_get_sprite(game, 55);
+    } else if (strcmp(type, "HP_MURAL") == 0) {
+        list_t *hearts = get_player_hearts(scene);
+        size_t num_hearts = list_size(hearts);
+        double length = 60;
+        UI_t *heart = make_heart(HEART_PADDING + 32 * (num_hearts) + length, MAX_HEIGHT - 32 - HEART_PADDING, game_get_sprite(game, EMPTY_HEART_ID), "PLAYER_HEART");
+        scene_add_UI_component(scene, heart);
+        list_free(hearts);
+        powerup_sprite = game_get_sprite(game, 53);
     }
-    scene_add_UI_text(game_get_current_scene(game), text);
+    rect_t player_hitbox = body_get_hitbox(player);
+    double buffer_dist = 40;
+
+    player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
+    player_info.level++;
+
+    SDL_Rect sprite_size = sprite_get_shape(powerup_sprite, 1);
+    UI_t *component = UI_init(powerup_sprite, (rect_t) {512 - sprite_size.w/4, 256 + player_hitbox.h / 2 + buffer_dist, sprite_size.w/2, sprite_size.h/2}, "LEVEL_UP", .5);
+    scene_add_UI_component(scene, component);
+
     body_set_stats_info(player, player_info);
 }
 
@@ -292,27 +304,26 @@ void game_random_mural(game_t *game) {
     int mural_id;
     game_set_paused(game, true);
     music_play("assets/sounds/music_mural.wav");
-    printf("MURAL TYPE: %d", mural_type);
     switch (mural_type) {
         case 0:
-            mural_id = HP_MURAL_ID;
-            handle_mural_buffs("HP_MURAL", game);
-            break;
-        case 1:
             mural_id = ATK_MURAL_ID;
             handle_mural_buffs("ATK_MURAL", game);
             break;
-        case 2:
+        case 1:
             mural_id = SPD_MURAL_ID;
             handle_mural_buffs("SPD_MURAL", game);
             break;
-        case 3:
+        case 2:
             mural_id = INV_MURAL_ID;
             handle_mural_buffs("INV_MURAL", game);
             break;
-        case 4:
+        case 3:
             mural_id = CD_MURAL_ID;
             handle_mural_buffs("CD_MURAL", game);
+            break;
+        case 4:
+            mural_id = HP_MURAL_ID;
+            handle_mural_buffs("HP_MURAL", game);
             break;
     }
     UI_t *mural = UI_init(game_get_sprite(game, mural_id), (rect_t) {0,0, 1024, 512}, "MURAL", 1);

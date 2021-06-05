@@ -23,6 +23,18 @@ typedef struct {
 } collision_info_t;
 
 /**
+ * Computes the status of the collision between two hitboxes.
+ * The hitboxes are given as rect_ts.
+ *
+ * @param shape1 the first hitbox
+ * @param shape2 the second hitbox
+ * @return whether the shapes are colliding, and if so, the collision axis.
+ * The axis should be a unit vector pointing from shape1 towards shape2.
+ */
+collision_info_t find_collision(rect_t hitbox1, rect_t hitbox2);
+
+
+/**
  * Computes the status of the collision between two convex polygons.
  * The shapes are given as lists of vertices in counterclockwise order.
  * There is an edge between each pair of consecutive vertices,
@@ -33,8 +45,6 @@ typedef struct {
  * @return whether the shapes are colliding, and if so, the collision axis.
  * The axis should be a unit vector pointing from shape1 towards shape2.
  */
-collision_info_t find_collision(rect_t hitbox1, rect_t hitbox2);
-
 collision_info_t find_collision_list(list_t *shape1, list_t *shape2);
 
 #endif // #ifndef __COLLISION_H__

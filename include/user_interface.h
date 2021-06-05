@@ -18,6 +18,14 @@ extern const int COIN_EMPTY_ID;
 extern const int EXPERIENCE;
 extern const int HEALTH;
 
+/**
+ * Handles door interactions, showing the "PRESS F" UI component
+ * as long as the player is in the door interactor's area.
+ *
+ * @param game a pointer to a game
+ * @param entered_area whether the play was in the area of the door
+ * @return whether the player is still in the area of the door
+ */
 bool UI_handle_door_interaction(game_t *game, bool entered_area);
 
 #endif // #ifndef __USER_INTERFACE_H__
