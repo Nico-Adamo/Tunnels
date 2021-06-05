@@ -287,8 +287,9 @@ void handle_mural_buffs(char *type, game_t *game){
     }
     rect_t player_hitbox = body_get_hitbox(player);
     double buffer_dist = 40;
-    
+
     player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
+    player_info.level++;
 
     SDL_Rect sprite_size = sprite_get_shape(powerup_sprite, 1);
     UI_t *component = UI_init(powerup_sprite, (rect_t) {512 - sprite_size.w/4, 256 + player_hitbox.h / 2 + buffer_dist, sprite_size.w/2, sprite_size.h/2}, "LEVEL_UP", .5);
