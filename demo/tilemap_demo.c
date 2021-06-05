@@ -1,10 +1,8 @@
 #include "game.h"
 #include "enemy.h"
 #include "scene.h"
-#include "color.h"
 #include "list.h"
 #include "vector.h"
-#include "polygon.h"
 #include "body.h"
 #include "map.h"
 #include <math.h>
@@ -117,6 +115,8 @@ int main(int arg_c, char *arg_v[]) {
 
     shuffle_levels();
     make_level(game, 0);
+
+    random_room_music();
 
     double seconds = 0;
 
@@ -242,6 +242,7 @@ int main(int arg_c, char *arg_v[]) {
             if (body_get_stats_info(player).health <= 0) {
                 game_set_room(game, 0);
                 make_room(game);
+                random_room_music();
                 stats_info_t player_info = body_get_stats_info(game_get_player(game));
                 player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
                 body_set_stats_info(game_get_player(game), player_info);

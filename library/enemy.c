@@ -12,9 +12,17 @@ const double max_cooldown = 2;
 const double NECROMANCER_WALK_RADIUS = 75;
 const double NECROMANCER_SPAWN_THICKNESS = 100;
 
+const double OGRE_CHARGE_COOLDOWN = 1;
+
 const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
 
 double BOSS_ATTACK_TIMER = 0;
+double OGRE_CHARGE_TIMER = 0;
+double OGRE_INVISIBLITY_TIMER = 0;
+int OGRE_IS_CHARGING = 0;
+size_t BOSS_ATTACK_TYPE;
+
+double ZOMBIE_AUX_TIMER = 0;
 
 body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
     vector_t bottom_left = {x, y};
@@ -188,7 +196,6 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
                 create_semi_destructive_collision(scene, game_get_player(game), bullet);
             }
         } else if (shooting_attack == 1) {
-
             // TARGETED BULLET ATTACK
             body_t *player = game_get_player(game);
             if(has_line_of_sight(game, body_get_centroid(enemy), body_get_centroid(player), 16)) {
@@ -217,17 +224,197 @@ void handle_necromancer_wizard(game_t *game, body_t *enemy) {
 }
 
 void handle_big_zombie(game_t *game, body_t *enemy) {
-    // follow the player
-    // shoots at player
-    // rarely, raise the dead (zombie and tiny zombie only)
-    // regaining health when hitting the player
+
+    BOSS_ATTACK_TIMER -= 0.5;
+
+
+    if (BOSS_ATTACK_TIMER <= 0) {
+        BOSS_ATTACK_TYPE = rand() % 8;
+        ZOMBIE_AUX_TIMER = 0;
+        body_set_invulnerability_timer(enemy, 0);
+    }
+
+    if (BOSS_ATTACK_TYPE == 0) {
+        // SPAWN ATTACK
+        if (BOSS_ATTACK_TIMER <= 0) {
+            vector_t enemy_center = body_get_centroid(enemy);
+            body_set_velocity(enemy, VEC_ZERO);
+            double spawn_radius = 32;
+            for (size_t i = 0; i < 3; i++) {
+                double angle = rand_from(0, 2*M_PI);
+                double x = enemy_center.x + (spawn_radius * cos(angle));
+                double y = enemy_center.y + (spawn_radius * sin(angle));
+
+                enum enemy_type ID;
+                int ID_gen = rand() % 2;
+                if (ID_gen == 0) ID = TINY_ZOMBIE;
+                else if (ID_gen == 1) ID = ID = ZOMBIE;
+                body_t *new_enemy = make_enemy(game, x, y, ID);
+
+                scene_add_body(game_get_current_scene(game), new_enemy);
+                create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
+            }
+            BOSS_ATTACK_TIMER = rand_from(1, 3);
+        }
+    } else if (BOSS_ATTACK_TYPE == 1 || BOSS_ATTACK_TYPE == 2) {
+        // HP RESTORATION
+        if (BOSS_ATTACK_TIMER <= 0) {
+            BOSS_ATTACK_TIMER = rand_from(1, 3);
+            body_set_velocity(enemy, VEC_ZERO);
+            stats_info_t enemy_info = body_get_stats_info(enemy);
+            enemy_info.health *= 1.25;
+            body_set_invulnerability_timer(enemy, BOSS_ATTACK_TIMER);
+            body_set_stats_info(enemy, enemy_info);
+        }
+    } else {
+        scene_t *scene = game_get_current_scene(game);
+        vector_t enemy_center = body_get_centroid(enemy);
+        body_t *player = game_get_player(game);
+        rect_t player_collision_hitbox = body_get_collision_hitbox(player);
+        vector_t pch_center = (vector_t) {player_collision_hitbox.x + player_collision_hitbox.w/2, player_collision_hitbox.y + player_collision_hitbox.h/2};
+
+        // Follow the player
+        if(has_line_of_sight(game, enemy_center, pch_center, 16)) {
+            pathfind(game, enemy, player);
+        }
+
+        if (BOSS_ATTACK_TYPE == 3 || BOSS_ATTACK_TYPE == 4) {
+            if (BOSS_ATTACK_TIMER <= 0) {
+                BOSS_ATTACK_TIMER = rand_from(2, 4);
+            }
+            // TARGET PLAYER
+            if(has_line_of_sight(game, body_get_centroid(enemy), body_get_centroid(player), 16)) {
+                vector_t player_direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+
+                body_t *bullet = make_bullet(game, enemy, player_direction, body_get_stats_info(enemy).bullet_id, 400);
+
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            }
+        } else if (BOSS_ATTACK_TYPE == 5 || BOSS_ATTACK_TYPE == 6) {
+            // TARGETED TWO BULLET
+            if (BOSS_ATTACK_TIMER <= 0) {
+                BOSS_ATTACK_TIMER = rand_from(2, 4);
+            }
+            if(has_line_of_sight(game, body_get_centroid(enemy), body_get_centroid(player), 16)) {
+                vector_t player_direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+                double player_angle = -atan2(player_direction.y, player_direction.x) + M_PI_2;
+
+                for (size_t i = 0; i < 2; i++) {
+                    double angle = player_angle + pow(-1, i) * M_PI / 12;
+
+                    vector_t direction = {sin(angle), cos(angle)};
+
+                    body_t *bullet = make_bullet(game, enemy, direction, body_get_stats_info(enemy).bullet_id, 400);
+
+                    scene_add_body(scene, bullet);
+                    create_tile_collision(scene, bullet);
+                    create_semi_destructive_collision(scene, game_get_player(game), bullet);
+                }
+            }
+        } else {
+            // SPIRAL
+            if (BOSS_ATTACK_TIMER <= 0) {
+                BOSS_ATTACK_TIMER = 6;
+            }
+            for(int i = 0; i < 8; i++) {
+                double angle = ZOMBIE_AUX_TIMER * M_PI / 12 + i * M_PI / 4;
+
+                vector_t direction = {sin(angle), cos(angle)};
+
+                body_t *bullet = make_bullet(game, enemy, direction, body_get_stats_info(enemy).bullet_id, 300);
+
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+
+            }
+            ZOMBIE_AUX_TIMER++;
+        }
+    }
+}
+
+void ogre_pathfind(game_t *game, body_t *enemy, body_t *player) {
+    if(OGRE_IS_CHARGING == 1) {
+        body_set_velocity(enemy, VEC_ZERO);
+        OGRE_IS_CHARGING++;
+    } else if(OGRE_IS_CHARGING == 2) {
+        body_set_velocity(enemy, vec_multiply(body_get_stats_info(enemy).speed * 8, vec_find_direction(body_get_centroid(player), body_get_centroid(enemy))));
+        OGRE_IS_CHARGING++;
+    } else if(OGRE_IS_CHARGING == 3) {
+        OGRE_IS_CHARGING = 0;
+        OGRE_CHARGE_TIMER = rand_from(5, 6);
+    } else {
+        pathfind(game, enemy, player);
+    }
 }
 
 void handle_ogre(game_t *game, body_t *enemy) {
-    // mainly melee
-    // charge attack
-    // spawn army of orc dudes
-    // rare shooting attack
+    body_t *player = game_get_player(game);
+
+    ogre_pathfind(game, enemy, player);
+
+    BOSS_ATTACK_TIMER -= 0.5;
+    OGRE_CHARGE_TIMER -= 0.5;
+    if(OGRE_CHARGE_TIMER <= 0 && OGRE_IS_CHARGING == 0) {
+        OGRE_IS_CHARGING = 1;
+    }
+    if (BOSS_ATTACK_TIMER <= 0 && OGRE_IS_CHARGING == 0) {
+        int atk_type = rand() % 1;
+        if(atk_type == 0) { // Spawn reinforcements
+            vector_t direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+            vector_t normal_dir = (vector_t) {direction.y, -direction.x};
+            int num_enemies = rand() % 5;
+            for (size_t i = 0; i < num_enemies + 2; i++) {
+                vector_t offset = vec_multiply(70 * (num_enemies / 2.0 - i), normal_dir);
+                vector_t spawn_pos = vec_add(vec_add(body_get_centroid(enemy), vec_multiply(50, direction)), offset);
+                if(has_line_of_sight(game, body_get_centroid(enemy), spawn_pos, 5)) {
+                    enum enemy_type ID;
+                    int ID_gen = rand() % 3;
+                    if (ID_gen == 0) ID = GOBLIN;
+                    if (ID_gen == 1) ID = MASKED_ORC;
+                    if (ID_gen == 2) ID = ORC_WARRIOR;
+                    body_t *new_enemy = make_enemy(game, spawn_pos.x, spawn_pos.y, ID);
+                    scene_add_body(game_get_current_scene(game), new_enemy);
+                    create_enemy_collision(game_get_current_scene(game), new_enemy, game_get_player(game));
+                }
+            }
+            BOSS_ATTACK_TIMER = rand_from(6, 8);
+        }
+    } else if(OGRE_IS_CHARGING == 0){
+        int shoot_atk = rand() % 4;
+        int bullet_num = 10;
+        scene_t *scene = game_get_current_scene(game);
+        if(shoot_atk == 0) {
+            // TARGETED BULLET ATTACK
+            if(has_line_of_sight(game, body_get_centroid(enemy), body_get_centroid(player), 16)) {
+                vector_t player_direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+                double player_angle = atan2(player_direction.y, player_direction.x);
+                size_t num_bullets = 2 * (rand() % 3) + 1;
+                double angle = player_angle - ((M_PI / 12) * (num_bullets - 1) / 2);
+                for (size_t i = 0; i < num_bullets; i++) {
+                    body_t *bullet = make_bullet(game, enemy, (vector_t) {cos(angle), sin(angle)}, body_get_stats_info(enemy).bullet_id, 400);
+                    scene_add_body(scene, bullet);
+                    create_tile_collision(scene, bullet);
+                    create_semi_destructive_collision(scene, game_get_player(game), bullet);
+                    angle += M_PI / 12;
+                }
+            }
+        } else if(shoot_atk == 1) {
+            vector_t direction = vec_find_direction(body_get_centroid(player), body_get_centroid(enemy));
+            vector_t normal_dir = (vector_t) {direction.y, -direction.x};
+            int num_bullets = rand() % bullet_num/2 + bullet_num/2;
+            for (size_t i = 0; i < num_bullets; i++) {
+                vector_t offset = vec_multiply(30 * (bullet_num / 2.0 - i), normal_dir);
+                vector_t spawn_pos = vec_add(body_get_centroid(enemy), offset);
+                body_t *bullet = make_bullet_pos(game, spawn_pos, direction, body_get_stats_info(enemy).bullet_id, body_get_stats_info(enemy).attack, 400);
+                scene_add_body(scene, bullet);
+                create_tile_collision(scene, bullet);
+                create_semi_destructive_collision(scene, game_get_player(game), bullet);
+            }
+        }
+    }
 }
 
 void demon_pathfind(game_t *game, body_t *demon) {
@@ -333,9 +520,10 @@ void handle_enemies(game_t *game, double dt) {
         } else if (body_get_type(enemy) == BOSS_NECROMANCER_WIZARD) {
             handle_necromancer_wizard(game, enemy);
         } else if (body_get_type(enemy) == BOSS_BIG_ZOMBIE) {
+            handle_big_zombie(game, enemy);
 
         } else if (body_get_type(enemy) == BOSS_OGRE) {
-
+            handle_ogre(game, enemy);
         } else if (body_get_type(enemy) == BOSS_BIG_DEMON) {
             handle_big_demon(game, enemy);
         }
@@ -605,37 +793,37 @@ stats_info_t ENEMY_STAT_INFO[19] = {
      .invulnerability_timer = 0
     },
      // NECROMANCER_WIZARD
-    {.health = 40,
+    {.health = 140,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 41,
-     .experience = 20,
+     .experience = 30,
      .speed = 60,
      .atk_type = STATIC_SHOOTER,
      .invulnerability_timer = 0
     },
      // BIG_ZOMBIE
-    {.health = 40,
+    {.health = 140,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 46,
-     .experience = 20,
-     .speed = 100,
+     .experience = 30,
+     .speed = 85,
      .atk_type = STATIC_SHOOTER,
      .invulnerability_timer = 0
     },
      // OGRE
-    {.health = 40,
+    {.health = 220,
      .attack = 15,
      .cooldown = 5,
      .bullet_id = 42,
-     .experience = 20,
+     .experience = 30,
      .speed = 120,
      .atk_type = STATIC_SHOOTER,
      .invulnerability_timer = 0
     },
      // BIG_DEMON
-    {.health = 60,
+    {.health = 200,
      .attack = 20,
      .cooldown = 5,
      .bullet_id = 37,

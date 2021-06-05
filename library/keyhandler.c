@@ -110,11 +110,6 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     if(find_collision(interactor->area, body_get_hitbox(player)).collided) {
                         interactor->interaction(game);
                         if(interactor->type == MURAL) {
-                            stats_info_t player_info = body_get_stats_info(player);
-                            player_info.health = list_size(get_player_hearts(game_get_current_scene(game))) * 10;
-                            ui_text_t *text = ui_text_init("Health restored", (vector_t) {HEART_PADDING, HEART_PADDING}, 3, OBJECTIVE_TEXT);
-                            scene_add_UI_text(game_get_current_scene(game), text);
-                            body_set_stats_info(player, player_info);
                             list_remove(interactors, i);
                             i--;
                         }
@@ -129,12 +124,15 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                 for(size_t i = 0; i < list_size(ui_components); i++) {
                     if(strcmp(UI_get_type(list_get(ui_components, i)), "MURAL") == 0) {
                         list_remove(ui_components, i);
+                        random_room_music();
                     }
                 }
                 game_set_paused(game, !game_is_paused(game));
                 if (game_is_paused(game)) {
+                    Mix_PauseMusic();
                     scene_add_UI_component(scene, UI_init(game_get_sprite(game, PAUSE_ID), (rect_t) {0, 0, 1024, 512}, "PAUSE", 1));
                 } else {
+                    Mix_ResumeMusic();
                     for(size_t i = 0; i < list_size(ui_components); i++) {
                         if(strcmp(UI_get_type(list_get(ui_components, i)), "PAUSE") == 0) {
                             list_remove(ui_components, i);
