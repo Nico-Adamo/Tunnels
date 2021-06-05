@@ -832,8 +832,8 @@ stats_info_t ENEMY_STAT_INFO[19] = {
 void scale_enemies() {
     for(size_t i = 0; i < sizeof(ENEMY_STAT_INFO) / sizeof(stats_info_t); i++) {
         stats_info_t enemy_stats = ENEMY_STAT_INFO[i];
-        enemy_stats.health *= 1.50;
-        enemy_stats.experience *= 1.50;
+        enemy_stats.health *= 2.0;
+        enemy_stats.experience *= 1.5;
         ENEMY_STAT_INFO[i] = enemy_stats;
     }
 
