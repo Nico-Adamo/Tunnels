@@ -14,8 +14,6 @@ const double NECROMANCER_SPAWN_THICKNESS = 100;
 
 const double OGRE_CHARGE_COOLDOWN = 1;
 
-const char *BULLET_PATH = "assets/knight_f_idle_anim_f0.png";
-
 double BOSS_ATTACK_TIMER = 0;
 double OGRE_CHARGE_TIMER = 0;
 double OGRE_INVISIBLITY_TIMER = 0;

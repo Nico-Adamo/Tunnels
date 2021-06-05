@@ -125,6 +125,8 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
                     if(strcmp(UI_get_type(list_get(ui_components, i)), "MURAL") == 0) {
                         list_remove(ui_components, i);
                         random_room_music();
+                        ui_text_t *text = ui_text_init("Health restored", (vector_t) {675, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+                        scene_add_UI_text(game_get_current_scene(game), text);
                     }
                 }
                 game_set_paused(game, !game_is_paused(game));
