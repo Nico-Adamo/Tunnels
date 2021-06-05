@@ -6,7 +6,7 @@ const double MAX_HEIGHT = 512;
 const double HALF_HEART_HEALTH = 5;
 const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
-const size_t ROOMS_PER_LEVEL = 0;
+const size_t ROOMS_PER_LEVEL = 5;
 
 
 char *level_variants[] = {
@@ -33,16 +33,16 @@ const char* LEVELS[] = {
     "assets/levels/room_17"
 };
 
-// const char* BOSS_LEVELS[] = {
-//     "assets/levels/boss_room_01_orc_full.txt",
-//     "assets/levels/boss_room_01_zombie_full.txt",
-//     "assets/levels/boss_room_02_demon_full.txt",
-//     "assets/levels/boss_room_02_necromancer_full.txt"
-// };
-
 const char* BOSS_LEVELS[] = {
-    "assets/levels/boss_room_01_orc_full.txt"
+    "assets/levels/boss_room_01_orc_full.txt",
+    "assets/levels/boss_room_01_zombie_full.txt",
+    "assets/levels/boss_room_02_demon_full.txt",
+    "assets/levels/boss_room_02_necromancer_full.txt"
 };
+
+// const char* BOSS_LEVELS[] = {
+//     "assets/levels/boss_room_01_orc_full.txt"
+// };
 
 const char* POST_BOSS_LEVELS[] = {
     "assets/levels/post_boss_room_level_1_full.txt",
