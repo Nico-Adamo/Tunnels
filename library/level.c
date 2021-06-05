@@ -6,7 +6,7 @@ const double MAX_HEIGHT = 512;
 const double HALF_HEART_HEALTH = 5;
 const double PLAYER_HEALTH = 100;
 const double HEART_PADDING = 4;
-const size_t ROOMS_PER_LEVEL = 5;
+const size_t ROOMS_PER_LEVEL = 2;
 
 
 char *level_variants[] = {
@@ -197,13 +197,14 @@ scene_t *make_title(game_t *game) {
 }
 
 void random_room_music() {
-    int room_music = rand() % 2;
+    int room_music = rand() % 4;
     if(room_music == 0) music_play("assets/sounds/music_1.wav");
     if(room_music == 1) music_play("assets/sounds/music_2.wav");
+    if(room_music == 2) music_play("assets/sounds/music_3.wav");
+    if(room_music == 3) music_play("assets/sounds/music_4.wav");
 }
 
 void make_room(game_t *game) {
-    random_room_music();
     body_t *player = game_get_player(game);
     scene_t *scene_new = scene_reset(game);
     stats_info_t player_info = body_get_stats_info(player);
@@ -220,6 +221,7 @@ void make_room(game_t *game) {
 
 
 void make_level(game_t *game, int level) {
+    random_room_music();
     game_set_room(game, 0);
     game_reset_dungeon(game);
     for(int i=level*ROOMS_PER_LEVEL; i < level*ROOMS_PER_LEVEL+ROOMS_PER_LEVEL; i++) {
@@ -239,6 +241,11 @@ void game_end_room(game_t *game) {
     if(scene_check_objective(game_get_current_scene(game))) {
         game_next_room(game);
         make_room(game);
+    }
+    if(game_get_room(game) == ROOMS_PER_LEVEL) { // On the boss
+        music_play("assets/sounds/music_boss.wav");
+    } else if(game_get_room(game) == ROOMS_PER_LEVEL + 1) {
+        random_room_music();
     }
 }
 
