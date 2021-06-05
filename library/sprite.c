@@ -34,8 +34,6 @@ SDL_Rect sprite_get_shape(sprite_t *sprite, size_t cur_frame) {
         sprite->shape.w,
         sprite->shape.h
     };
-    // printf("%d, x: %d, y: %d || ", sprite->current_frame, curr_draw_shape.x, curr_draw_shape.y);
-    // printf("w: %d, h: %d\n", sprite->shape.w, sprite->shape.h);
     return curr_draw_shape;
 }
 

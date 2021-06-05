@@ -73,9 +73,6 @@ char **shuffle_str_array(const char *arr[], int arr_size) {
 
 void shuffle_levels() {
     levels_shuffled = shuffle_str_array(LEVELS, sizeof(LEVELS) / sizeof(char*));
-    // for(size_t i = 0; i<6; i++) {
-    //     printf("Level: %s\n", levels_shuffled[i]);
-    // }
     boss_levels_shuffled = shuffle_str_array(BOSS_LEVELS, sizeof(BOSS_LEVELS) / sizeof(char*));
 }
 
@@ -231,10 +228,8 @@ void make_level(game_t *game, int level) {
         char *level_full_path = malloc(sizeof(level) + 15 * sizeof(char *));
         strcpy(level_full_path, level);
         strcat(level_full_path, level_variants[rand() % 3]);
-        printf("Level: %s\n", level_full_path);
         game_add_room(game, level_full_path);
     }
-    printf("%s\n", boss_levels_shuffled[level]);
     game_add_room(game, boss_levels_shuffled[level]);
     game_add_room(game, POST_BOSS_LEVELS[level]);
 }
@@ -308,7 +303,6 @@ void game_random_mural(game_t *game) {
     int mural_id;
     game_set_paused(game, true);
     music_play("assets/sounds/music_mural.wav");
-    printf("MURAL TYPE: %d", mural_type);
     switch (mural_type) {
         case 0:
             mural_id = ATK_MURAL_ID;

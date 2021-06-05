@@ -130,7 +130,6 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
             body2_info.health -= body1_info.attack;
             body_set_stats_info(body2, body2_info);
             body_set_invulnerability_timer(body2, body_get_stats_info(body2).invulnerability_timer);
-            printf("Health: %f\n", body2_info.health);
             if (body2_info.health <= 0) body_remove(body2);
         }
     } else if ((body_get_type(body1) == PLAYER && body_get_type(body2) == ENEMY_BULLET) ||

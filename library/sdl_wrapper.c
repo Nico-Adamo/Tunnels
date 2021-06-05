@@ -179,7 +179,6 @@ void sdl_set_camera(vector_t cam) {
 }
 
 bool sdl_is_onscreen(double x, double y) {
-    //printf("Camera: %f %f\n", camera.x, camera.y);
     return x >= camera.x && x <= WINDOW_WIDTH+camera.x && y >= camera.y && y <= WINDOW_HEIGHT+camera.y;
 }
 

@@ -143,7 +143,6 @@ void necromancer_wizard_pathfind(game_t *game, body_t *enemy) {
         } else {
             double angle = rand_from (0, 2 * M_PI);
             pathfind_dir = (vector_t) {cos(angle), sin(angle)};
-            printf("%f; %f, %f\n", angle, pathfind_dir.x, pathfind_dir.y);
 
             pathfind_tile(game, enemy, vec_add(room_center, vec_multiply(NECROMANCER_WALK_RADIUS, pathfind_dir)));
         }
