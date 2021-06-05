@@ -15,6 +15,9 @@
  */
 typedef struct scene scene_t;
 
+/**
+ * All possible room types.
+ */
 typedef enum {KILL, SURVIVE, NAVIGATE, BOSS, POST_BOSS} room_type_t;
 
 /**
@@ -49,8 +52,22 @@ void scene_free(scene_t *scene);
  */
 size_t scene_bodies(scene_t *scene);
 
+/**
+ * Sets whether or not the current scene is the menu.
+ *
+ * @param scene a pointer to a scene
+ * @param is_menu whether the scene is the menu or not
+ */
 void scene_set_is_menu(scene_t *scene, bool is_menu);
+
+/**
+ * Returns whether or not the current scene is the menu.
+ *
+ * @param scene a pointer toa scene
+ * @return whether the scene is the menu or not (boolean)
+ */
 bool scene_is_menu(scene_t *scene);
+
 /**
  * Gets the body at a given index in a scene.
  * Asserts that the index is valid.
@@ -114,27 +131,142 @@ void scene_add_bodies_force_creator(
     free_func_t freer
 );
 
+/**
+ * Adds a floor tile to a scene.
+ *
+ * @param scene a pointer to a scene
+ * @param tile a pointer to the tile to add to the scene
+ */
 void scene_add_floor_tile(scene_t *scene, tile_t *tile);
+
+/**
+ * Adds a well tile to a scene.
+ *
+ * @param scene a pointer to a scene
+ * @param tile a pointer to the tile to add to the scene
+ */
 void scene_add_wall_tile(scene_t *scene, tile_t *tile);
+
+/**
+ * Adds a collider tile to a scene.
+ *
+ * @param scene a pointer to a scene
+ * @param tile a pointer to the tile to add to the scene
+ */
 void scene_add_collider_tile(scene_t *scene, tile_t *tile);
+
+/**
+ * Adds a UI component to a scene.
+ *
+ * @param scene a pointer to a scene
+ * @param UI a pointer to the UI component to add to the scene
+ */
 void scene_add_UI_component(scene_t *scene, UI_t *UI);
+
+/**
+ * Adds UI text to a scene.
+ *
+ * @param scene a pointer to a scene
+ * @param UI a pointer to the UI text to add to the scene
+ */
 void scene_add_UI_text(scene_t *scene, ui_text_t *text);
+
+/**
+ * Sets the room type of a scene and adds corresponding objective text.
+ *
+ * @param scene a pointer to a scene
+ * @param room_type the type to be set for the scene
+ */
 void scene_set_room_type(scene_t *scene, room_type_t room_type);
+
+/**
+ * Sets the unlock time for a scene.
+ * Called when necessary for specific time-based rooms.
+ *
+ * @param scene a pointer to a scene
+ * @param unlock_time the time before the scene is unlocked
+ */
 void scene_set_unlock_time(scene_t *scene, double unlock_time);
 
+/**
+ * Returns a list of the floor tiles for a scene.
+ *
+ * @param scene a pointer to a scene
+ * @return a list of the floor tiles in the specified scene
+ */
 list_t *scene_get_floor_tiles(scene_t *scene);
+
+/**
+ * Returns a list of the wall tiles for a scene.
+ *
+ * @param scene a pointer to a scene
+ * @return a list of the wall tiles in the specified scene
+ */
 list_t *scene_get_wall_tiles(scene_t *scene);
+
+/**
+ * Returns a list of the collider tiles for a scene.
+ *
+ * @param scene a pointer to a scene
+ * @return a list of the collider tiles in the specified scene
+ */
 list_t *scene_get_collider_tiles(scene_t *scene);
+
+/**
+ * Returns a list of the UI components for a scene.
+ *
+ * @param scene a pointer to a scene
+ * @return a list of the UI components in the specified scene
+ */
 list_t *scene_get_UI_components(scene_t *scene);
+
+/**
+ * Returns a list of the UI texts for a scene.
+ *
+ * @param scene a pointer to a scene
+ * @return a list of the UI texts in the specified scene
+ */
 list_t *scene_get_UI_texts(scene_t *scene);
+
+/**
+ * Returns the room type for a given scene.
+ *
+ * @param scene a pointer to a scene
+ * @return the room type for the specified scene
+ */
 room_type_t scene_get_room_type(scene_t *scene);
+
+/**
+ * Returns the unlock time for a given scene.
+ *
+ * @param scene a pointer to a scene
+ * @return the unlock time for the specified scene
+ */
 double scene_get_unlock_time(scene_t *scene);
 
+/**
+ * Returns whether or not the objective for a scene (room) has been met.
+ *
+ * @param scene a pointer to a scene
+ * @return whether or not the objective has been met
+ */
 bool scene_check_objective(scene_t *scene);
 
+/**
+ * Sorts a list of bodies in a scene by depth.
+ *
+ * @param scene a pointer to a scene
+ */
 void scene_sort_by_depth(scene_t *scene);
 
+/**
+ * Returns a list of enemies in a scene.
+ *
+ * @param scene a pointer to a scene
+ * @return a list of enemies in a scene
+ */
 list_t *scene_get_enemies(scene_t *scene);
+
 /**
  * Executes a tick of a given scene over a small time interval.
  * This requires executing all the force creators

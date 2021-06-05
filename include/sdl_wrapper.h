@@ -64,12 +64,39 @@ void sdl_init(vector_t min, vector_t max);
  */
 bool sdl_is_done(scene_t *scene);
 
+/**
+ * Loads and returns a specified texture.
+ *
+ * @param path the file path to the texture to load
+ * @return the loaded texture
+ */
 SDL_Texture *sdl_load_texture(const char *path);
 
+/**
+ * Draws a texture.
+ *
+ * @param texture the texture to draw
+ * @param source the source rectangle
+ * @param destination the destination for the texture (where it is loaded)
+ * @param flipped whether or not the texture is flipped
+ */
 void sdl_draw_texture(SDL_Texture *texture, SDL_Rect source, rect_t destination, bool flipped);
 
-void sdl_set_camera(vector_t camera);
+/**
+ * Sets the camera for the screen.
+ *
+ * @param cam the new position for the camera
+ */
+void sdl_set_camera(vector_t cam);
 
+/**
+ * Returns whether a current coordinate is on-screen in relation to
+ * the window width/height and the camera position.
+ *
+ * @param x the x-coodinate
+ * @param y the y-coordinate
+ * @return if the coordinate is on-screen
+ */
 bool sdl_is_onscreen(double x, double y);
 
 /**
@@ -92,6 +119,14 @@ void sdl_show(void);
  */
 void sdl_render_scene(scene_t *scene);
 
+/**
+ * Renders a given game, including tilemap rendering, sprite rendering,
+ * and text rendering.
+ * Interally references sdl_draw_texture(), sdl_clear(), sdl_render_tilemap(),
+ * and sdl_show(), which should not be called directly.
+ *
+ * @param game the game to render
+ */
 void sdl_render_game(game_t *game);
 
 /**

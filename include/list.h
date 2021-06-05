@@ -10,6 +10,9 @@
  */
 typedef struct list list_t;
 
+/**
+ * A comparator function that compares two items.
+ */
 typedef int (*comparator_t)
     (void* item1, void* item2);
 
@@ -78,6 +81,13 @@ void *list_remove(list_t *list, size_t index);
  */
 void list_add(list_t *list, void *value);
 
+/**
+ * Sorts a list according to a specified comparator.
+ * Uses insertion sort.
+ *
+ * @param list a pointer to a list
+ * @param compare the comparator to be used
+ */
 void list_sort(list_t *list, comparator_t compare);
 
 #endif // #ifndef __LIST_H__

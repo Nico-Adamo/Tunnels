@@ -51,6 +51,18 @@ void create_collision(
  */
 void create_destructive_collision(scene_t *scene, body_t *body1, body_t *body2);
 
+/**
+ * Adds a force creator to a scene, creating a semi-destructive collision
+ * between two bodies.
+ * Handles Player/Enemy, Enemy/Bullet, and Player/Bullet collisions.
+ * The bodies should be destroyed by calling body_remove().
+ * This should be represented as an on-collision callback
+ * registered with create_collision().
+ *
+ * @param scene the scene containing the bodies
+ * @param body1 the first body
+ * @param body2 the second body
+ */
 void create_semi_destructive_collision(scene_t *scene, body_t *body1, body_t *body2);
 
 /**
@@ -77,8 +89,23 @@ void create_physics_collision (
     body_t *body2
 );
 
+/**
+ * Creates a collision between a given body and all collider tiles in
+ * a specified scene.
+ *
+ * @param scene the scene containing the body
+ * @param body the relevant body
+ */
 void create_tile_collision(scene_t *scene, body_t *body1);
 
+/**
+ * Creates a collision between a given enemy, other enemies in the scene,
+ * and the player.
+ *
+ * @param scene the scene containing the bodies
+ * @param body the specified enemy
+ * @param player the player
+ */
 void create_enemy_collision(scene_t *scene, body_t *body, body_t *player);
 
 #endif // #ifndef __FORCES_H__
