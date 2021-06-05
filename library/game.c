@@ -528,7 +528,7 @@ game_t *game_init(double scale) {
     game->current_scene = NULL;
     game->tile_infos = list_init(NUM_TILES, tile_info_free);
     game->tile_interactors = list_init(INITIAL_TILE_INTERACTORS, free);
-    game->sprites = list_init(NUM_SPRITES, free);
+    game->sprites = list_init(NUM_SPRITES, sprite_free);
     game->scale = scale;
     game->player = NULL;
     game->dungeon = list_init(ROOMS_PER_LEVEL, free);
