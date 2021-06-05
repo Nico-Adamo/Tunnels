@@ -35,19 +35,19 @@ vector_t UI_get_centroid(UI_t *UI) {
     return UI->centroid;
 }
 
+void UI_set_centroid(UI_t *UI, vector_t x) {
+    vector_t translation = vec_subtract(x, UI->centroid);
+    UI->centroid = x;
+    UI->hitbox.x += translation.x;
+    UI->hitbox.y += translation.y;
+}
+
 double UI_get_scale(UI_t *UI) {
     return UI->scale;
 }
 
 char *UI_get_type(UI_t *UI) {
     return UI->type;
-}
-
-void UI_set_centroid(UI_t *UI, vector_t x) {
-    vector_t translation = vec_subtract(x, UI->centroid);
-    UI->centroid = x;
-    UI->hitbox.x += translation.x;
-    UI->hitbox.y += translation.y;
 }
 
 

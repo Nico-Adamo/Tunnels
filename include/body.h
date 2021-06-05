@@ -155,7 +155,7 @@ SDL_Rect body_get_collision_shape(body_t *body);
 
 /**
  * Gets the entire hitbox of a body
- * Hitbox gives the current location of the sprite shape of a body
+ * Hitbox gives the current location and size of the sprite shape of a body
  *
  * @param body a pointer to a body returned from body_init()
  * @return the body's entire hitbox
@@ -164,7 +164,7 @@ rect_t body_get_draw_hitbox(body_t *body);
 
 /**
  * Gets the bullet hitbox of a body
- * Bullet hitbox gives the current location of the hitbox shape
+ * Bullet hitbox gives the current location and size of the hitbox shape
  * 
  * @param body a pointer to a body returned from body_init()
  * @return the body's hitbox
@@ -173,7 +173,7 @@ rect_t body_get_hitbox(body_t *body);
 
 /**
  * Gets the current collision hitbox of a body
- * Collision hitbox gives the current location of the collision shape
+ * Collision hitbox gives the current location and size of the collision shape
  *
  * @param body a pointer to a body returned from body_init()
  * @return the body's collision hitbox
