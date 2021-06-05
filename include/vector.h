@@ -13,12 +13,17 @@ typedef struct {
     double y;
 } vector_t;
 
+/**
+ * A rectangle.
+ * Has bottom-left x, y coordinates as well as a width and height.
+ */
 typedef struct rect {
     double x;
     double y;
     double w;
     double h;
 } rect_t;
+
 /**
  * The zero vector, i.e. (0, 0).
  * "extern" declares this global variable without allocating memory for it.
