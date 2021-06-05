@@ -218,7 +218,7 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
         }
     } else if ((body_get_type(body1) == PLAYER && body_get_type(body2) == ENEMY_BULLET) ||
     (body_get_type(body1) >= ENEMY && body_get_type(body2) == PLAYER_BULLET)) {
-        if(body_get_invulnerability_timer(body1) <= 0 || body_get_type(body1) != PLAYER) {
+        if(body_get_invulnerability_timer(body1) <= 0) {
             body1_info.health -= body2_info.attack;
             body_set_stats_info(body1, body1_info);
             body_set_invulnerability_timer(body1, body_get_stats_info(body1).invulnerability_timer);
@@ -231,14 +231,16 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
                 if(sound == 2) sound_play("assets/sounds/player_hit_3.wav");
             }
         }
-        if(body_get_type(body1) == ENEMY) {
+        if(body_get_type(body1) >= ENEMY) {
             int sound = rand() % 3;
             if(sound == 0) sound_play("assets/sounds/mob_hit_1.wav");
             if(sound == 1) sound_play("assets/sounds/mob_hit_2.wav");
             if(sound == 2) sound_play("assets/sounds/mob_hit_3.wav");
 
             body_set_hit_timer(body1, 0.3);
-            body_add_impulse(body1, vec_multiply(body_get_mass(body1) / 2, body_get_velocity(body2)));
+            if (body_get_type(body1) == ENEMY) {
+                body_add_impulse(body1, vec_multiply(body_get_mass(body1) / 2, body_get_velocity(body2)));
+            }
         }
     }
 
