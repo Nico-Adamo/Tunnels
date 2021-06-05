@@ -104,7 +104,6 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
     stats_info_t enemy_info = body_get_stats_info(enemy);
     body_t *player = game_get_player(game);
     vector_t enemy_center = body_get_centroid(enemy);
-    vector_t player_center = body_get_centroid(player);
     rect_t player_collision_hitbox = body_get_collision_hitbox(player);
     vector_t pch_center = (vector_t) {player_collision_hitbox.x + player_collision_hitbox.w/2, player_collision_hitbox.y + player_collision_hitbox.h/2};
 
