@@ -6,6 +6,12 @@ const int PAUSE_ID = 63;
 
 const double player_velocity = 300;
 const double player_bullet_velocity = 400;
+const char *HEALTH_RESTORED = "Health restored";
+const double HEALTH_RESTORED_X = 675;
+const double HEALTH_RESTORED_LIFETIME = 3;
+
+const char *PAUSE = "PAUSE";
+const double PAUSE_SCALE = 1;
 
 bool key_pressed[8] = {false, false, false, false, false, false, false, false};
 
@@ -122,21 +128,21 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
             case ESCAPE: {
                 list_t *ui_components = scene_get_UI_components(scene);
                 for(size_t i = 0; i < list_size(ui_components); i++) {
-                    if(strcmp(UI_get_type(list_get(ui_components, i)), "MURAL") == 0) {
+                    if(strcmp(UI_get_type(list_get(ui_components, i)), MURAL_TEXT) == 0) {
                         list_remove(ui_components, i);
                         random_room_music();
-                        ui_text_t *text = ui_text_init("Health restored", (vector_t) {675, HEART_PADDING}, 3, OBJECTIVE_TEXT);
+                        ui_text_t *text = ui_text_init(HEALTH_RESTORED, (vector_t) {HEALTH_RESTORED_X, HEART_PADDING}, HEALTH_RESTORED_LIFETIME, OBJECTIVE_TEXT);
                         scene_add_UI_text(game_get_current_scene(game), text);
                     }
                 }
                 game_set_paused(game, !game_is_paused(game));
                 if (game_is_paused(game)) {
                     Mix_PauseMusic();
-                    scene_add_UI_component(scene, UI_init(game_get_sprite(game, PAUSE_ID), (rect_t) {0, 0, 1024, 512}, "PAUSE", 1));
+                    scene_add_UI_component(scene, UI_init(game_get_sprite(game, PAUSE_ID), (rect_t) {0, 0, MAX_WIDTH, MAX_HEIGHT}, PAUSE, PAUSE_SCALE));
                 } else {
                     Mix_ResumeMusic();
                     for(size_t i = 0; i < list_size(ui_components); i++) {
-                        if(strcmp(UI_get_type(list_get(ui_components, i)), "PAUSE") == 0) {
+                        if(strcmp(UI_get_type(list_get(ui_components, i)), PAUSE) == 0) {
                             list_remove(ui_components, i);
                         }
                     }

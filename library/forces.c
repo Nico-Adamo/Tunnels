@@ -11,6 +11,15 @@ const double MIN_DIST = 5;
 const double RECOIL_DIST = 0.25;
 const double RECOIL_ENEMY = 15;
 
+const char* SOUNDS[] = {
+    "assets/sounds/player_hit_1.wav",
+    "assets/sounds/player_hit_2.wav",
+    "assets/sounds/player_hit_3.wav",
+    "assets/sounds/mob_hit_1.wav",
+    "assets/sounds/mob_hit_2.wav",
+    "assets/sounds/mob_hit_3.wav"
+};
+
 typedef struct aux {
     double param;
     body_t *body1;
@@ -119,11 +128,6 @@ void create_physics_collision(scene_t *scene, double elasticity, body_t *body1, 
 void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, void *aux) {
     stats_info_t body1_info = body_get_stats_info(body1);
     stats_info_t body2_info = body_get_stats_info(body2);
-    /*
-        create_x_collision(player, bullet, etc.)
-        create_x_collison(player, enemy)
-    */
-    // types: PLAYER ENEMY ENEMY_BULLET PLAYER_BULLET(?)
 
     if (body_get_type(body2) == PLAYER && body_get_type(body1) >= ENEMY) {
         if(body_get_invulnerability_timer(body2) <= 0) {
@@ -142,16 +146,16 @@ void semi_destructive_collision(body_t *body1, body_t *body2, vector_t axis, voi
             body_remove(body2);
             if(body_get_type(body1) == PLAYER) {
                 int sound = rand() % 3;
-                if(sound == 0) sound_play("assets/sounds/player_hit_1.wav");
-                if(sound == 1) sound_play("assets/sounds/player_hit_2.wav");
-                if(sound == 2) sound_play("assets/sounds/player_hit_3.wav");
+                if(sound == 0) sound_play(SOUNDS[0]);
+                if(sound == 1) sound_play(SOUNDS[1]);
+                if(sound == 2) sound_play(SOUNDS[2]);
             }
         }
         if(body_get_type(body1) >= ENEMY) {
             int sound = rand() % 3;
-            if(sound == 0) sound_play("assets/sounds/mob_hit_1.wav");
-            if(sound == 1) sound_play("assets/sounds/mob_hit_2.wav");
-            if(sound == 2) sound_play("assets/sounds/mob_hit_3.wav");
+            if(sound == 0) sound_play(SOUNDS[3]);
+            if(sound == 1) sound_play(SOUNDS[4]);
+            if(sound == 2) sound_play(SOUNDS[5]);
 
             body_set_hit_timer(body1, 0.3);
             if (body_get_type(body1) == ENEMY) {

@@ -6,7 +6,6 @@
 #include "sound.h"
 
 extern const char *SPRITE;
-// const char *SPRITE_PATH = "assets/knight_f_idle_anim_f0.png";
 
 extern const double MAX_WIDTH;
 extern const double MAX_HEIGHT;
@@ -14,6 +13,8 @@ extern const double MAX_HEIGHT;
 extern const double HALF_HEART_HEALTH;
 extern const double PLAYER_HEALTH;
 extern const double HEART_PADDING;
+
+const char *MURAL_TEXT = "MURAL";
 
 /**
  * Shuffles the array of levels.
