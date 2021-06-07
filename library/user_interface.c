@@ -17,6 +17,11 @@ const int COIN_FILLED_ID = 59;
 const int COIN_EMPTY_ID = 60;
 const int EXPERIENCE = 61;
 const int HEALTH = 62;
+const int HP_POWERUP = 53;
+const int ATK_POWERUP = 54;
+const int CD_POWERUP = 55;
+const int SPD_POWERUP = 56;
+const int INV_POWERUP = 57;
 
 const double BUFFER = 40;
 const double BOTTOM_LEFT_X = 512 - 125/2;

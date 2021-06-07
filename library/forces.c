@@ -6,10 +6,7 @@
 #include "sound.h"
 #include <stdio.h>
 
-// can add these as function parameters and set them in the demo
-const double MIN_DIST = 5;
 const double RECOIL_DIST = 0.25;
-const double RECOIL_ENEMY = 15;
 
 const char* SOUNDS[] = {
     "assets/sounds/player_hit_1.wav",
@@ -51,7 +48,7 @@ void collision_aux_free(void *collision_aux) {
     free(coll);
 }
 
-void collision(void *aux) {
+void collision(void *aux, double dt) {
     collision_aux_t *values = (collision_aux_t *) aux;
     body_t *body1 = values->body1;
     body_t *body2 = values->body2;
@@ -216,10 +213,7 @@ void tile_collision(void *aux, double dt) {
                 }
             }
             body_set_velocity(body, new_velocity);
-
-
         }
-        // still need to deal with enemy collisions
     }
 
 }

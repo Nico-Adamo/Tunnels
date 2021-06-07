@@ -83,7 +83,7 @@ const char *HEALTH_TEXT = "HEALTH";
 const char *EXPERIENCE_TEXT = "EXPERIENCE";
 const char *START_TEXT = "START";
 const char *VICTORY_TEXT = "VICTORY SCREEN";
-const char *LEVEL_UP_TEXT = "LEVEL UP";
+const char *LEVEL_UP_TEXT = "LEVEL_UP";
 const char *MURAL_TEXT = "MURAL";
 
 const double HEART_SIZE = 32;
@@ -186,12 +186,12 @@ scene_t *scene_reset(game_t *game) {
         heart_num = list_size(get_player_hearts(game_get_current_scene(game)));
     }
     else {
-        exp = 0; 
+        exp = 0;
         max_exp = PLAYER_EXP;
     }
 
 
-    // Initialize Demo Heart
+    // Initialize Hearts
     for (int i = 0; i < heart_num; i++) {
         UI_t *heart = make_heart(HEART_PADDING + HEART_BUFFER + HEART_SIZE * i, MAX_HEIGHT - HEART_SIZE - HEART_PADDING, game_get_sprite(game, FULL_HEART_ID), PLAYER_HEART);
         scene_add_UI_component(scene, heart);
@@ -201,21 +201,21 @@ scene_t *scene_reset(game_t *game) {
     scene_add_UI_component(scene, health_text);
 
 
-    // Initialize Demo Coins
+    // Initialize Coins
     int coin_exp = max_exp / COIN_NUM;
     int coin_filled = floor(exp / coin_exp);
     for (int i = 0; i < coin_filled; i++) {
-        UI_t *coin = make_coin(HEART_PADDING + COIN_BUFFER + COIN_SIZE * i, MAX_HEIGHT - COIN_SIZE + HEART_SIZE - HEART_PADDING * 2, game_get_sprite(game, COIN_FILLED_ID), PLAYER_COIN);
+        UI_t *coin = make_coin(HEART_PADDING + COIN_BUFFER + COIN_SIZE * i, MAX_HEIGHT - COIN_SIZE - HEART_SIZE - HEART_PADDING * 2, game_get_sprite(game, COIN_FILLED_ID), PLAYER_COIN);
         scene_add_UI_component(scene, coin);
     }
 
     for (int i = coin_filled; i < COIN_NUM; i++) {
-        UI_t *coin = make_coin(HEART_PADDING + COIN_BUFFER + COIN_SIZE * i, MAX_HEIGHT - COIN_SIZE + HEART_SIZE - HEART_PADDING * 2, game_get_sprite(game, COIN_EMPTY_ID), PLAYER_COIN);
+        UI_t *coin = make_coin(HEART_PADDING + COIN_BUFFER + COIN_SIZE * i, MAX_HEIGHT - COIN_SIZE - HEART_SIZE - HEART_PADDING * 2, game_get_sprite(game, COIN_EMPTY_ID), PLAYER_COIN);
         scene_add_UI_component(scene, coin);
     }
 
     sprite_t *experience = game_get_sprite(game, EXPERIENCE);
-    UI_t *experience_text = UI_init(experience, (rect_t) {HEART_PADDING, MAX_HEIGHT - COIN_SIZE + HEART_SIZE - HEART_PADDING * 2, EXP_LENGTH, COIN_SIZE}, EXPERIENCE_TEXT, EXP_SCALE);
+    UI_t *experience_text = UI_init(experience, (rect_t) {HEART_PADDING, MAX_HEIGHT - COIN_SIZE - HEART_SIZE - HEART_PADDING * 2, EXP_LENGTH, COIN_SIZE}, EXPERIENCE_TEXT, EXP_SCALE);
     scene_add_UI_component(scene, experience_text);
     return scene;
 }
@@ -303,16 +303,16 @@ void handle_mural_buffs(char *type, game_t *game){
     sprite_t *powerup_sprite;
     if (strcmp(type, MURALS[0]) == 0) {
         player_info.attack += ATTACK_POWER_UP;
-        powerup_sprite = game_get_sprite(game, 54);
+        powerup_sprite = game_get_sprite(game, ATK_POWERUP);
     } else if (strcmp(type, MURALS[1]) == 0) {
         player_info.speed += SPEED_POWER_UP;
-        powerup_sprite = game_get_sprite(game, 56);
+        powerup_sprite = game_get_sprite(game, SPD_POWERUP);
     } else if (strcmp(type, MURALS[2]) == 0) {
         player_info.invulnerability_timer *= INV_POWER_UP;
-        powerup_sprite = game_get_sprite(game, 57);
+        powerup_sprite = game_get_sprite(game, INV_POWERUP);
     } else if (strcmp(type, MURALS[3]) == 0) {
         player_info.cooldown *= CD_POWER_UP;
-        powerup_sprite = game_get_sprite(game, 55);
+        powerup_sprite = game_get_sprite(game, CD_POWERUP);
     } else if (strcmp(type, MURALS[4]) == 0) {
         list_t *hearts = get_player_hearts(scene);
         size_t num_hearts = list_size(hearts);

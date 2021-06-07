@@ -17,6 +17,11 @@ extern const int COIN_FILLED_ID;
 extern const int COIN_EMPTY_ID;
 extern const int EXPERIENCE;
 extern const int HEALTH;
+extern const int HP_POWERUP;
+extern const int ATK_POWERUP;
+extern const int CD_POWERUP;
+extern const int SPD_POWERUP;
+extern const int INV_POWERUP;
 
 /**
  * Handles door interactions, showing the "PRESS F" UI component

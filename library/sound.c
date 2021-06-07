@@ -13,5 +13,5 @@ void music_play(const char *path) {
         Mix_HaltMusic();
     }
     Mix_Music *music = Mix_LoadMUS(path);
-    int ret = Mix_FadeInMusic(music, LOOPS, MS); // TODO: magic number
+    int ret = Mix_FadeInMusic(music, LOOPS, MS);
 }

@@ -9,6 +9,7 @@ const double player_bullet_velocity = 400;
 const char *HEALTH_RESTORED = "Health restored";
 const double HEALTH_RESTORED_X = 675;
 const double HEALTH_RESTORED_LIFETIME = 3;
+const int PLAYER_BULLET_ID = 3;
 
 const char *PAUSE = "PAUSE";
 const double PAUSE_SCALE = 1;
@@ -24,7 +25,7 @@ void body_set_velocity_and_direction(body_t *player, vector_t velocity) {
 
 void player_make_bullet(game_t *game, body_t *player, scene_t *scene, vector_t bullet_dir) {
     if(body_get_shoot_cooldown(player) > 0) return;
-    body_t *bullet = make_bullet(game, player, bullet_dir, 3, player_bullet_velocity);
+    body_t *bullet = make_bullet(game, player, bullet_dir, PLAYER_BULLET_ID, player_bullet_velocity);
     scene_add_body(scene, bullet);
     create_tile_collision(scene, bullet);
     for (size_t i = 0; i < scene_bodies(scene); i++) {
