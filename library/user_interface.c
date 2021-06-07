@@ -18,6 +18,15 @@ const int COIN_EMPTY_ID = 60;
 const int EXPERIENCE = 61;
 const int HEALTH = 62;
 
+const double BUFFER = 40;
+const double BOTTOM_LEFT_X = 512 - 125/2;
+const double BOTTOM_LEFT_Y = 256;
+const double HITBOX_WIDTH = 120;
+const double HITBOX_HEIGHT = 46;
+const double SHAPE_WIDTH = 600;
+const double SHAPE_HEIGHT = 230;
+const double SCALE = 0.2;
+
 bool UI_handle_door_interaction(game_t *game, bool entered_area) {
     bool still_in_area = false;
     list_t *interactors = game_get_tile_interactors(game);
@@ -27,11 +36,11 @@ bool UI_handle_door_interaction(game_t *game, bool entered_area) {
         tile_interactor_t *interactor = list_get(interactors, i);
         if (find_collision(interactor->area, body_get_hitbox(player_current)).collided) {
             if(entered_area == false) {
-                SDL_Rect shape = (SDL_Rect) {0, 0, 600, 230};
+                SDL_Rect shape = (SDL_Rect) {0, 0, SHAPE_WIDTH, SHAPE_HEIGHT};
                 rect_t player_hitbox = body_get_draw_hitbox(player_current);
-                double buffer_dist = 40;
-                rect_t hitbox = (rect_t) {512 - 125/2, 256 + player_hitbox.h/2 + buffer_dist, 120, 46};
-                UI_t *press_F = UI_init(game_get_sprite(game, PRESS_F_ID), hitbox, "PRESS_F", 0.1);
+                double buffer_dist = BUFFER;
+                rect_t hitbox = (rect_t) {BOTTOM_LEFT_X, BOTTOM_LEFT_Y + player_hitbox.h/2 + buffer_dist, HITBOX_WIDTH, HITBOX_HEIGHT};
+                UI_t *press_F = UI_init(game_get_sprite(game, PRESS_F_ID), hitbox, "PRESS_F", SCALE);
                 scene_add_UI_component(scene, press_F);
             }
             still_in_area = true;

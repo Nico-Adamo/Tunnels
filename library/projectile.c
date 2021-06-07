@@ -1,5 +1,9 @@
 #include "projectile.h"
 
+const double BULLET_MASS = 0.1;
+const double BULLET_SCALE = 4;
+const double BULLET_SHIFT_SCALE = 0.5;
+
 body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_id, double bullet_speed) {
     sprite_t *sprite = game_get_sprite(game, sprite_id);
     body_sprite_info_t bullet_info = {
@@ -17,11 +21,10 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
     };
 
     if (body_get_type(body) == PLAYER) {
-        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, PLAYER_BULLET, info);
+        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), BULLET_MASS, BULLET_SCALE, PLAYER_BULLET, info);
     } else {
-        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), 0.1, 4, ENEMY_BULLET, info);
+        bullet = body_init_with_info(bullet_info, sprite, body_get_centroid(body), BULLET_MASS, BULLET_SCALE, ENEMY_BULLET, info);
     }
-    //vector_t player_dir = body_get_direction(body);
 
     vector_t bullet_velocity = {
         .x = bullet_dir.x * bullet_speed,
@@ -29,8 +32,8 @@ body_t *make_bullet(game_t *game, body_t *body, vector_t bullet_dir, int sprite_
     };
 
     vector_t bullet_shift = {
-        .x = (1 - abs(bullet_dir.x)) * .5 * body_get_velocity(body).x,
-        .y = (1 - abs(bullet_dir.y)) * .5 * body_get_velocity(body).y
+        .x = (1 - abs(bullet_dir.x)) * BULLET_SHIFT_SCALE * body_get_velocity(body).x,
+        .y = (1 - abs(bullet_dir.y)) * BULLET_SHIFT_SCALE * body_get_velocity(body).y
     };
 
     bullet_velocity = vec_add(bullet_velocity, bullet_shift);
@@ -56,7 +59,7 @@ body_t *make_bullet_pos(game_t *game, vector_t spawn_point, vector_t bullet_dir,
         .cooldown = 0
     };
 
-    bullet = body_init_with_info(bullet_info, sprite, spawn_point, 0.1, 4, ENEMY_BULLET, info);
+    bullet = body_init_with_info(bullet_info, sprite, spawn_point, BULLET_MASS, BULLET_SCALE, ENEMY_BULLET, info);
 
     vector_t bullet_velocity = {
         .x = bullet_dir.x * bullet_speed,
