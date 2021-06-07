@@ -13,6 +13,8 @@ const double HEALTH_RESTORED_LIFETIME = 3;
 const char *PAUSE = "PAUSE";
 const double PAUSE_SCALE = 1;
 
+const char *MURAL_T = "MURAL";
+
 bool key_pressed[8] = {false, false, false, false, false, false, false, false};
 
 void body_set_velocity_and_direction(body_t *player, vector_t velocity) {
@@ -128,7 +130,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
             case ESCAPE: {
                 list_t *ui_components = scene_get_UI_components(scene);
                 for(size_t i = 0; i < list_size(ui_components); i++) {
-                    if(strcmp(UI_get_type(list_get(ui_components, i)), MURAL_TEXT) == 0) {
+                    if(strcmp(UI_get_type(list_get(ui_components, i)), MURAL_T) == 0) {
                         list_remove(ui_components, i);
                         random_room_music();
                         ui_text_t *text = ui_text_init(HEALTH_RESTORED, (vector_t) {HEALTH_RESTORED_X, HEART_PADDING}, HEALTH_RESTORED_LIFETIME, OBJECTIVE_TEXT);

@@ -84,6 +84,7 @@ const char *EXPERIENCE_TEXT = "EXPERIENCE";
 const char *START_TEXT = "START";
 const char *VICTORY_TEXT = "VICTORY SCREEN";
 const char *LEVEL_UP_TEXT = "LEVEL UP";
+const char *MURAL_TEXT = "MURAL";
 
 const double HEART_SIZE = 32;
 const double HEART_SCALE = 2;

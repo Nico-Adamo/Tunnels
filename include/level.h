@@ -14,8 +14,6 @@ extern const double HALF_HEART_HEALTH;
 extern const double PLAYER_HEALTH;
 extern const double HEART_PADDING;
 
-const char *MURAL_TEXT = "MURAL";
-
 /**
  * Shuffles the array of levels.
  */
