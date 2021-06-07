@@ -12,6 +12,22 @@ const int WINDOW_HEIGHT = 512;
 const double MS_PER_S = 1e3;
 const double map_scale = 10;
 const double TEXT_FADEOUT_TIME = 0.5;
+const double CENTER_MULTIPLIER = .5;
+const int AUDIO_FREQUENCY = 22050;
+const int AUDIO_CHANNELS = 2;
+const int AUDIO_CHUNKSIZE = 4096;
+const int RENDERER_INDEX = -1;
+const int CLEAR_COLOR_RGB = 32;
+const int SHOW_COLOR_RGB = 0;
+const int COLOR_A = 255;
+const int BIG_ZOMBIE_HIT_R = 50;
+const int BIG_ZOMBIE_HIT_G = 255;
+const int BIG_ZOMBIE_HIT_B = 50;
+const int NORMAL_HIT_R = 255;
+const int NORMAL_HIT_G = 50;
+const int NORMAL_HIT_B = 50;
+const int WHITE_RGB = 255;
+
 
 /**
  * The coordinate at the center of the screen.
@@ -60,7 +76,7 @@ vector_t get_window_center(void) {
     vector_t dimensions = {.x = *width, .y = *height};
     free(width);
     free(height);
-    return vec_multiply(0.5, dimensions);
+    return vec_multiply(CENTER_MULTIPLIER, dimensions);
 }
 
 /**
@@ -114,7 +130,7 @@ void sdl_init(vector_t min, vector_t max) {
     assert(min.x < max.x);
     assert(min.y < max.y);
 
-    center = vec_multiply(0.5, vec_add(min, max));
+    center = vec_multiply(CENTER_MULTIPLIER, vec_add(min, max));
     max_diff = vec_subtract(max, center);
     SDL_Init(SDL_INIT_EVERYTHING);
     TTF_Init();
@@ -128,9 +144,9 @@ void sdl_init(vector_t min, vector_t max) {
         WINDOW_HEIGHT,
         SDL_WINDOW_RESIZABLE
     );
-    Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
-    camera = (vector_t) {0, 0};
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    Mix_OpenAudio(AUDIO_FREQUENCY, MIX_DEFAULT_FORMAT, AUDIO_CHANNELS, AUDIO_CHUNKSIZE);
+    camera = VEC_ZERO;
+    renderer = SDL_CreateRenderer(window, RENDERER_INDEX, 0);
 }
 
 bool sdl_is_done(scene_t *game) {
@@ -165,7 +181,7 @@ bool sdl_is_done(scene_t *game) {
 }
 
 void sdl_clear(void) {
-    SDL_SetRenderDrawColor(renderer, 32, 32, 32, 255);
+    SDL_SetRenderDrawColor(renderer, CLEAR_COLOR_RGB, CLEAR_COLOR_RGB, CLEAR_COLOR_RGB, COLOR_A);
     SDL_RenderClear(renderer);
 }
 
@@ -221,7 +237,7 @@ void sdl_show(void) {
     boundary->y = max_pixel.y;
     boundary->w = max_pixel.x - min_pixel.x;
     boundary->h = min_pixel.y - max_pixel.y;
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, SHOW_COLOR_RGB, SHOW_COLOR_RGB, SHOW_COLOR_RGB, COLOR_A);
     SDL_RenderDrawRect(renderer, boundary);
     free(boundary);
 
@@ -252,13 +268,13 @@ void sdl_render_game(game_t *game) {
         SDL_Texture *texture = body_get_texture(body);
         if(body_get_hit_timer(body) > 0) {
             if (body_get_invulnerability_timer(body) > 0 && body_get_type(body) == BOSS_BIG_ZOMBIE) {
-                SDL_SetTextureColorMod(texture, 50, 255, 50);
+                SDL_SetTextureColorMod(texture, BIG_ZOMBIE_HIT_R, BIG_ZOMBIE_HIT_G, BIG_ZOMBIE_HIT_B);
             } else {
-                SDL_SetTextureColorMod(texture, 255, 50, 50);
+                SDL_SetTextureColorMod(texture, NORMAL_HIT_R, NORMAL_HIT_G, NORMAL_HIT_B);
             }
         }
         sdl_draw_texture(texture, shape, hitbox, body_get_flipped(body));
-        SDL_SetTextureColorMod(texture, 255,255,255);
+        SDL_SetTextureColorMod(texture, WHITE_RGB, WHITE_RGB, WHITE_RGB);
     }
 
     // Tilemap rendering: walls
@@ -282,7 +298,7 @@ void sdl_render_game(game_t *game) {
         hitbox.y += camera.y;
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, TTF_RenderText_Solid(pixeled_font, message, font_color));
         double lifetime = ui_text_get_timer(text);
-        if(lifetime <= TEXT_FADEOUT_TIME) SDL_SetTextureAlphaMod(texture, floor(lifetime * 255/TEXT_FADEOUT_TIME));
+        if(lifetime <= TEXT_FADEOUT_TIME) SDL_SetTextureAlphaMod(texture, floor(lifetime * WHITE_RGB/TEXT_FADEOUT_TIME));
         sdl_draw_texture(texture, shape, hitbox, false);
         SDL_DestroyTexture(texture);
     }
