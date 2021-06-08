@@ -9,7 +9,6 @@ const double ENEMY_SCALE = 4;
 const double MAX_ENEMY_DISTANCE = 2000;
 const double DX = 16;
 const double MAX_PATHFIND_DISTANCE = 100;
-const vector_t ROOM_CENTER = (vector_t) {830, 845};
 
 const double ENEMY_HEALTH_SCALE = 2.0;
 const double ENEMY_EXP_SCALE = 1.5;
@@ -88,7 +87,6 @@ int OGRE_IS_CHARGING = 0;
 
 double BOSS_ATTACK_TIMER = 0;
 size_t BOSS_ATTACK_TYPE;
-
 double ZOMBIE_AUX_TIMER = 0;
 
 body_t *make_enemy(game_t *game, double x, double y, enum enemy_type type) {
@@ -201,6 +199,7 @@ void handle_non_boss_enemy(game_t *game, body_t *enemy) {
 }
 
 void necromancer_wizard_pathfind(game_t *game, body_t *enemy) {
+    vector_t ROOM_CENTER = (vector_t) {830, 845};
     vector_t centroid = body_get_centroid(enemy);
     vector_t pathfind_dir = VEC_ZERO;
     double dist_from_center = vec_distance(centroid, ROOM_CENTER);
