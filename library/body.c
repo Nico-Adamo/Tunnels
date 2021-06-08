@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+const double MIN_COOLDOWN = .1;
+const vector_t DEFAULT_DIR = {
+    .x = 1,
+    .y = 0
+};
+
 double rand_from(double min, double max) {
     double range = (max - min);
     double div = RAND_MAX / range;
@@ -54,12 +60,12 @@ body_t *body_init_with_info(body_sprite_info_t sprite_ids, sprite_t *sprite, vec
     body->type = type;
     body->info = info;
     body->info_freer = free;
-    body->direction.x = 1;
-    body->direction.y = 0;
+    body->direction.x = DEFAULT_DIR.x;
+    body->direction.y = DEFAULT_DIR.y;
     body->animation_timer = 0;
     body->hit_timer = 0;
     body->invulnerability_timer = 0;
-    body->shoot_cooldown = rand_from(0.1, info.cooldown);
+    body->shoot_cooldown = rand_from(MIN_COOLDOWN, info.cooldown);
 
 
     body->centroid.x = body->bottom_left.x + body->scale * (sprite_get_hitbox_shape(sprite).x + sprite_get_hitbox_shape(sprite).w / 2);
@@ -268,8 +274,8 @@ void body_tick(body_t *body, double dt) {
 
     body_set_velocity(body, final_velocity);
     body_set_centroid(body, vec_add(body->centroid, vec_multiply(dt, average_velocity)));
-    body->net_force = (vector_t) {0, 0};
-    body->net_impulse = (vector_t) {0, 0};
+    body->net_force = VEC_ZERO;
+    body->net_impulse = VEC_ZERO;
 }
 
 void body_remove(body_t *body) {

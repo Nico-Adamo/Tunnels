@@ -131,7 +131,7 @@ collision_info_t find_collision_list(list_t *shape1, list_t *shape2) {
         else {
             if (separating_axis < current_min) {
                 current_min = separating_axis;
-                info.axis = ortho_axis; // come back here if broken
+                info.axis = ortho_axis;
                 double len = sqrt(pow(info.axis.x, 2) + pow(info.axis.y, 2));
                 info.axis.y /= len;
                 info.axis.x /= len;

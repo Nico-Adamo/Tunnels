@@ -3,8 +3,6 @@
 #include "level.h"
 
 const int PAUSE_ID = 63;
-
-const double player_velocity = 300;
 const double player_bullet_velocity = 400;
 const char *HEALTH_RESTORED = "Health restored";
 const double HEALTH_RESTORED_X = 675;
@@ -47,6 +45,7 @@ void handle_movement_shooting(game_t *game) {
     body_t *player = game_get_player(game);
     vector_t velocity = body_get_velocity(player);
     vector_t bullet_dir = VEC_ZERO;
+    double player_velocity = body_get_stats_info(player).speed;
     if(key_pressed[0] == true) { // "W" held
         velocity.y = player_velocity;
         body_set_velocity_and_direction(player, velocity);
@@ -155,6 +154,7 @@ void on_key(char key, key_event_type_t type, double held_time, game_t *game) {
         }
     }
     else if (type == KEY_RELEASED) {
+        double player_velocity = body_get_stats_info(player).speed;
         switch (key) {
             case 'a':
                 key_pressed[1] = false;
