@@ -11,7 +11,7 @@ Includes:
 * Projectile system
 * Functional UI system
 * Enemy AI
-* 45 unique levels
+* 15 unique levels with procedural variation
 * Multiple enemies w/ custom properties
 * Multiple bosses w/ custom skills 
 * Sprite animations
@@ -19,3 +19,6 @@ Includes:
 * Experience / skill system
 * Custom soundtrack
 * Real Caltech murals giving temporary stat boosts
+
+A game by Nico Adamo, Bella Mendoza, Maddie Ramos, and Bilge Gungore
+Made for CS3 at Caltech
